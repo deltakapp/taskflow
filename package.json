@@ -4,7 +4,7 @@
   "description": "Collaborative project management application",
   "main": "server/index.js",
   "scripts": {
-    "test": "test"
+    "start": "node server/index.js"
   },
   "repository": {
     "type": "git",
