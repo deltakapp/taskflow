@@ -1,23 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import "./App.css";
 
 function App() {
+  const [message, setMessage] = useState("");
+
+  async function testFetch(e) {
+    e.preventDefault();
+    const request = {
+      method: "GET",
+      cache: "no-store",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: "echo!" }),
+    };
+    const response = await fetch(
+      "https://taskflow.herokuapp.com/testfetch",
+      request
+    );
+    if (response.ok) {
+      const result = await response.json();
+      console.log(result);
+      setMessage(result.message);
+    } else {
+      console.log(response.status);
+    }
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <button onClick={testFetch}>Fetch something!</button>
+      <p>{message}</p>
     </div>
   );
 }

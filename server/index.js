@@ -6,6 +6,7 @@ const PORT = process.env.PORT || 5000;
 /* Create express application */
 const app = express();
 app.use(cors());
+app.use(express.json());
 
 /* Log all requests */
 app.use((req, res, next) => {
@@ -21,6 +22,10 @@ app.use(express.static(path.join(__dirname, "../frontend/build")));
 /* test path */
 app.get("/test", async (req, res) => {
   res.status(200).send("Success");
+});
+
+app.get("/testfetch", async (req, res) => {
+  res.status(200).send(req.message);
 });
 
 /* homepage path; dynamic routes point here */
