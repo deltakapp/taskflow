@@ -18,14 +18,14 @@ app.use((req, res, next) => {
 /* root directory path for frontend static build files */
 app.use(express.static(path.join(__dirname, "../frontend/build")));
 
-/* homepage path, dynamic routes point here */
-app.get("/*", function (req, res) {
-  res.sendFile(path.join(__dirname, "../frontend/build", "index.html"));
-});
-
 /* test path */
 app.get("/test", async (req, res) => {
   res.status(200).send("Success");
+});
+
+/* homepage path; dynamic routes point here */
+app.get("/*", function (req, res) {
+  res.sendFile(path.join(__dirname, "../frontend/build", "index.html"));
 });
 
 /* listen for requests */
