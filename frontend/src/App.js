@@ -4,6 +4,7 @@ import "./App.css";
 function App() {
   const [message, setMessage] = useState("");
 
+  /* test fetch api */
   async function testFetch(e) {
     e.preventDefault();
     const request = {
