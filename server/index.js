@@ -25,7 +25,7 @@ app.get("/test", async (req, res) => {
 });
 
 app.get("/testfetch", async (req, res) => {
-  res.status(200).send(req.message);
+  res.status(200).json("echo");
 });
 
 /* homepage path; dynamic routes point here */
