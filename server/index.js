@@ -8,6 +8,6 @@ express()
   // .set("view engine", "ejs")
   // .get("/", (req, res) => res.render("pages/index"))
   .get("/", (req, res) => {
-    res.status(201).send("hello world");
+    res.status(201).send("Hello world!");
   })
   .listen(PORT, () => console.log(`Listening on ${PORT}`));
