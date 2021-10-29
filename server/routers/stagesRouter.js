@@ -28,7 +28,7 @@ router.post("/", async (req, res) => {
   try {
     const stage = new res.locals.stageModel();
     stage.title = req.body.stageTitle;
-    stage.tasks = req.body.tasks;
+    stage.tasks = req.body.tasks || [];
     const savedStage = await stage.save();
 
     res.status(201).send(savedStage); //TODO: transform to client-friendly shape
@@ -43,7 +43,6 @@ router.get("/:stageId", async (req, res) => {
   try {
     const stage = res.locals.stageModel.findById(req.params.stageId);
     console.log(`Found stage ${stage.title}:`);
-    console.log(stage.json());
     res.status(200).send(stage);
   } catch (err) {
     console.error(err);

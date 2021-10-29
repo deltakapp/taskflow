@@ -4,6 +4,7 @@ console.time("full server");
 console.time("imports");
 const express = require("express");
 const mongoose = require("mongoose");
+const cors = require("cors"); //NOTE: remove for production, also app.use(cors())
 const path = require("path");
 const usersRouter = require("./routers/usersRouter");
 const projectsRouter = require("./routers/projectsRouter");
@@ -38,6 +39,7 @@ mongoose.connection.on("error", (err) => {
 
 /* Create express application */
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 // logging for all requests

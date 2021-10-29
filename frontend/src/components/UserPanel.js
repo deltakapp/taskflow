@@ -6,7 +6,6 @@ import ProjectsList from "./ProjectsList";
 export default function UserPanel() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user, shallowEqual);
-
   const [showProjectsList, toggleProjectsList] = useState(false);
 
   useEffect(() => {
