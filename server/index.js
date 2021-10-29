@@ -3,9 +3,10 @@
 console.time("full server");
 console.time("imports");
 const express = require("express");
-
 const mongoose = require("mongoose");
 const path = require("path");
+const usersRouter = require("./routers/usersRouter");
+const projectsRouter = require("./routers/projectsRouter");
 
 const PORT = process.env.PORT || 5000;
 const URL = process.env.DB_URL;
@@ -60,6 +61,10 @@ app.get("/test", async (req, res) => {
 app.get("/*", function (req, res) {
   res.sendFile(path.join(__dirname, "../frontend/build", "index.html"));
 });
+
+/* API Routers */
+app.use("/api/users", usersRouter);
+app.use("/api/projects", projectsRouter);
 
 /* listen for requests */
 app.listen(PORT, function () {
