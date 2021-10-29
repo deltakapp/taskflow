@@ -3,6 +3,7 @@
 console.time("full server");
 console.time("imports");
 const express = require("express");
+
 const mongoose = require("mongoose");
 const path = require("path");
 
@@ -39,6 +40,7 @@ const app = express();
 app.use(express.json());
 
 // logging for all requests
+
 app.use((req, res, next) => {
   const filename = path.basename(req.url);
   const dirname = path.dirname(req.url);
