@@ -41,7 +41,6 @@ const app = express();
 app.use(express.json());
 
 // logging for all requests
-
 app.use((req, res, next) => {
   const filename = path.basename(req.url);
   const dirname = path.dirname(req.url);

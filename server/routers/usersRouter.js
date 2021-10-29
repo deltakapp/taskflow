@@ -33,11 +33,15 @@ router.post("/", async (req, res) => {
 
 /* User login */
 router.post("/login", async (req, res) => {
+  console.log("Attempting login");
   try {
     const user = await User.findByCredentials(
       req.body.email,
       req.body.password
     );
+    if (user) {
+      console.log("user found");
+    }
     const token = user.generateAuthToken();
     await user.save();
     res.status(200).send({ user, token }); //move token to header?
@@ -48,6 +52,7 @@ router.post("/login", async (req, res) => {
     });
     await user.save();
   } catch (err) {
+    console.log("error in login route");
     res.status(404).send(err);
   }
 });
