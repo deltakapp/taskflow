@@ -4,7 +4,6 @@ console.time("full server");
 console.time("imports");
 const express = require("express");
 const mongoose = require("mongoose");
-// const cors = require("cors");
 const path = require("path");
 
 const PORT = process.env.PORT || 5000;
@@ -38,7 +37,6 @@ mongoose.connection.on("error", (err) => {
 /* Create express application */
 const app = express();
 app.use(express.json());
-// app.use(cors());
 
 // logging for all requests
 app.use((req, res, next) => {
