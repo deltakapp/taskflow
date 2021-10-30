@@ -1,3 +1,7 @@
+/* Nomenclature: when creating a new project, the intended name */
+/* of the project is called "title", until it is sent to database */
+/* and created, after which the project's name is referred to as "id" */
+
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { apiDomain as URL } from "../utils/apiDomain";
 
@@ -16,20 +20,20 @@ export default function ProjectsList() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        projectName: `${document.getElementById("new-project-name").value}`,
+        title: `${document.getElementById("new-project-title").value}`,
       }),
     };
     const response = await fetch(`${URL}/api/projects/`, request);
     if (response.ok) {
       const result = await response.json();
-      console.log(result); //TODO: convert projectId > project.id in server response
+      console.log(result);
       dispatch({ type: "project/created", payload: result });
     } else {
       console.log(response.status);
     }
   }
 
-  async function handleDeleteProject(projectName) {
+  async function handleDeleteProject(id) {
     const request = {
       method: "DELETE",
       headers: {
@@ -37,21 +41,40 @@ export default function ProjectsList() {
         "Content-Type": "application/json",
       },
     };
-    const response = await fetch(`${URL}/api/projects/${projectName}`, request);
+    const response = await fetch(`${URL}/api/projects/${id}`, request);
     if (response.ok) {
-      dispatch({ type: "project/deleted", payload: projectName });
+      dispatch({ type: "project/deleted", payload: { id: id } });
     } else {
       console.log(response.status);
     }
   }
 
-  const listProjects = projects.map((project) => {
+  async function handleLoadProject(id) {
+    const request = {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${user.token}`,
+        "Content-Type": "application/json",
+      },
+    };
+    const response = await fetch(`${URL}/api/projects/${id}`, request);
+    if (response.ok) {
+      const result = await response.json();
+      console.log(result);
+      dispatch({
+        type: "project/loaded",
+        payload: { id: id, stages: result },
+      });
+    }
+  }
+
+  const listProjects = projects.map((id) => {
     return (
       //TODO: Change to project.id
-      <li key={project}>
-        {project}
-        <button>Edit [XXX]</button>
-        <button onClick={() => handleDeleteProject(project)}>Delete</button>
+      <li key={id}>
+        {id}
+        <button onClick={() => handleLoadProject(id)}>Edit</button>
+        <button onClick={() => handleDeleteProject(id)}>Delete</button>
       </li>
     );
   });
@@ -59,7 +82,7 @@ export default function ProjectsList() {
   return (
     <div>
       {projects && <ul>{listProjects}</ul>}
-      <textarea id="new-project-name"></textarea>
+      <textarea id="new-project-title"></textarea>
       <button onClick={handleCreateProject}>Create Project</button>
     </div>
   );

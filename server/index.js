@@ -4,6 +4,7 @@ console.time("full server");
 console.time("imports");
 const express = require("express");
 const mongoose = require("mongoose");
+const cors = require("cors"); //NOTE: remove for production, also app.use(cors())
 const path = require("path");
 const usersRouter = require("./routers/usersRouter");
 const projectsRouter = require("./routers/projectsRouter");
@@ -14,10 +15,7 @@ console.timeEnd("imports");
 
 /* Connect server to mongodb using mongoose */
 mongoose
-  .connect(URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(URL)
   .then(console.log("Connection established with database"))
 
   /* Handle initial connection errors */
@@ -38,6 +36,7 @@ mongoose.connection.on("error", (err) => {
 
 /* Create express application */
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 // logging for all requests
@@ -56,14 +55,15 @@ app.get("/test", async (req, res) => {
   res.status(200).send("Success");
 });
 
-/* homepage path, dynamic routes point here */
-app.get("/*", function (req, res) {
-  res.sendFile(path.join(__dirname, "../frontend/build", "index.html"));
-});
-
 /* API Routers */
 app.use("/api/users", usersRouter);
 app.use("/api/projects", projectsRouter);
+
+/* homepage path, dynamic routes point here */
+app.get("/*", function (req, res) {
+  console.log("GETting homepage");
+  res.sendFile(path.join(__dirname, "../frontend/build", "index.html"));
+});
 
 /* listen for requests */
 app.listen(PORT, function () {

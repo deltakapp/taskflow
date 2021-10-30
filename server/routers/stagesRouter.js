@@ -28,7 +28,7 @@ router.post("/", async (req, res) => {
   try {
     const stage = new res.locals.stageModel();
     stage.title = req.body.stageTitle;
-    stage.tasks = req.body.tasks;
+    stage.tasks = req.body.tasks || [];
     const savedStage = await stage.save();
 
     res.status(201).send(savedStage); //TODO: transform to client-friendly shape
@@ -43,7 +43,6 @@ router.get("/:stageId", async (req, res) => {
   try {
     const stage = res.locals.stageModel.findById(req.params.stageId);
     console.log(`Found stage ${stage.title}:`);
-    console.log(stage.json());
     res.status(200).send(stage);
   } catch (err) {
     console.error(err);
@@ -76,9 +75,15 @@ router.patch("/:stageId", async (req, res) => {
 /* Delete stage */
 router.delete("/:stageId", async (req, res) => {
   try {
-    res.locals.stageModel.findByIdAndDelete(req.params.stageId);
-    console.log(`Deleted stage ${req.params.stageId}`);
-    res.status(204).send();
+    const removed = await res.locals.stageModel.findByIdAndRemove(
+      req.params.stageId
+    );
+    if (removed) {
+      console.log(`Deleted stage ${req.params.stageId}`);
+      res.status(204).send();
+    } else {
+      res.status(404).send();
+    }
   } catch (err) {
     console.error(err);
     res.status(404).send();

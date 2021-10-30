@@ -1,5 +1,4 @@
 /* User Routes at path /api/users */
-/* this is derived from routers/user-jwt.js in COPY OF working cookies */
 
 /* These routes do not follow REST standard: auth middleware renders */
 /* user-specific resource-naming unnecessary, and endpoints which */
@@ -48,6 +47,7 @@ router.post("/login", async (req, res) => {
     });
     await user.save();
   } catch (err) {
+    console.log(err);
     res.status(404).send(err);
   }
 });
@@ -83,7 +83,7 @@ router.post("/logout", auth, async (req, res) => {
 /* Delete user */
 router.delete("/", auth, async (req, res) => {
   try {
-    await User.findByIdAndDelete(res.locals.user._id);
+    await User.findByIdAndDelete(res.locals.user.id);
     console.log("user deleted");
     res.status(204).send();
   } catch (err) {
@@ -93,6 +93,6 @@ router.delete("/", auth, async (req, res) => {
 
 /* Update user email address */
 //TODO
-//router.patch("/users");
+//router.put("/users");
 
 module.exports = router;

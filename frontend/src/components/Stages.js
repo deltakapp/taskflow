@@ -2,7 +2,7 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { apiDomain as URL } from "../utils/apiDomain";
 
 export default function Project() {
-  const projectTitle = useSelector((state) => state.project.projectId);
+  const projectId = useSelector((state) => state.project.id);
   const stages = useSelector((state) => state.project.stages); //revise comparison fn
   const user = useSelector((state) => state.user, shallowEqual);
   const dispatch = useDispatch();
@@ -27,19 +27,19 @@ export default function Project() {
       }),
     };
     const response = await fetch(
-      `${URL}/api/projects/${projectTitle}/stages`,
+      `${URL}/api/projects/${projectId}/stages`,
       request
     );
     if (response.ok) {
       const result = await response.json();
-      console.log(result); //TODO: convert projectId > project.id in server response
-      dispatch({ type: "stage/added", payload: result });
+      console.log(result); //TODO: convert projectId > projectId in server response
+      dispatch({ type: "stage/created", payload: result });
     } else {
       console.log(response.status);
     }
   }
 
-  async function handleDeleteStage(stageId) {
+  async function handleDeleteStage(id) {
     const request = {
       method: "DELETE",
       headers: {
@@ -47,11 +47,11 @@ export default function Project() {
       },
     };
     const response = await fetch(
-      `${URL}/api/projects/${projectTitle}/stages/${stageId}`,
+      `${URL}/api/projects/${projectId}/stages/${id}`,
       request
     );
     if (response.ok) {
-      dispatch({ type: "stage/deleted", payload: stageId });
+      dispatch({ type: "stage/deleted", payload: { id: id } });
     } else {
       console.log(response.status);
     }
@@ -60,9 +60,9 @@ export default function Project() {
   const stagesList = stages ? (
     stages.map((stage) => {
       return (
-        <li key={stage._id}>
+        <li key={stage.id}>
           <h3>{stage.title}</h3>
-          <button onClick={() => handleDeleteStage(stage._id)}>
+          <button onClick={() => handleDeleteStage(stage.id)}>
             Delete Stage
           </button>
           <hr />
@@ -75,7 +75,7 @@ export default function Project() {
 
   return (
     <div>
-      <h2>{projectTitle}</h2>
+      <h2>{projectId}</h2>
       <ul>{stages && stagesList}</ul>
       <textarea id="new-stage-title"></textarea>
       <button onClick={handleCreateStage}>Create Stage</button>

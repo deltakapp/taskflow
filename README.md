@@ -39,6 +39,7 @@ Long-term Heroku deployment:
 push to heroku main
 heroku ps:scale web=1
 heroku run /frontend npm run build
+/server/index.js remove import cors and app.use(cors()) and any cors in package.json
 
 # Glossary
 

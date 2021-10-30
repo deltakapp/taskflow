@@ -19,7 +19,7 @@ const auth = async (req, res, next) => {
 
     if (Date.now() > decoded.exp * 1000 - 1800000) {
       console.log("REFRESHING STALE TOKEN");
-      res.set("X-Replacement-Token", user.generateAuthToken());
+      res.set("X-Auth-Token", user.generateAuthToken());
     }
 
     res.locals.user = user;

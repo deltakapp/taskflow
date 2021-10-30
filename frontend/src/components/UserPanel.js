@@ -6,7 +6,6 @@ import ProjectsList from "./ProjectsList";
 export default function UserPanel() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user, shallowEqual);
-
   const [showProjectsList, toggleProjectsList] = useState(false);
 
   useEffect(() => {
@@ -67,7 +66,7 @@ export default function UserPanel() {
   if (user.name) {
     return (
       <div>
-        {user.name}
+        {`${user.name} `}
         <button onClick={handleLogout}>Log Out</button>
         <hr />
         <button onClick={() => toggleProjectsList(!showProjectsList)}>

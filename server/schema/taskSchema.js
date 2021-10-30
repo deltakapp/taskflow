@@ -20,4 +20,31 @@ const taskSchema = new mongoose.Schema(
   }
 );
 
+/* alias 'id' to '_id' */
+taskSchema
+  .virtual("id") // virtual get '_id' => 'id' is mongoose default
+  .set((id) => {
+    this._id = id;
+  });
+
+/* Rules for converting documents to JSON*/
+taskSchema.set("toJSON", {
+  virtuals: true, // use virtuals
+  versionKey: false, // remove versionKey
+  transform: (doc, converted) => {
+    delete converted._id; // remove _id (converted to id)
+    delete converted.createdAt;
+  },
+});
+
+/* Rules for converting documents to JSON (identical to toJSON) */
+taskSchema.set("toObject", {
+  virtuals: true, // use virtuals
+  versionKey: false, // remove versionKey
+  transform: (doc, converted) => {
+    delete converted._id; // remove _id (converted to id)
+    delete converted.createdAt;
+  },
+});
+
 module.exports = taskSchema;

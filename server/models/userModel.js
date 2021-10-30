@@ -1,4 +1,3 @@
-/* this is derived from models/user-jwt.js in COPY OF working cookies */
 const mongoose = require("mongoose");
 const validator = require("validator");
 const jwt = require("jsonwebtoken");
@@ -43,17 +42,38 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-/* convert user to JSON */
-userSchema.methods.toJSON = function () {
-  const user = this;
-  const userObject = user.toObject();
+/* alias 'id' to '_id' */
+userSchema
+  .virtual("id") // virtual get '_id' => 'id' is mongoose default
+  .set((id) => {
+    this._id = id;
+  });
 
-  /* strip secrets */
-  delete userObject.password;
-  delete userObject.tokens;
+/* Rules for converting documents to JSON */
+userSchema.set("toJSON", {
+  virtuals: true, // use virtuals
+  versionKey: false, // remove versionKey
+  transform: (doc, converted) => {
+    delete converted.password; // remove password
+    delete converted.tokens; // remove tokens
+    delete converted._id; // remove _id (converted to id)
+    delete converted.createdAt;
+    delete converted.updatedAt;
+  },
+});
 
-  return userObject;
-};
+/* Rules for converting documents to JSON (identical to toJSON) */
+userSchema.set("toObject", {
+  virtuals: true, // use virtuals
+  versionKey: false, // remove versionKey
+  transform: (doc, converted) => {
+    delete converted.password; // remove password
+    delete converted.tokens; // remove tokens
+    delete converted._id; // remove _id (converted to id)
+    delete converted.createdAt;
+    delete converted.updatedAt;
+  },
+});
 
 userSchema.methods.generateAuthToken = function () {
   const user = this;
