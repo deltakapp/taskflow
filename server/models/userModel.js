@@ -45,7 +45,7 @@ const userSchema = new mongoose.Schema(
 /* alias 'id' to '_id' */
 userSchema
   .virtual("id") // virtual get '_id' => 'id' is mongoose default
-  .set(function (id) {
+  .set((id) => {
     this._id = id;
   });
 

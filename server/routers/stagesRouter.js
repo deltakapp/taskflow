@@ -75,9 +75,15 @@ router.patch("/:stageId", async (req, res) => {
 /* Delete stage */
 router.delete("/:stageId", async (req, res) => {
   try {
-    res.locals.stageModel.findByIdAndDelete(req.params.stageId);
-    console.log(`Deleted stage ${req.params.stageId}`);
-    res.status(204).send();
+    const removed = await res.locals.stageModel.findByIdAndRemove(
+      req.params.stageId
+    );
+    if (removed) {
+      console.log(`Deleted stage ${req.params.stageId}`);
+      res.status(204).send();
+    } else {
+      res.status(404).send();
+    }
   } catch (err) {
     console.error(err);
     res.status(404).send();

@@ -14,27 +14,40 @@ export default function projectReducer(prevState = initialState, action) {
       return state;
     }
     case "project/loaded": {
+      // not yet used
       state = action.payload;
       return state;
     }
     case "project/unloaded": {
+      // not yet used
       return initialState;
     }
     case "project/deleted": {
-      console.log(action.payload);
-      if (action.payload === state.projectId) {
+      console.log(action.payload.id);
+      if (action.payload.id === state.id) {
         return initialState;
       }
       return state;
     }
-    case "stage/added": {
+    case "stage/created": {
       console.log(action.payload);
       state.stages = state.stages.concat(action.payload);
       return state;
     }
     case "stage/deleted": {
       state.stages = state.stages.filter(
-        (stage) => stage._id !== action.payload
+        (stage) => stage.id !== action.payload.id
+      );
+      return state;
+    }
+    case "task/created": {
+      console.log(action.payload);
+      state.stages = state.stages.concat(action.payload);
+      return state;
+    }
+    case "task/deleted": {
+      state.stages = state.stages.filter(
+        (stage) => stage.id !== action.payload.id
       );
       return state;
     }

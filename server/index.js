@@ -15,10 +15,7 @@ console.timeEnd("imports");
 
 /* Connect server to mongodb using mongoose */
 mongoose
-  .connect(URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(URL)
   .then(console.log("Connection established with database"))
 
   /* Handle initial connection errors */
@@ -58,14 +55,15 @@ app.get("/test", async (req, res) => {
   res.status(200).send("Success");
 });
 
-/* homepage path, dynamic routes point here */
-app.get("/*", function (req, res) {
-  res.sendFile(path.join(__dirname, "../frontend/build", "index.html"));
-});
-
 /* API Routers */
 app.use("/api/users", usersRouter);
 app.use("/api/projects", projectsRouter);
+
+/* homepage path, dynamic routes point here */
+app.get("/*", function (req, res) {
+  console.log("GETting homepage");
+  res.sendFile(path.join(__dirname, "../frontend/build", "index.html"));
+});
 
 /* listen for requests */
 app.listen(PORT, function () {

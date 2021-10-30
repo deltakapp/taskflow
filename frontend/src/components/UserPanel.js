@@ -66,7 +66,7 @@ export default function UserPanel() {
   if (user.name) {
     return (
       <div>
-        {user.name}
+        {`${user.name} `}
         <button onClick={handleLogout}>Log Out</button>
         <hr />
         <button onClick={() => toggleProjectsList(!showProjectsList)}>

@@ -4,7 +4,7 @@ export default function userReducer(prevState = initialState, action) {
   let state = { ...prevState };
 
   switch (action.type) {
-    case "user/created":
+    case "user/created": // currently not in use
       state = action.payload;
       state.flag = "EMAIL_CONFIRMATION"; //TODO: use me
       return state;
@@ -22,17 +22,17 @@ export default function userReducer(prevState = initialState, action) {
       state = { flag: "LOGGED_OUT" };
       return state;
 
-    case "user/deleted":
+    case "user/deleted": // currently not in use
       state = { flag: "DELETED" };
       return state;
 
     case "project/created":
-      state.projects = state.projects.concat(action.payload.projectId);
+      state.projects = state.projects.concat(action.payload.id);
       return state;
 
     case "project/deleted":
       state.projects = state.projects.filter(
-        (project) => project !== action.payload
+        (project) => project !== action.payload.id
       );
       return state;
 

@@ -20,21 +20,17 @@ router.use(auth);
 /* Check user authorization to edit project */
 router.use("/:projectId", (req, res, next) => {
   /* TODO: sanitize req url params */
-  const projectId = req.params.projectId;
+  const id = req.params.projectId;
 
   // reject unauthorized requests
-  if (!res.locals.user.projects.includes(projectId)) {
+  if (!res.locals.user.projects.includes(id)) {
     res.status(403).send();
     /* Note: I could add 404-checking for invalid :projectId */
     /* but that would add time overhead to query the database again */
     /* and those routes should fail to authorize anyway */
   } else {
-    // if (!projectEditors.hasOwn(projectId)) {
-    //   projectEditors.projectId = [];
-    // }
-    // if (!projectEditors.projectId.includes(req.locals.user._id))
     /* create project-specific stage model */
-    res.locals.stageModel = mongoose.model(projectId, stageSchema, projectId);
+    res.locals.stageModel = mongoose.model(id, stageSchema, id);
     /* TODO: convert above into persistent list a la projectEditors */
     next();
   }
@@ -44,28 +40,26 @@ router.use("/:projectId", (req, res, next) => {
 router.post("/", async (req, res) => {
   try {
     // TODO: make url-compatible
-    let projectId = req.body.projectName;
+    let id = req.body.title;
 
     /* Check if duplicate name */
     const projects = await mongoose.connection.db
       .listCollections({}, { nameOnly: true })
       .toArray();
-    const duplicateName = projects.some(
-      (project) => project.name === projectId
-    );
+    const duplicateName = projects.some((project) => project.name === id);
 
     if (duplicateName) {
       res.status(409).send(); // TODO: add alternate project naming
     } else {
       /* create collection to represent new project */
-      res.locals.stageModel = mongoose.model(projectId, stageSchema, projectId);
+      res.locals.stageModel = mongoose.model(id, stageSchema, id);
       await res.locals.stageModel.createCollection();
 
-      /* add projectId to user document (creates authorization to edit) */
-      res.locals.user.projects.push(projectId);
+      /* add id to user document (creates authorization to edit) */
+      res.locals.user.projects.push(id);
       await res.locals.user.save();
 
-      res.status(201).send({ projectId: projectId }); // add new URL in this body?
+      res.status(201).send({ id: id }); // add new URL in this body?
     }
   } catch (err) {
     console.error(err);
@@ -73,11 +67,12 @@ router.post("/", async (req, res) => {
   }
 });
 
-/* Get project data */
+/* Read project data */
 router.get("/:projectId", async (req, res) => {
   try {
     const projectData = await res.locals.stageModel.find();
     console.log("found project data");
+    console.log(projectData);
     res.status(200).send(projectData); //TODO: check if data too large
   } catch (err) {
     console.error(err);
@@ -88,17 +83,18 @@ router.get("/:projectId", async (req, res) => {
 /* Delete a project */
 router.delete("/:projectId", async (req, res) => {
   try {
-    const projectId = req.params.projectId;
+    const id = req.params.projectId;
 
     /* Delete collection */
-    await mongoose.connection.db.dropCollection(projectId);
-    console.log(`Deleted project ${projectId}`);
+    const collectionDeleted = await mongoose.connection.collection(id).drop();
+    if (collectionDeleted) {
+      console.log(`Deleted project ${id}`);
+    } else {
+      console.log("FAILED TO DELETE PROJECT");
+    }
 
     /* delete permissions in users */
-    await User.updateMany(
-      { projects: projectId },
-      { $pullAll: { projects: [projectId] } }
-    );
+    await User.updateMany({ projects: id }, { $pullAll: { projects: [id] } });
 
     res.status(204).send();
   } catch (err) {
@@ -110,7 +106,7 @@ router.delete("/:projectId", async (req, res) => {
 /* Start an editing session */
 // router.patch("/:projectId", async (req, res) => {
 //   try {
-//     const projectId = req.params.projectId;
+//     const id = req.params.projectId;
 
 //   }
 // })

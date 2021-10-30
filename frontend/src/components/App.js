@@ -10,7 +10,7 @@ function App() {
     <div className="App">
       <UserPanel />
       <hr />
-      {project.projectId && <Stages />}
+      {project.id ? <Stages /> : "No Project Selected"}
     </div>
   );
 }
