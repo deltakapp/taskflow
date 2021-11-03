@@ -1,0 +1,12 @@
+header {
+  background-color: thistle;
+}
+
+#app-title {
+  margin: 0rem;
+}
+
+#app-subtitle {
+  margin: 0rem;
+  font-size: 1.125rem;
+}

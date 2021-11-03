@@ -1,5 +1,5 @@
 const initialState = {
-  id: 0,
+  id: null,
   title: "",
   stages: [],
 };

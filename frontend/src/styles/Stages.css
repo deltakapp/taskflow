@@ -1,0 +1,29 @@
+#stages-panel {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
+}
+
+.stage {
+  margin: 0.5rem;
+  background-color: rgb(126, 245, 132);
+  border-radius: 0.5rem;
+}
+
+.stage-header {
+  display: grid;
+  grid-template-columns: 1.5rem 1fr 1.5rem;
+}
+
+.stage-title {
+  display: inline;
+  grid-column-start: 2;
+  grid-column-end: 3;
+  margin: 0rem;
+}
+
+.btn-stage-settings {
+  display: inline;
+  grid-column-start: 3;
+  grid-column-end: 4;
+  /* text-align: center; */
+}

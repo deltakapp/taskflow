@@ -68,19 +68,21 @@ export default function ProjectsList() {
     }
   }
 
-  const listProjects = projects.map((id) => {
-    return (
-      //TODO: Change to project.id
-      <li key={id}>
-        {id}
-        <button onClick={() => handleLoadProject(id)}>Edit</button>
-        <button onClick={() => handleDeleteProject(id)}>Delete</button>
-      </li>
-    );
-  });
+  const listProjects = projects
+    ? projects.map((id) => {
+        return (
+          //TODO: Change to project.id
+          <li key={id}>
+            {id}
+            <button onClick={() => handleLoadProject(id)}>Edit</button>
+            <button onClick={() => handleDeleteProject(id)}>Delete</button>
+          </li>
+        );
+      })
+    : null;
 
   return (
-    <div>
+    <div id="projectsList">
       {projects && <ul>{listProjects}</ul>}
       <textarea id="new-project-title"></textarea>
       <button onClick={handleCreateProject}>Create Project</button>
