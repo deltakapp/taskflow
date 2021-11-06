@@ -4,7 +4,7 @@ export default function userReducer(prevState = initialState, action) {
   let state = { ...prevState };
 
   switch (action.type) {
-    case "user/created": // currently not in use
+    case "user/created":
       state = action.payload;
       state.flag = "EMAIL_CONFIRMATION"; //TODO: use me
       return state;

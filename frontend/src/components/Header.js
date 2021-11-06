@@ -1,13 +1,14 @@
-import { shallowEqual, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import "../styles/Header.css";
+import UserTab from "./UserTab";
 
-export default function Header() {
-  const user = useSelector((state) => state.user, shallowEqual);
+export default function HomeHeader() {
   const projectTitle = useSelector((state) => state.project.id);
 
   return (
-    <header>
+    <header id="header">
       <h1 id="app-title">{projectTitle || "Taskflow"}</h1>
+      <UserTab />
       {!projectTitle && (
         <h2 id="app-subtitle">Collaborative Project Management</h2>
       )}

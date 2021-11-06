@@ -11,6 +11,7 @@
 
 .stage-header {
   display: grid;
+  text-align: center;
   grid-template-columns: 1.5rem 1fr 1.5rem;
 }
 
@@ -23,7 +24,34 @@
 
 .btn-stage-settings {
   display: inline;
+  grid-column-start: 1;
+  grid-column-end: 2;
+  text-align: center;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  border: none;
+  padding: 0rem;
+  font-size: 1rem;
+  cursor: pointer;
+  overflow: hidden;
+  outline: none;
+}
+.btn-stage-delete {
+  display: inline;
   grid-column-start: 3;
   grid-column-end: 4;
-  /* text-align: center; */
+  text-align: center;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  border: none;
+  padding: 0rem;
+  font-size: 0.875rem;
+  color: red;
+  cursor: pointer;
+  overflow: hidden;
+  outline: none;
+}
+
+hr {
+  margin: 0.125rem 0.25rem 0.25rem 0.25rem;
 }

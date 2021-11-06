@@ -1,12 +1,20 @@
-header {
+#header {
+  display: grid;
+  grid-template-columns: 6rem 1fr 6rem;
+  width: 100%;
+  text-align: center;
   background-color: thistle;
 }
 
 #app-title {
-  margin: 0rem;
+  grid-column-start: 2;
+  grid-column-end: 3;
+  margin: 0.25rem;
 }
 
 #app-subtitle {
+  grid-column-start: 2;
+  grid-column-end: 3;
   margin: 0rem;
   font-size: 1.125rem;
 }

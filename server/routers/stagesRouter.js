@@ -6,28 +6,29 @@
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
-const stageSchema = require("../schema/stageSchema");
+// const stageSchema = require("../schema/stageSchema");
 
 router.use("/", (req, res, next) => {
   console.log("Using Stages Router");
+  console.log(req.params.stageId);
   next();
 });
 
 /* logging for stage requests */
-router.route("/:projectId/stages/:stageId/tasks").all((req, res, next) => {
-  console.log(
-    `\nTask ${req.method} stageId: ${req.params.stageId} projectId: ${
-      req.params.projectId
-    }\nBody: ${JSON.stringify(req.body)}`
-  );
-  next();
-});
+// router.route("/:projectId/stages/:stageId/tasks").all((req, res, next) => {
+//   console.log(
+//     `\nTask ${req.method} stageId: ${req.params.stageId} projectId: ${
+//       req.params.projectId
+//     }\nBody: ${JSON.stringify(req.body)}`
+//   );
+//   next();
+// });
 
 /* Create a new stage */
 router.post("/", async (req, res) => {
   try {
     const stage = new res.locals.stageModel();
-    stage.title = req.body.stageTitle;
+    stage.title = req.body.title;
     stage.tasks = req.body.tasks || [];
     const savedStage = await stage.save();
 

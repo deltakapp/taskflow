@@ -1,14 +1,14 @@
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import "../styles/Stages.css";
 import { apiDomain as URL } from "../utils/apiDomain";
+import TaskCreator from "./TaskCreator";
+import TaskList from "./TaskList";
 
-export default function Project() {
+export default function StagesList() {
   const projectId = useSelector((state) => state.project.id);
-  const stages = useSelector((state) => state.project.stages); //revise comparison fn
+  const stages = useSelector((state) => state.project.stages, shallowEqual); //revise comparison fn
   const user = useSelector((state) => state.user, shallowEqual);
   const dispatch = useDispatch();
-
-  console.log(stages);
 
   async function handleDeleteStage(id) {
     const request = {
@@ -29,17 +29,28 @@ export default function Project() {
   }
 
   const stagesList = stages ? (
-    stages.map((stage) => {
+    stages.map((stage, index) => {
       return (
         <section className="stage" key={stage.id}>
           <div className="stage-header">
+            <button className="btn-stage-settings">⚙️</button>
             <h3 className="stage-title">{stage.title}</h3>
-            <div className="btn-stage-settings">⚙️</div>
+            <button
+              className="btn-stage-delete"
+              onClick={() => handleDeleteStage(stage.id)}
+            >
+              X
+            </button>
           </div>
           <hr />
-          <button onClick={() => handleDeleteStage(stage.id)}>
-            Delete Stage
-          </button>
+          {!!stage.tasks.length && (
+            <TaskList stageId={stage.id} stageIndex={index} />
+          )}
+          <TaskCreator
+            projectId={projectId}
+            stageId={stage.id}
+            stageIndex={index}
+          />
         </section>
       );
     })

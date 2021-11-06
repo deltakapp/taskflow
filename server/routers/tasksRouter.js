@@ -6,11 +6,22 @@
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
-const stageSchema = require("../schema/stageSchema");
+const taskSchema = require("../schema/taskSchema");
+const Task = mongoose.model("Task", taskSchema);
 
-router.use("/", (req, res, next) => {
-  console.log("Using Tasks Router (make sure not stages router");
-  next();
+/* UNFINISHED ========*/
+/* Create a new task */
+router.post("/", async (req, res) => {
+  try {
+    const stage = await res.locals.stageModel.findById(res.locals.stageId);
+    const task = new Task(req.body);
+    stage.tasks.push(task);
+    await stage.save();
+    res.status(201).send(task); //TODO: transform to client-friendly shape
+  } catch (err) {
+    console.error(err);
+    res.status(400).send();
+  }
 });
 
 module.exports = router;
