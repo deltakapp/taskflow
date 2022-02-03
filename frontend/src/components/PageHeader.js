@@ -1,12 +1,12 @@
 import { useSelector } from "react-redux";
-import "../styles/Header.css";
+import "../styles/PageHeader.css";
 import UserTab from "./UserTab";
 
-export default function HomeHeader() {
+export default function PageHeader() {
   const projectTitle = useSelector((state) => state.project.id);
 
   return (
-    <header id="header">
+    <header id="page-header">
       <h1 id="app-title">{projectTitle || "Taskflow"}</h1>
       <UserTab />
       {!projectTitle && (

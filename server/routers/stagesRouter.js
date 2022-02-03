@@ -6,11 +6,11 @@
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
+const tasksRouter = require("./tasksRouter");
 // const stageSchema = require("../schema/stageSchema");
 
 router.use("/", (req, res, next) => {
   console.log("Using Stages Router");
-  console.log(req.params.stageId);
   next();
 });
 
@@ -90,5 +90,13 @@ router.delete("/:stageId", async (req, res) => {
     res.status(404).send();
   }
 });
+
+/* Store stageId in res.locals then use tasksRouter */
+router.use("/:stageId/tasks", (req, res, next) => {
+  res.locals.stageId = req.params.stageId;
+  console.log("using tasks router");
+  next();
+});
+router.use("/:stageId/tasks", tasksRouter);
 
 module.exports = router;

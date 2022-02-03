@@ -1,4 +1,4 @@
-#header {
+#page-header {
   display: grid;
   grid-template-columns: 6rem 1fr 6rem;
   width: 100%;

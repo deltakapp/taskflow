@@ -45,6 +45,7 @@ export default function TaskCreator({ projectId, stageId, stageIndex }) {
         <button
           className="btn-close-task-creator"
           onClick={() => toggleOpen(false)}
+          type="button"
         >
           Cancel
         </button>

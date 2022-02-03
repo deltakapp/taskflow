@@ -9,7 +9,6 @@ const mongoose = require("mongoose");
 const taskSchema = require("../schema/taskSchema");
 const Task = mongoose.model("Task", taskSchema);
 
-/* UNFINISHED ========*/
 /* Create a new task */
 router.post("/", async (req, res) => {
   try {
@@ -21,6 +20,18 @@ router.post("/", async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(400).send();
+  }
+});
+
+/* Delete task */
+router.delete("/:taskId", async (req, res) => {
+  try {
+    const stage = await res.locals.stageModel.findById(res.locals.stageId);
+    stage.tasks.id(req.params.taskId).remove();
+    await stage.save();
+  } catch (err) {
+    console.error(err);
+    res.status(404).send();
   }
 });
 

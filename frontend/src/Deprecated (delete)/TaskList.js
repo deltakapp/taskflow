@@ -1,33 +1,30 @@
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import "../styles/TaskList.css";
-import Task from "./Task";
+import "../deprecated/TaskList.css";
 
 export default function TaskList({ stageId, stageIndex, projectId }) {
-  console.log(stageId);
   const tasks = useSelector(
     (state) => state.project.stages[stageIndex].tasks,
     shallowEqual
   ); //revise comparison fn
-  console.log(tasks);
   const user = useSelector((state) => state.user, shallowEqual);
   const dispatch = useDispatch();
 
   async function handleDeleteTask(id) {
-    // const request = {
-    //   method: "DELETE",
-    //   headers: {
-    //     Authorization: `Bearer ${user.token}`,
-    //   },
-    // };
-    // const response = await fetch(
-    //   `${URL}/api/projects/${projectId}/stages/${stageId}`,
-    //   request
-    // );
-    // if (response.ok) {
-    //   dispatch({ type: "stage/deleted", payload: { id: id } });
-    // } else {
-    //   console.log(response.status);
-    // }
+    const request = {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${user.token}`,
+      },
+    };
+    const response = await fetch(
+      `${URL}/api/projects/${projectId}/stages/${stageId}`,
+      request
+    );
+    if (response.ok) {
+      dispatch({ type: "stage/deleted", payload: { id: id } });
+    } else {
+      console.log(response.status);
+    }
   }
 
   const tasksList = tasks ? (
@@ -44,7 +41,7 @@ export default function TaskList({ stageId, stageIndex, projectId }) {
               ❌
             </button>
           </div>
-          <Task />
+          {/* <Task /> */}
         </section>
       );
     })
