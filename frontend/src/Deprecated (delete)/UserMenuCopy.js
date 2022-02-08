@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import ProjectsList from "../components/ProjectsList";
 import { apiDomain as URL } from "../utils/apiDomain";
-import ProjectsList from "./ProjectsList";
 
-export default function UserPanel() {
+export default function UserMenuCopy() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user, shallowEqual);
   const [showProjectsList, toggleProjectsList] = useState(false);

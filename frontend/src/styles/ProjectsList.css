@@ -1,0 +1,13 @@
+#projects-list {
+  list-style: none;
+}
+
+#new-project-creator {
+  display: block;
+  margin: auto;
+  width: 50%;
+}
+
+#new-project-creator textarea {
+  display: block;
+}

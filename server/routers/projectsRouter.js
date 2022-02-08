@@ -10,7 +10,6 @@ const auth = require("../middleware/auth");
 const User = require("../models/userModel");
 const stageSchema = require("../schema/stageSchema");
 const stagesRouter = require("./stagesRouter");
-const tasksRouter = require("./tasksRouter");
 
 const projectEditors = {}; //lists current editors (subscribers) for each project
 
@@ -21,6 +20,7 @@ router.use(auth);
 router.use("/:projectId", (req, res, next) => {
   /* TODO: sanitize req url params */
   const id = req.params.projectId;
+  console.log(req.params);
 
   // reject unauthorized requests
   if (!res.locals.user.projects.includes(id)) {
@@ -112,9 +112,6 @@ router.delete("/:projectId", async (req, res) => {
 // })
 
 /* End an editing session */
-
-/* task routes are handled by tasksRouter */
-router.use("/:projectId/stages/:stageId/tasks", tasksRouter);
 
 /* stage routes are handled by stagesRouter */
 router.use("/:projectId/stages", stagesRouter);

@@ -1,5 +1,5 @@
 const initialState = {
-  id: 0,
+  id: null,
   title: "",
   stages: [],
 };
@@ -19,7 +19,6 @@ export default function projectReducer(prevState = initialState, action) {
       return state;
     }
     case "project/unloaded": {
-      // not yet used
       return initialState;
     }
     case "project/deleted": {
@@ -42,7 +41,10 @@ export default function projectReducer(prevState = initialState, action) {
     }
     case "task/created": {
       console.log(action.payload);
-      state.stages = state.stages.concat(action.payload);
+      const stageId = action.payload.stageId;
+      const index = state.stages.findIndex((stage) => stage.id === stageId);
+      const task = action.payload.task;
+      state.stages[index].tasks = state.stages[index].tasks.concat(task);
       return state;
     }
     case "task/deleted": {
@@ -50,6 +52,9 @@ export default function projectReducer(prevState = initialState, action) {
         (stage) => stage.id !== action.payload.id
       );
       return state;
+    }
+    case "user/loggedOut": {
+      return initialState;
     }
     default:
       return prevState;

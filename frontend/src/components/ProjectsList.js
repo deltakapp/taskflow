@@ -3,11 +3,14 @@
 /* and created, after which the project's name is referred to as "id" */
 
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import "../styles/ProjectsList.css";
 import { apiDomain as URL } from "../utils/apiDomain";
 
 export default function ProjectsList() {
   const dispatch = useDispatch();
   const projects = useSelector((state) => state.user.projects, shallowEqual);
+  const navigate = useNavigate();
   const user = useSelector((state) => state.user, shallowEqual);
 
   async function handleCreateProject(e) {
@@ -65,25 +68,33 @@ export default function ProjectsList() {
         type: "project/loaded",
         payload: { id: id, stages: result },
       });
+      navigate(`../project/${id}`);
     }
   }
 
-  const listProjects = projects.map((id) => {
-    return (
-      //TODO: Change to project.id
-      <li key={id}>
-        {id}
-        <button onClick={() => handleLoadProject(id)}>Edit</button>
-        <button onClick={() => handleDeleteProject(id)}>Delete</button>
-      </li>
-    );
-  });
+  const listProjects = projects
+    ? projects.map((id) => {
+        return (
+          //TODO: Change to project.id
+          <li key={id}>
+            {id}
+            <button onClick={() => handleLoadProject(id)}>Edit</button>
+            <button onClick={() => handleDeleteProject(id)}>Delete</button>
+          </li>
+        );
+      })
+    : null;
 
   return (
-    <div>
-      {projects && <ul>{listProjects}</ul>}
-      <textarea id="new-project-title"></textarea>
-      <button onClick={handleCreateProject}>Create Project</button>
+    <div id="projects-menu">
+      {projects && <ul id="projects-list">{listProjects}</ul>}
+      <hr />
+      <form id="new-project-creator" onSubmit={handleCreateProject}>
+        <h3>Create a new project</h3>
+        <h3>Titled:</h3>
+        <textarea id="new-project-title"></textarea>
+        <button id="submit">Create Project</button>
+      </form>
     </div>
   );
 }

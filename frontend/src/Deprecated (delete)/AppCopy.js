@@ -1,13 +1,15 @@
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import Header from "../components/Header";
+import Main from "../components/Main";
+import Navbar from "../components/Navbar";
+import "../styles/AppCopy.css";
 import { apiDomain as URL } from "../utils/apiDomain";
+import UserPanel from "./UserMenuCopy";
 
-export default function Project() {
-  const projectId = useSelector((state) => state.project.id);
-  const stages = useSelector((state) => state.project.stages); //revise comparison fn
-  const user = useSelector((state) => state.user, shallowEqual);
+export default function AppCopy() {
   const dispatch = useDispatch();
-
-  console.log(stages);
+  const user = useSelector((state) => state.user, shallowEqual);
+  const projectId = useSelector((state) => state.project.id);
 
   async function handleCreateStage(e) {
     e.preventDefault();
@@ -39,46 +41,15 @@ export default function Project() {
     }
   }
 
-  async function handleDeleteStage(id) {
-    const request = {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${user.token}`,
-      },
-    };
-    const response = await fetch(
-      `${URL}/api/projects/${projectId}/stages/${id}`,
-      request
-    );
-    if (response.ok) {
-      dispatch({ type: "stage/deleted", payload: { id: id } });
-    } else {
-      console.log(response.status);
-    }
-  }
-
-  const stagesList = stages ? (
-    stages.map((stage) => {
-      return (
-        <li key={stage.id}>
-          <h3>{stage.title}</h3>
-          <button onClick={() => handleDeleteStage(stage.id)}>
-            Delete Stage
-          </button>
-          <hr />
-        </li>
-      );
-    })
-  ) : (
-    <li>No stages yet</li>
-  );
-
   return (
-    <div>
-      <h2>{projectId}</h2>
-      <ul>{stages && stagesList}</ul>
+    <div className="app-copy">
+      <Header />
+
+      <UserPanel />
+      <Main />
       <textarea id="new-stage-title"></textarea>
       <button onClick={handleCreateStage}>Create Stage</button>
+      <Navbar />
     </div>
   );
 }

@@ -1,18 +1,11 @@
-import { shallowEqual, useSelector } from "react-redux";
-import "../styles/App.css";
-import Stages from "./Stages";
-import UserPanel from "./UserPanel";
+import { Outlet } from "react-router-dom";
+import PageHeader from "./PageHeader";
 
-function App() {
-  const project = useSelector((state) => state.project, shallowEqual);
-  console.log(project);
+export default function App() {
   return (
-    <div className="App">
-      <UserPanel />
-      <hr />
-      {project.id ? <Stages /> : "No Project Selected"}
-    </div>
+    <>
+      <PageHeader />
+      <Outlet />
+    </>
   );
 }
-
-export default App;
