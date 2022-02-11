@@ -3,7 +3,7 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { apiDomain as URL } from "../utils/apiDomain";
 
-export default function Login() {
+export default function Login(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state) => state.user, shallowEqual);
@@ -48,12 +48,11 @@ export default function Login() {
 
   return !user.id ? (
     <div>
-      Log In:
+      <h2>Login</h2>
       <form onSubmit={handleLogin}>
-        <span>Email: </span>
+        <p>Email</p>
         <input id="user-email" type="text" />
-        <br />
-        <span>Password: </span>
+        <p>Password</p>
         <input id="user-password" type="text" />
         <button type="submit">Log In</button>
       </form>

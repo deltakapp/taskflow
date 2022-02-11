@@ -1,31 +1,43 @@
+main {
+  height:100%;
+}
+#project-board {
+  position: relative;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column !important;
+}
 #stages-panel {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
+  display: flex;
+  width: 100%;
+  overflow-x: scroll;
 }
 
 .stage {
+  min-width: 355px;
+  max-width: 355px;
+  flex-grow: 1;
   margin: 0.5rem;
-  background-color: rgb(126, 245, 132);
+  background-color: rgb(202, 202, 202);
   border-radius: 0.5rem;
+  overflow-y: scroll;
+  height: calc(100vh - 100px);
 }
 
 .stage-header {
-  display: grid;
-  text-align: center;
-  grid-template-columns: 1.5rem 1fr 1.5rem;
+  min-height: 16px;
 }
 
 .stage-title {
-  display: inline;
-  grid-column-start: 2;
-  grid-column-end: 3;
+  float: left;
   margin: 0rem;
 }
 
+.task-creator {
+  margin-top: 30px;
+}
 .btn-stage-settings {
   display: inline;
-  grid-column-start: 1;
-  grid-column-end: 2;
   text-align: center;
   background-color: transparent;
   background-repeat: no-repeat;
@@ -38,8 +50,6 @@
 }
 .btn-stage-delete {
   display: inline;
-  grid-column-start: 3;
-  grid-column-end: 4;
   text-align: center;
   background-color: transparent;
   background-repeat: no-repeat;

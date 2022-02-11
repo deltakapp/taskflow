@@ -45,23 +45,24 @@ export default function Stage({ id, stageIndex, projectId }) {
 
   return (
     <section className="stage" key={id}>
-      <header className="stage-header">
-        <button className="btn-stage-settings">⚙️</button>
+      <div className="stage-header clearfix m-2">
         <h3 className="stage-title">{stage.title}</h3>
+        <button className="btn-stage-settings" class="float-right">⚙️</button>
         <button
-          className="btn-stage-delete"
-          onClick={() => handleDeleteStage(id)}
-        >
+	  className="btn-stage-delete"
+	  onClick={() => handleDeleteStage(id)}
+	  class="float-right"
+	>
           X
         </button>
-      </header>
-      <hr />
+	<div class="clearfix"></div>
+        <TaskCreator
+          projectId={projectId}
+          stageId={stage.id}
+          stageIndex={stageIndex}
+        />
+      </div>
       {taskList}
-      <TaskCreator
-        projectId={projectId}
-        stageId={stage.id}
-        stageIndex={stageIndex}
-      />
     </section>
   );
 }

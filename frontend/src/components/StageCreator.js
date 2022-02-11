@@ -34,19 +34,21 @@ export default function StageCreator({ projectId }) {
 
   return (
     <>
-      Create Stage:
-      <form onSubmit={handleCreateStage}>
-        <input id="new-stage-title"></input>
-        <button
-          className="btn-toggle-stage-creator"
-          onClick={() => toggleOpen(false)}
-        >
-          Cancel
-        </button>
-        <button className="btn-create-stage" type="submit">
-          Create Stage
-        </button>
-      </form>
+      <section class="stage">
+        Create Stage:
+        <form onSubmit={handleCreateStage}>
+          <input id="new-stage-title"></input>
+          <button
+            className="btn-toggle-stage-creator"
+            onClick={() => toggleOpen(false)}
+          >
+            Cancel
+          </button>
+          <button className="btn-create-stage" type="submit">
+            Create Stage
+          </button>
+        </form>
+      </section>
     </>
   );
 }

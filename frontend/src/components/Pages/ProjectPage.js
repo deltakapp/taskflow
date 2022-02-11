@@ -2,6 +2,7 @@
 import { shallowEqual, useSelector } from "react-redux";
 import "../../styles/ProjectPage.css";
 import useCheckUser from "../../utils/useCheckUser";
+import PageHeader from "../PageHeader";
 import Navbar from "../Navbar";
 import Stage from "../Stage";
 import StageCreator from "../StageCreator";
@@ -26,14 +27,18 @@ export default function ProjectPage() {
     : null;
   return (
     <>
+      <PageHeader />
       <Navbar />
-      <main id="project-board">
-        <div id="stages-panel">{stageList}</div>
-        <hr />
-        {/* {projectId ? <StageList /> : <ProjectsList />}
-        <hr /> */}
+      <main>
+	<div id="project-board">
+          <div id="stages-panel">
+	    {stageList}
+            {/* {projectId ? <StageList /> : <ProjectsList />}
+            <hr /> */}
+            <StageCreator projectId={projectId} />
+	  </div>
+        </div>
       </main>
-      <StageCreator projectId={projectId} />
     </>
   );
 }
