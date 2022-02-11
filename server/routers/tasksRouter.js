@@ -29,6 +29,7 @@ router.delete("/:taskId", async (req, res) => {
     const stage = await res.locals.stageModel.findById(res.locals.stageId);
     stage.tasks.id(req.params.taskId).remove();
     await stage.save();
+    res.status(204).send();
   } catch (err) {
     console.error(err);
     res.status(404).send();

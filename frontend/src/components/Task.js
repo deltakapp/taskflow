@@ -20,8 +20,15 @@ export default function Task({ taskIndex, stageIndex, stageId, projectId }) {
       `${URL}/api/projects/${projectId}/stages/${stageId}/tasks/${task.id}`,
       request
     );
+    if (response) {
+      console.log("response received");
+    }
     if (response.ok) {
-      dispatch({ type: "stage/deleted", payload: { id: task.id } });
+      console.log("dispatching delete");
+      dispatch({
+        type: "task/deleted",
+        payload: { id: task.id, stageId: stageId },
+      });
     } else {
       console.log(response.status);
     }
@@ -31,7 +38,8 @@ export default function Task({ taskIndex, stageIndex, stageId, projectId }) {
     <div class="task">
       <p class="float-left">{task.title}</p>
       <button class="btn-task-settings float-right">⚙️</button>
-      <button class="btn-task-delete float-right"
+      <button
+        class="btn-task-delete float-right"
         onClick={() => handleDeleteTask()}
       >
         ❌
