@@ -48,8 +48,12 @@ export default function projectReducer(prevState = initialState, action) {
       return state;
     }
     case "task/deleted": {
-      state.stages = state.stages.filter(
-        (stage) => stage.id !== action.payload.id
+      console.log(action.payload);
+      const stageIndex = state.stages.findIndex(
+        (stage) => stage.id === action.payload.stageId
+      );
+      state.stages[stageIndex].tasks = state.stages[stageIndex].tasks.filter(
+        (task) => task.id !== action.payload.id
       );
       return state;
     }
