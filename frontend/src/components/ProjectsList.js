@@ -88,7 +88,6 @@ export default function ProjectsList() {
   return (
     <div id="projects-menu">
       {projects && <ul id="projects-list">{listProjects}</ul>}
-      <hr />
       <form id="new-project-creator" onSubmit={handleCreateProject}>
         <h3>Create a new project</h3>
         <h3>Titled:</h3>

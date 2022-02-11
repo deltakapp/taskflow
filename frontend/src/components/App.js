@@ -4,8 +4,7 @@ import PageHeader from "./PageHeader";
 export default function App() {
   return (
     <>
-      <PageHeader />
-      <Outlet />
+        <Outlet />
     </>
   );
 }

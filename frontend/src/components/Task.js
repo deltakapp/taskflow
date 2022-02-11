@@ -28,14 +28,14 @@ export default function Task({ taskIndex, stageIndex, stageId, projectId }) {
   }
 
   return (
-    <div className="task">
-      <div className="task-header">
-        <h3 className="task-title">{task.title}</h3>
-        <button className="btn-task-settings">⚙️</button>
-        <button className="btn-task-delete" onClick={() => handleDeleteTask()}>
-          ❌
-        </button>
-      </div>
+    <div class="task">
+      <p class="float-left">{task.title}</p>
+      <button class="btn-task-settings float-right">⚙️</button>
+      <button class="btn-task-delete float-right"
+        onClick={() => handleDeleteTask()}
+      >
+        ❌
+      </button>
     </div>
   );
 }

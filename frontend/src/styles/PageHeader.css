@@ -1,20 +1,24 @@
-#page-header {
-  display: grid;
-  grid-template-columns: 6rem 1fr 6rem;
-  width: 100%;
-  text-align: center;
-  background-color: thistle;
+header {
+  height: 50px;
+}
+
+header.home {
+  height: 350px;
 }
 
 #app-title {
-  grid-column-start: 2;
-  grid-column-end: 3;
-  margin: 0.25rem;
 }
 
 #app-subtitle {
-  grid-column-start: 2;
-  grid-column-end: 3;
-  margin: 0rem;
-  font-size: 1.125rem;
 }
+header.home h1 {
+  display:none;
+}
+.logo { 
+  margin-top: 8px;
+  width: 125px;
+  float:left;
+}
+
+.float-right { float: right; }
+.float-left { float: left; }

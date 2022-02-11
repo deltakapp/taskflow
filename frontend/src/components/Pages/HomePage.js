@@ -1,23 +1,65 @@
+import { useEffect } from "react";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { apiDomain as URL } from "../../utils/apiDomain";
 import { Link } from "react-router-dom";
 
 export default function HomePage() {
-  function StartUnsavedProject(e) {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const user = useSelector((state) => state.user, shallowEqual);
+
+  useEffect(() => {
+    if (user.id) {
+      setTimeout(() => {
+        navigate(`../user/${user.id}`);
+      }, 1500);
+    }
+  }, [user.id, navigate]);
+
+  async function handleLogin(e) {
     e.preventDefault();
-    window.alert("This feature is unavailable yet.");
-    return null;
+    const email = document.getElementById("user-email");
+    const password = document.getElementById("user-password");
+    const request = {
+      method: "POST",
+      cache: "no-store",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: email.value,
+        password: password.value,
+      }),
+    };
+    const response = await fetch(`${URL}/api/users/login`, request);
+    if (response.ok) {
+      const result = await response.json();
+      console.log(result);
+      dispatch({
+        type: "user/loggedIn",
+        payload: { ...result.user, token: result.token },
+      });
+    } else {
+      const result = await response.json();
+      console.log(result.message || response);
+      dispatch({ type: "user/failedLogin" });
+    }
+    email.value = "";
+    password.value = "";
   }
 
   return (
-    <>
-      <main id="home-page">
-        <h2>
-          <Link to="/signup">Sign Up</Link>
-        </h2>
-        <h3>or</h3>
-        <h2>
-          <button onClick={StartUnsavedProject}>Start a new project</button>
-        </h2>
-      </main>
-    </>
+    <main class="home">
+      <img class="logo" alt="Taskflow.tech" src="/logo.png" />
+      <h1><a href="/">Taskflow.tech</a></h1>
+      <h2>Login</h2>
+      <form onSubmit={handleLogin}>
+        <input id="user-email" type="text" placeholder="E-mail" />
+        <input id="user-password" type="password" placeholder="Password" />
+        <button type="submit">Log In</button>
+      </form>
+      <h3><Link to="/signup">Sign Up</Link></h3>
+    </main>
   );
 }
+
+

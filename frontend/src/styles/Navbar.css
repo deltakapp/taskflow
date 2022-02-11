@@ -1,21 +1,27 @@
-#navbar {
-  position: fixed;
-  width: 100%;
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  justify-items: center;
-  background-color: rgb(221, 166, 253);
-  bottom: 0;
-}
-@media only screen and (min-width: 1000px) {
-  #navbar {
-    position: sticky;
-    bottom: auto;
-  }
+.tabrow {
+  position: relative;
 }
 
-#navbar button {
-  min-width: 5rem;
-  height: 2rem;
-  background-color: rgb(147, 147, 255);
+ul.tabrow {margin:0; padding: 0; }
+
+.tabrow:after {
+  position: absolute;
+  content: "";
+  width: 100%;
+  bottom: 0;
+  left: 0;
+  border-bottom: 1px solid #AAA;
 }
+.tabrow li {
+  position: relative;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  border: 1px solid #AAA;
+  background: #ECECEC;
+  display: inline-block;
+  text-shadow: 0 1px #FFF;
+  margin: 0 5px;
+  padding: 0 20px;
+}
+
+.tabrow li.current { background-color: #d1e99f; }

@@ -14,7 +14,7 @@ export default function UserTab() {
   }
 
   return user.id ? (
-    <div id="user-tab">
+    <div id="user-tab" class="float-right">
       <button id="btn-user" onClick={handleNavUserPanel}>
         {user.name || "Anonymous User"}
       </button>
