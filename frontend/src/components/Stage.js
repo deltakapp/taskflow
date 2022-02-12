@@ -29,6 +29,30 @@ export default function Stage({ id, stageIndex, projectId }) {
     }
   }
 
+  async function handleEditStageName(id) {
+    const request = {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${user.token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title: "title has been edited",
+      }),
+    };
+    const response = await fetch(
+      `${URL}/api/projects/${projectId}/stages/${id}`,
+      request
+    );
+    if (response.ok) {
+      const result = await response.json();
+      console.log(result);
+      dispatch({ type: "stage/updated", payload: { stage: result } });
+    } else {
+      console.log(response.status);
+    }
+  }
+
   const taskList = tasks
     ? tasks.map((task, index) => {
         return (
@@ -47,15 +71,21 @@ export default function Stage({ id, stageIndex, projectId }) {
     <section className="stage" key={id}>
       <div className="stage-header clearfix m-2">
         <h3 className="stage-title">{stage.title}</h3>
-        <button className="btn-stage-settings" class="float-right">⚙️</button>
         <button
-	  className="btn-stage-delete"
-	  onClick={() => handleDeleteStage(id)}
-	  class="float-right"
-	>
+          className="btn-stage-settings"
+          class="float-right"
+          onClick={() => handleEditStageName(id)}
+        >
+          ⚙️
+        </button>
+        <button
+          className="btn-stage-delete"
+          onClick={() => handleDeleteStage(id)}
+          class="float-right"
+        >
           X
         </button>
-	<div class="clearfix"></div>
+        <div class="clearfix"></div>
         <TaskCreator
           projectId={projectId}
           stageId={stage.id}

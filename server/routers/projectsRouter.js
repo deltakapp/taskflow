@@ -71,8 +71,7 @@ router.post("/", async (req, res) => {
 router.get("/:projectId", async (req, res) => {
   try {
     const projectData = await res.locals.stageModel.find();
-    console.log("found project data");
-    console.log(projectData);
+    console.log("fetching project data");
     res.status(200).send(projectData); //TODO: check if data too large
   } catch (err) {
     console.error(err);
