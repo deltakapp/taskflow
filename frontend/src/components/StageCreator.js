@@ -3,7 +3,8 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { apiDomain as URL } from "../utils/apiDomain";
 
 export default function StageCreator({ projectId }) {
-  const [open, toggleOpen] = useState(false);
+  //const [open, toggleOpen] = useState(false);
+  const toggleOpen = useState(false);
   const user = useSelector((state) => state.user, shallowEqual);
   const dispatch = useDispatch();
 
@@ -34,7 +35,7 @@ export default function StageCreator({ projectId }) {
 
   return (
     <>
-      <section class="stage">
+      <section className="stage">
         Create Stage:
         <form onSubmit={handleCreateStage}>
           <input id="new-stage-title"></input>

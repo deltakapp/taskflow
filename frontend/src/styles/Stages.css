@@ -26,6 +26,7 @@ main {
 
 .stage-header {
   min-height: 16px;
+  margin: 8px 8px 16px 8px;
 }
 
 .stage-title {
@@ -33,17 +34,22 @@ main {
   margin: 0rem;
 }
 
-.btn-stage-settings {
-  display: inline;
-  text-align: center;
+.btn {
+  width:100%;
+  padding: 4px 8px 4px 16px;
+  display: block;
   background-color: transparent;
   background-repeat: no-repeat;
   border: none;
-  padding: 0rem;
   font-size: 1rem;
+  text-align: left;
   cursor: pointer;
   overflow: hidden;
   outline: none;
+}
+
+.btn:hover {
+  background-color: #d1e99f;
 }
 
 .btn-stage-delete {
@@ -60,30 +66,21 @@ main {
   outline: none;
 }
 
-hr {
-  margin: 0.125rem 0.25rem 0.25rem 0.25rem;
-}
-
-.dropdown-menu {
-    position: fixed;
-    margin: 10vh auto;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 999;
-    max-height: 80vh;
-    max-width: 90vw;
-    width: 448px;
-    background-color: #fcfcfc;
-}
-
 .dropdown { position: relative; }
+
 .dropdown-content {
   position: absolute;
+  top: 0;
   right: 0;
-  background-color: #f9f9f9;
   z-index: 1;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  padding: 4px;
+  border: 1px solid #2f353c;
+  border-radius: 0.5rem;
+  box-shadow: -4px 8px 24px gray;
 }
+
 .overlay {
   position: fixed;
   z-index: 99;
@@ -98,4 +95,8 @@ hr {
   visibility: hidden;
   opacity: 0;
   transition: opacity .3s;
+}
+
+.stage summary {
+  list-style: none;
 }

@@ -48,8 +48,8 @@ export default function HomePage() {
   }
 
   return (
-    <main class="home">
-      <img class="logo" alt="Taskflow.tech" src="/logo.png" />
+    <main className="home">
+      <img className="logo" alt="Taskflow.tech" src="/logo.png" />
       <h1><a href="/">Taskflow.tech</a></h1>
       <h2>Login</h2>
       <form onSubmit={handleLogin}>
