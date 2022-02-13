@@ -42,7 +42,7 @@ export default function TaskCreator({ projectId, stageId, stageIndex }) {
             requires js to remove if content in text area */
 
   return open ? (
-    <div class="task-creator mt-8">
+    <div class="task-creator mt-3">
       <form onSubmit={handleCreateTask}>
         <textarea
 	  className="new-task-title"
@@ -69,7 +69,7 @@ export default function TaskCreator({ projectId, stageId, stageIndex }) {
         className="btn-open-task-creator"
         onClick={() => toggleOpen(true)}
       >
-        <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-plus">
+        <svg height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="mr-2">
           <path fill-rule="evenodd" d="M7.75 2a.75.75 0 01.75.75V7h4.25a.75.75 0 110 1.5H8.5v4.25a.75.75 0 11-1.5 0V8.5H2.75a.75.75 0 010-1.5H7V2.75A.75.75 0 017.75 2z"></path>
         </svg>
       </button>

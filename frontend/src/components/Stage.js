@@ -69,28 +69,28 @@ export default function Stage({ id, stageIndex, projectId }) {
 
   return (
     <section className="stage" key={id}>
-      <div className="stage-header clearfix m-2">
-        <h3 className="stage-title">{stage.title}</h3>
-        <button
-          className="btn-stage-settings"
-          class="float-right"
-          onClick={() => handleEditStageName(id)}
-        >
-          ⚙️
-        </button>
-        <button
-          className="btn-stage-delete"
-          onClick={() => handleDeleteStage(id)}
-          class="float-right"
-        >
-          X
-        </button>
-        <div class="clearfix"></div>
-        <TaskCreator
-          projectId={projectId}
-          stageId={stage.id}
-          stageIndex={stageIndex}
-        />
+      <div className="stage-header m-2">
+        <details class="dropdown">
+          <summary class="" role="button">
+            <h3 className="stage-title">{stage.title}</h3>
+            <svg height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="float-right">
+              <path d="M8 9a1.5 1.5 0 100-3 1.5 1.5 0 000 3zM1.5 9a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm13 0a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"></path>
+            </svg>
+            <TaskCreator
+              projectId={projectId}
+              stageId={stage.id}
+              stageIndex={stageIndex}
+            />
+          </summary>
+          <details-menu class="dropdown-content" role="menu">
+            <button className="btn-stage-settings" onClick={() => handleEditStageName(id)}>
+              Edit Stage
+            </button>
+            <button onClick={() => handleDeleteStage(id)}>
+              Delete Stage
+            </button>
+          </details-menu>
+        </details>
       </div>
       {taskList}
     </section>
