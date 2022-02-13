@@ -33,6 +33,13 @@ export default function projectReducer(prevState = initialState, action) {
       state.stages = state.stages.concat(action.payload);
       return state;
     }
+    case "stage/updated": {
+      console.log(action.payload);
+      const stageId = action.payload.stage.id;
+      const index = state.stages.findIndex((stage) => stage.id === stageId);
+      state.stages[index] = action.payload.stage;
+      return state;
+    }
     case "stage/deleted": {
       state.stages = state.stages.filter(
         (stage) => stage.id !== action.payload.id

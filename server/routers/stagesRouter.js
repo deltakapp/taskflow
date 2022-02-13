@@ -42,7 +42,7 @@ router.post("/", async (req, res) => {
 /* Get stage data */
 router.get("/:stageId", async (req, res) => {
   try {
-    const stage = res.locals.stageModel.findById(req.params.stageId);
+    const stage = await res.locals.stageModel.findById(req.params.stageId);
     console.log(`Found stage ${stage.title}:`);
     res.status(200).send(stage);
   } catch (err) {
@@ -54,7 +54,7 @@ router.get("/:stageId", async (req, res) => {
 /* Modify stage */
 router.patch("/:stageId", async (req, res) => {
   try {
-    const stage = res.locals.stageModel.findById(req.params.stageId);
+    const stage = await res.locals.stageModel.findById(req.params.stageId);
 
     /* update fields as specified */
     if (req.body.title) {
@@ -64,9 +64,9 @@ router.patch("/:stageId", async (req, res) => {
       stage.tasks = req.body.tasks;
     }
 
-    stage.save();
+    await stage.save();
     console.log(`Updated stage ${stage.title}:`);
-    res.status(204).send(); //change to send new stage state
+    res.status(200).json(stage);
   } catch (err) {
     console.error(err);
     res.status(404).send();
