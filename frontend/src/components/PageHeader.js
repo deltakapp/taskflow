@@ -9,7 +9,7 @@ export default function PageHeader() {
 
   return (
     <header id="page-header">
-      <img class="logo" src="/logo-smol.png" />
+      <img className="logo" alt="logo" src="/logo-smol.png" />
       <UserTab />
       {!projectTitle && (
         <h2 id="app-subtitle">Collaborative Project Management</h2>

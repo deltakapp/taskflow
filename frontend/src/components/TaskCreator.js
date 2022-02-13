@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import "../styles/TaskCreator.css";
 import { apiDomain as URL } from "../utils/apiDomain";
 
 export default function TaskCreator({ projectId, stageId, stageIndex }) {
@@ -42,14 +41,14 @@ export default function TaskCreator({ projectId, stageId, stageIndex }) {
             requires js to remove if content in text area */
 
   return open ? (
-    <div class="task-creator mt-8">
+    <div className="task-creator">
       <form onSubmit={handleCreateTask}>
         <textarea
 	  className="new-task-title"
 	  placeholder="Enter a task"
 	  maxlength="31">
 	</textarea>
-	<div class="task-creator-buttons mt-2">
+	<div className="two-button mt-2">
           <button className="btn-create-task mr-1" type="submit">
             Create Task
           </button>
@@ -64,13 +63,13 @@ export default function TaskCreator({ projectId, stageId, stageIndex }) {
       </form>
     </div>
   ) : (
-    <div className="task-creator" class="float-right">
+    <div className="task-creator float-right">
       <button
         className="btn-open-task-creator"
         onClick={() => toggleOpen(true)}
       >
-        <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-plus">
-          <path fill-rule="evenodd" d="M7.75 2a.75.75 0 01.75.75V7h4.25a.75.75 0 110 1.5H8.5v4.25a.75.75 0 11-1.5 0V8.5H2.75a.75.75 0 010-1.5H7V2.75A.75.75 0 017.75 2z"></path>
+        <svg height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" className="mr-2">
+          <path fillRule="evenodd" d="M7.75 2a.75.75 0 01.75.75V7h4.25a.75.75 0 110 1.5H8.5v4.25a.75.75 0 11-1.5 0V8.5H2.75a.75.75 0 010-1.5H7V2.75A.75.75 0 017.75 2z"></path>
         </svg>
       </button>
     </div>
