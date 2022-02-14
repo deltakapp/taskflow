@@ -81,3 +81,5 @@ main {
 	cursor: pointer;
 	outline: inherit;
 }
+
+* { box-sizing: border-box; }

@@ -60,14 +60,17 @@ export default function Stage({ id, stageIndex, projectId }) {
             />
           </summary>
           <span className="dropdown-content mt-4" >
-            <StageRename
+	    <ul>
+            <li><StageRename
               projectId={projectId}
               stageId={stage.id}
               stageIndex={stageIndex}
-            />
+            /></li>
+	  <li>
             <button className="btn" onClick={() => handleDeleteStage(id)}>
               Delete Stage
-            </button>
+            </button></li>
+	    </ul>
           </span>
         </details>
       </div>

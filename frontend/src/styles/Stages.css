@@ -13,6 +13,14 @@ main {
   overflow-x: scroll;
 }
 
+.overlay-inner {
+  min-width: 355px;
+  max-width: 355px;
+  flex-grow: 1;
+  margin: 0.5rem;
+  background-color: rgb(202, 202, 202);
+  border-radius: 0.5rem;
+  }
 .stage {
   min-width: 355px;
   max-width: 355px;
@@ -47,10 +55,22 @@ main {
   overflow: hidden;
   outline: none;
 }
+.dropdown-content ul { list-style: none; 
+  padding: 0;
+}
 
-.btn:hover {
+
+.dropdown-content li:hover, .tabrow li:hover {
   background-color: #d1e99f;
 }
+
+.tabrow li.add-project {
+  border: none;
+  padding: 0;
+  margin: 0;
+  background: none;
+}
+.tabrow svg { width: 100% }
 
 .btn-stage-delete {
   display: inline;
@@ -88,13 +108,20 @@ main {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.9);
+  background: rgba(255, 255, 255, 0.33);
   display: flex;
   align-items: center;
   text-align: center;
-  visibility: hidden;
-  opacity: 0;
   transition: opacity .3s;
+}
+.overlay-inner {
+  position: absolute;
+  background-color: rgb(202, 202, 202);
+  width: 300px;
+  left: 0;
+  right: 0;
+  margin: auto;
+  padding: 8px;
 }
 
 .stage summary {
