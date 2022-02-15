@@ -71,21 +71,18 @@ export default function NavPane(props) {
   const createProject = 
 	open ? (
       <div className="overlay">
-      <div className="overlay-inner">
-        <form id="new-project-creator" onSubmit={handleCreateProject}>
-          <input id="new-project-title" />
-        <div className="two-button mt-2">
-          <button id="submit">Create Project</button>
-          <button     
-            className="btn-close-task-creator ml-1"
-            onClick={() => toggleOpen(false)}
-            type="button"
-          >             
-            Cancel      
-          </button>
-        </div> 
-        </form>
-      </div>
+        <div className="overlay-inner">
+          <form id="new-project-creator" onSubmit={handleCreateProject}>
+            <label for="new-project-title">New Project:</label>
+            <input id="new-project-title" />
+            <div className="two-button mt-2">
+              <button id="submit">Create Project</button>
+              <button className="btn-close-task-creator ml-1" onClick={() => toggleOpen(false)} type="button" >             
+                Cancel      
+              </button>
+            </div> 
+          </form>
+        </div>
       </div>
   ) : (
     <li className="add-project">

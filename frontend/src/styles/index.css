@@ -32,13 +32,15 @@ body {
 .home .logo { width: 100%; }
 
 .home form p { margin: 0; }
-main.home { margin: 25px auto; width: 350px; background: #fff; border-radius: 10px; overflow: hidden; padding: 24px 48px; }
+main.home { margin: 25px auto; width: 350px; background: #fff; border-radius: 10px; overflow: hidden; padding: 24px 48px; border: none; }
 main h1 { display: none; }
 
 .clearfix::after { display: table; clear: both; context: ""; }
 .clearfix::before { display: table; context: ""; }
 main {
   height:100%;
+  background-color: #ececec;
+  border-top: 1px solid #AAA;
 }
 
 .float-left { float: left; }

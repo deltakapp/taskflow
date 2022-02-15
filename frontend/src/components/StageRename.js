@@ -38,17 +38,18 @@ export default function TaskCreator({ projectId, stageId, stageIndex }) {
   return open ? (
     <div class="overlay">
       <div class="overlay-inner">
-      <form className="stage-rename" onSubmit={handleEditStageName}>
-        <input type="text" className="rename" maxLength="30" />
-      <div className="two-button mt-2">
-        <button className="btn-stage-rename mr-1" type="submit">
-          Rename
-        </button>
-        <button className="btn-close-stage-rename ml-1" onClick={() => toggleOpen(false)} type="button" >
-          Cancel
-        </button>
-      </div>
-    </form>
+        <form className="stage-rename" onSubmit={handleEditStageName}>
+          <label for="rename">Rename Stage:</label>
+          <input type="text" className="rename" maxLength="30" />
+          <div className="two-button mt-2">
+            <button className="btn-stage-rename mr-1" type="submit">
+              Rename
+            </button>
+            <button className="btn-close-stage-rename ml-1" onClick={() => toggleOpen(false)} type="button" >
+              Cancel
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   ) : (
