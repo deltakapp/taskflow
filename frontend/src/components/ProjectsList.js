@@ -91,7 +91,7 @@ export default function ProjectsList() {
       <form id="new-project-creator" onSubmit={handleCreateProject}>
         <h3>Create a new project</h3>
         <h3>Titled:</h3>
-        <textarea id="new-project-title"></textarea>
+        <input id="new-project-title" />
         <button id="submit">Create Project</button>
       </form>
     </div>

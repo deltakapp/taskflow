@@ -4,6 +4,7 @@ import { apiDomain as URL } from "../utils/apiDomain";
 
 export default function StageCreator({ projectId }) {
   const [open, toggleOpen] = useState(false);
+  //const toggleOpen = useState(false);
   const user = useSelector((state) => state.user, shallowEqual);
   const dispatch = useDispatch();
 
@@ -27,28 +28,61 @@ export default function StageCreator({ projectId }) {
       const result = await response.json();
       console.log(result);
       dispatch({ type: "stage/created", payload: result });
+      toggleOpen(false);
     } else {
       console.log(response);
     }
   }
 
-  return (
-    <>
-      <section class="stage">
-        Create Stage:
+  async function handleEditStageName(id) {
+    const titleField = id.target.querySelector(".rename");
+    console.log(titleField)
+    console.log(titleField.value)
+    const request = {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${user.token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title: `${titleField.value}`,
+      }),
+    };
+    const response = await fetch(
+      `${URL}/api/projects/${projectId}/stages/${id}`,
+      request
+    );
+    if (response.ok) {
+      const result = await response.json();
+      console.log(result);
+      dispatch({ type: "stage/updated", payload: { stage: result } });
+    } else {
+      console.log(response.status);
+    }
+  }
+
+  return open ? (
+    <div class="overlay">
+      <div class="overlay-inner">
         <form onSubmit={handleCreateStage}>
-          <input id="new-stage-title"></input>
-          <button
-            className="btn-toggle-stage-creator"
-            onClick={() => toggleOpen(false)}
-          >
-            Cancel
-          </button>
-          <button className="btn-create-stage" type="submit">
-            Create Stage
-          </button>
+          <label for="new-stage-title">Create Stage:</label>
+          <input type="text" id="new-stage-title" maxLength="30"></input>
+          <div className="two-button mt-2">
+            <button className="btn-create-stage" type="submit">
+              Create Stage
+            </button>
+            <button className="btn-toggle-stage-creator" onClick={() => toggleOpen(false)} >
+              Cancel
+            </button>
+	  </div>
         </form>
-      </section>
-    </>
+      </div>
+    </div>
+  ) : (
+    <section className="stage create">
+      <button className="btn" onClick={() => toggleOpen(true)} >
+        Create Satge
+      </button>
+    </section>
   );
 }
