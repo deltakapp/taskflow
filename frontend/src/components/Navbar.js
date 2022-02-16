@@ -3,6 +3,10 @@ import { useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { apiDomain as URL } from "../utils/apiDomain";
+import Example from './example'
+import { DndProvider } from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
+
 
 export default function NavPane(props) {
 //export default function NavPane() {
@@ -99,6 +103,9 @@ export default function NavPane(props) {
       <ul className="tabrow">
         {listProjects}
         {createProject}
+        <DndProvider backend={HTML5Backend}>
+          <Example />
+        </DndProvider>
       </ul>
     </nav>
   );
