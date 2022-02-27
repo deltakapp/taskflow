@@ -2,8 +2,8 @@
 import { shallowEqual, useSelector } from "react-redux";
 import "../../styles/ProjectPage.css";
 import useCheckUser from "../../utils/useCheckUser";
-import PageHeader from "../PageHeader";
 import Navbar from "../Navbar";
+import PageHeader from "../PageHeader";
 import Stage from "../Stage";
 import StageCreator from "../StageCreator";
 
@@ -30,13 +30,13 @@ export default function ProjectPage() {
       <PageHeader />
       <Navbar />
       <main>
-	<div id="project-board">
+        <div id="project-board">
           <div id="stages-panel">
-	    {stageList}
+            {stageList}
             {/* {projectId ? <StageList /> : <ProjectsList />}
             <hr /> */}
             <StageCreator projectId={projectId} />
-	  </div>
+          </div>
         </div>
       </main>
     </>
