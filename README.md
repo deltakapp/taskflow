@@ -41,4 +41,4 @@ Taskflow is distributed under [MIT License](https://github.com/deltakapp/taskflo
 
 --- 
 
-Developed by [Delta Kapp](https://deltak.app) and [contributors](https://github.com/deltakapp/taskflow/graphs/contributors)
+Developed by [Delta Kapp](https://deltak.app) and [contributors](https://github.com/deltakapp/taskflow/graphs/contributors).
