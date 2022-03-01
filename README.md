@@ -1,4 +1,4 @@
-# ![Taskflow](frontend/public/logo192.png)
+# ![Taskflow](frontend/public/logo.png)
 
 > Open source [Kanban Board](https://en.wikipedia.org/wiki/Kanban_(development)) built with [Node](https://nodejs.org/en/), [React](https://reactjs.org/), [Express](https://reactjs.org/), and [MongoDB](https://reactjs.org/).
 
