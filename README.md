@@ -1,8 +1,8 @@
 # Taskflow
 
-Taskflow is an open source agile project management tool based on [Kanban](https://en.wikipedia.org/wiki/Kanban_(development)) and built with [Node](https://nodejs.org/en/), [React](https://reactjs.org/), [Express](https://reactjs.org/), and [MongoDB](https://reactjs.org/).
+Open source [Kanban](https://en.wikipedia.org/wiki/Kanban_(development)) built with [Node](https://nodejs.org/en/), [React](https://reactjs.org/), [Express](https://reactjs.org/), and [MongoDB](https://reactjs.org/).
 
-Try the live demo at [taskflow.tech](https://www.taskflow.tech/)!
+<span style="font-size:2em">[Demo](https://www.taskflow.tech/)!</span>
 
 ## Heroku Deployment
 
@@ -14,20 +14,34 @@ Clone this repo and install npm dependencies:
 ```bash
 git clone https://github.com/deltakapp/taskflow
 cd taskflow/
-npm intsall
-```
-
-Frontend developers must install additional dependencies:
-```bash
-cd frontend/ 
 npm install
 ```
 
-In the main directory, create an environemtal variable file named `.env` with the following syntax:
+Create an environemtal variable file named `.env` with the following syntax:
 ```
-DB_URL=mongodb+srv://dbuser:dbpass@dburl.com/dbname?retryWrites=true&w=majority
+DB_URL=mongodb+srv://dbuser:dbpass@dbaddress/dbname?retryWrites=true&w=majority
 AUTH_KEY=SECRET_KEY
 ```
+
+To run locally:
+```
+heroku run local
+```
+
+For frontend development additionally run:
+```bash
+cd frontend/ 
+npm install
+npm start
+```
+
+## License
+
+Taskflow is distributed under [MIT License](https://github.com/deltakapp/taskflow/blob/main/LICENSE).
+
+--- 
+
+Developed by [Delta Kapp](https://deltak.app) and [contributors](https://github.com/deltakapp/taskflow/graphs/contributors)
 
 ## Directories
 
