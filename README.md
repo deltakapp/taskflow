@@ -6,6 +6,10 @@
 
 ## [Demo](https://www.taskflow.tech)
 
+Demo username and password is `demo`.
+
+Add demo gifs here.
+
 ## Heroku Deployment
 
 tbd
