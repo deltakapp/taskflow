@@ -25,7 +25,7 @@ npm install
 
 In the main directory, create an environemtal variable file named `.env` with the following syntax:
 ```
-DB_URL=mongodb+srv://dbusername:dbpassword@urltoyourdatabase.com/database-name?retryWrites=true&w=majority
+DB_URL=mongodb+srv://dbuser:dbpass@dburl.com/dbname?retryWrites=true&w=majority
 AUTH_KEY=SECRET_KEY
 ```
 
