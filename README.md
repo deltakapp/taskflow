@@ -25,8 +25,8 @@ npm install
 
 Create an environemtal variable file named `.env` with the following syntax:
 ```
-DB_URL=mongodb+srv://dbuser:dbpass@dbaddress/dbname?retryWrites=true&w=majority
-AUTH_KEY=SECRET_KEY
+DB_URL=<database uri>
+AUTH_KEY=<database key>
 ```
 
 To run locally:
