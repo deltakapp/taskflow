@@ -25,8 +25,8 @@ npm install
 
 Create an environemtal variable file named `.env` with the following syntax:
 ```
-DB_URL=<database uri>
-AUTH_KEY=<database key>
+DB_URL=<YOUR-MONGO-DB-URI>
+AUTH_KEY=<YOUR-MONGO-KEY>
 ```
 
 To run locally:
