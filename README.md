@@ -1,7 +1,35 @@
-# taskflow
-Collaborative project management app
+# Taskflow
 
-# Directories
+Taskflow is an open source agile project management tool based on [Kanban](https://en.wikipedia.org/wiki/Kanban_(development)) and built with [Node](https://nodejs.org/en/), [React](https://reactjs.org/), [Express](https://reactjs.org/), and [MongoDB](https://reactjs.org/).
+
+Try the live demo at [taskflow.tech](https://www.taskflow.tech/)!
+
+## Heroku Deployment
+
+tbd
+
+## Development
+
+Clone this repo and install npm dependencies:
+```bash
+git clone https://github.com/deltakapp/taskflow
+cd taskflow/
+npm intsall
+```
+
+Frontend developers must install additional dependencies:
+```bash
+cd frontend/ 
+npm install
+```
+
+In the main directory, create an environemtal variable file named `.env` with the following syntax:
+```
+DB_URL=mongodb+srv://dbusername:dbpassword@urltoyourdatabase.com/database-name?retryWrites=true&w=majority
+AUTH_KEY=SECRET_KEY
+```
+
+## Directories
 
 /bin - only used for qgtunnel, do not modify, sourced from https://s3.amazonaws.com/quotaguard/qgtunnel-latest.tar.gz
 
