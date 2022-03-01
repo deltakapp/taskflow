@@ -1,5 +1,3 @@
-# Taskflow
-
 <p align="center">
   <img height="200" src="https://raw.githubusercontent.com/deltakapp/taskflow/main/frontend/public/logo.png">
 </p>
