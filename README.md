@@ -1,8 +1,8 @@
 # Taskflow
 
-Open source [Kanban](https://en.wikipedia.org/wiki/Kanban_(development)) built with [Node](https://nodejs.org/en/), [React](https://reactjs.org/), [Express](https://reactjs.org/), and [MongoDB](https://reactjs.org/).
+> Open source [Kanban Board](https://en.wikipedia.org/wiki/Kanban_(development)) built with [Node](https://nodejs.org/en/), [React](https://reactjs.org/), [Express](https://reactjs.org/), and [MongoDB](https://reactjs.org/).
 
-<span style="font-size:2em">[Demo](https://www.taskflow.tech/)!</span>
+<span style="font-size:larger">[Demo](https://www.taskflow.tech/)</span>
 
 ## Heroku Deployment
 
