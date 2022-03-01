@@ -1,4 +1,8 @@
-# ![Taskflow](frontend/public/logo.png)
+# Taskflow
+
+<p align="center">
+  <img height="200" src="https://raw.githubusercontent.com/deltakapp/taskflow/main/frontend/public/logo.png">
+</p>
 
 > Open source [Kanban Board](https://en.wikipedia.org/wiki/Kanban_(development)) built with [Node](https://nodejs.org/en/), [React](https://reactjs.org/), [Express](https://reactjs.org/), and [MongoDB](https://reactjs.org/).
 
