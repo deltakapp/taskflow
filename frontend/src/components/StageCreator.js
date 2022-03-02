@@ -66,7 +66,12 @@ export default function StageCreator({ projectId }) {
       <div class="overlay-inner">
         <form onSubmit={handleCreateStage}>
           <label for="new-stage-title">Create Stage:</label>
-          <input type="text" id="new-stage-title" maxLength="30"></input>
+          <input
+            type="text"
+            id="new-stage-title"
+            maxLength="29"
+            required
+          ></input>
           <div className="two-button mt-2">
             <button className="btn-create-stage" type="submit">
               Create Stage
