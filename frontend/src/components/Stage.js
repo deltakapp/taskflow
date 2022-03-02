@@ -1,8 +1,8 @@
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import "../styles/Stages.css";
 import { apiDomain as URL } from "../utils/apiDomain";
-import Task from "./Task";
 import StageRename from "./StageRename";
+import Task from "./Task";
 import TaskCreator from "./TaskCreator";
 
 export default function Stage({ id, stageIndex, projectId }) {
@@ -50,7 +50,14 @@ export default function Stage({ id, stageIndex, projectId }) {
         <details className="dropdown">
           <summary className="" role="button">
             <h3 className="stage-title">{stage.title}</h3>
-            <svg height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" className="float-right">
+            <svg
+              height="16"
+              viewBox="0 0 16 16"
+              version="1.1"
+              width="16"
+              data-view-component="true"
+              className="float-right"
+            >
               <path d="M8 9a1.5 1.5 0 100-3 1.5 1.5 0 000 3zM1.5 9a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm13 0a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"></path>
             </svg>
             <TaskCreator
@@ -59,18 +66,21 @@ export default function Stage({ id, stageIndex, projectId }) {
               stageIndex={stageIndex}
             />
           </summary>
-          <span className="dropdown-content mt-4" >
-	    <ul>
-            <li><StageRename
-              projectId={projectId}
-              stageId={stage.id}
-              stageIndex={stageIndex}
-            /></li>
-	  <li>
-            <button className="btn" onClick={() => handleDeleteStage(id)}>
-              Delete Stage
-            </button></li>
-	    </ul>
+          <span className="dropdown-content mt-4">
+            <ul>
+              <li>
+                <StageRename
+                  projectId={projectId}
+                  stageId={stage.id}
+                  stageIndex={stageIndex}
+                />
+              </li>
+              <li>
+                <button className="btn" onClick={() => handleDeleteStage(id)}>
+                  Delete Stage
+                </button>
+              </li>
+            </ul>
           </span>
         </details>
       </div>

@@ -4,8 +4,8 @@ import UserTab from "./UserTab";
 
 export default function PageHeader() {
   const projectTitle = useSelector((state) => state.project.id);
-	
-      //<h1 id="app-title">{projectTitle || "Taskflow"}</h1>
+
+  console.log("rendering PageHeader");
 
   return (
     <header id="page-header">
