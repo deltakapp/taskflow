@@ -36,8 +36,8 @@ export default function StageCreator({ projectId }) {
 
   async function handleEditStageName(id) {
     const titleField = id.target.querySelector(".rename");
-    console.log(titleField)
-    console.log(titleField.value)
+    console.log(titleField);
+    console.log(titleField.value);
     const request = {
       method: "PATCH",
       headers: {
@@ -71,17 +71,20 @@ export default function StageCreator({ projectId }) {
             <button className="btn-create-stage" type="submit">
               Create Stage
             </button>
-            <button className="btn-toggle-stage-creator" onClick={() => toggleOpen(false)} >
+            <button
+              className="btn-toggle-stage-creator"
+              onClick={() => toggleOpen(false)}
+            >
               Cancel
             </button>
-	  </div>
+          </div>
         </form>
       </div>
     </div>
   ) : (
     <section className="stage create">
-      <button className="btn" onClick={() => toggleOpen(true)} >
-        Create Satge
+      <button className="btn" onClick={() => toggleOpen(true)}>
+        Create Stage
       </button>
     </section>
   );

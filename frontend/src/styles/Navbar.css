@@ -1,5 +1,5 @@
 nav {
-  height: 500px;
+  height: 500px; /* revert to 26px */
   overflow: hidden;
   position: relative;
   z-index: 1;
@@ -10,7 +10,10 @@ nav {
   white-space: nowrap;
 }
 
-ul.tabrow {margin:0; padding: 0; }
+ul.tabrow {
+  margin: 0;
+  padding: 0;
+}
 
 .tabrow:after {
   position: absolute;
@@ -18,18 +21,20 @@ ul.tabrow {margin:0; padding: 0; }
   width: 100%;
   bottom: 0;
   left: 0;
-  border-bottom: 1px solid #AAA;
+  border-bottom: 1px solid #aaa;
 }
 .tabrow li {
   position: relative;
   border-top-left-radius: 6px;
   border-top-right-radius: 6px;
-  border: 1px solid #AAA;
+  border: 1px solid #aaa;
   border-bottom: none;
-  background: #ECECEC;
+  background: #ececec;
   display: inline-block;
-  text-shadow: 0 1px #FFF;
+  text-shadow: 0 1px #fff;
   margin: 0 5px;
 }
 
-.tabrow li.current { background-color: #d1e99f; }
+.tabrow li.current {
+  background-color: #d1e99f;
+}

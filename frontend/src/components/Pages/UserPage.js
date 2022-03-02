@@ -1,4 +1,4 @@
-import useCheckUser from "../../utils/useCheckUser";
+import useCheckUser from "../../hooks/useCheckUser";
 import ProjectsList from "../ProjectsList";
 
 export default function UserPage() {
