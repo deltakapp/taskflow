@@ -1,48 +1,50 @@
-# taskflow
-Collaborative project management app
+<p align="center">
+  <img height="200" src="https://raw.githubusercontent.com/deltakapp/taskflow/main/frontend/public/logo.png">
+</p>
 
-# Directories
+> Open source [Kanban Board](https://en.wikipedia.org/wiki/Kanban_(development)) built with [Node](https://nodejs.org/en/), [React](https://reactjs.org/), [Express](https://reactjs.org/), and [MongoDB](https://reactjs.org/).
 
-/bin - only used for qgtunnel, do not modify, sourced from https://s3.amazonaws.com/quotaguard/qgtunnel-latest.tar.gz
+## [Demo](https://www.taskflow.tech)
 
-/frontend - frontend code here. /src contains source code, /public contains static assets, /build contains client-ready code webpacked and babeled with create-react-app. .gitignore may be modified here to push /build folder, but long-term production should be built directly on server
+Demo username and password is `demo`.
 
-/node_modules - if you don't know what this is, please don't touch anything in this project.
+Add demo gifs here.
 
-/server - node.js server code, mostly with express and mongoose
+## Heroku Deployment
 
-/vendor - only used for nss_wrapper for qgtunnel, sourced from https://s3.amazonaws.com/quotaguard/qgtunnel-latest.tar.gz
+tbd
 
-.qgtunnel - what it says on the tin. tunnel information for qgtunnel.
+## Development
 
-Procfile - startup commands for heroku hosting
+Clone this repo and install npm dependencies:
+```bash
+git clone https://github.com/deltakapp/taskflow
+cd taskflow/
+npm install
+```
 
-# Testing
+Create an environemtal variable file named `.env` with the following syntax:
+```
+DB_URL=<YOUR-MONGO-DB-URI>
+AUTH_KEY=<YOUR-MONGO-KEY>
+```
 
-Client: /frontend npm start (serves client on localhost:3000)
+To run locally:
+```
+heroku run local
+```
 
-Server: npm start
+For frontend development additionally run:
+```bash
+cd frontend/ 
+npm install
+npm start
+```
 
-OR nodemon server/index.js (restarts server on file changes)
+## License
 
-# Deployment
+Taskflow is distributed under [MIT License](https://github.com/deltakapp/taskflow/blob/main/LICENSE).
 
-Local deployment: /frontend npm run build
-heroku local home
+--- 
 
-Heroku deployment: /frontend npm run build
-/frontend/.gitignore unignore /build
-push to heroku main
-heroku ps:scale web=1
-
-Long-term Heroku deployment:
-push to heroku main
-heroku ps:scale web=1
-heroku run /frontend npm run build
-/server/index.js remove import cors and app.use(cors()) and any cors in package.json
-
-# Glossary
-
-Heroku: cloud-hosting app which hosts this at taskflow.herokuapp.com
-Quotaguard: static IP solution for Heroku to connect with mongoDB
-QGTunnel: quotaguard feature for SOCKS5 connection with mongoDB
+Developed by [Delta Kapp](https://deltak.app) and [contributors](https://github.com/deltakapp/taskflow/graphs/contributors).
