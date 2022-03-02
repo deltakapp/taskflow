@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import "../styles/Navbar.css";
@@ -13,7 +13,7 @@ export default function NavPane(props) {
   const user = useSelector((state) => state.user, shallowEqual);
 
   /* On each local state.projects change, send update to server */
-  useEffect(async () => {
+  useCallback(async () => {
     const request = {
       method: "PATCH",
       headers: {
@@ -74,7 +74,6 @@ export default function NavPane(props) {
         // error handling will be extremely tough here
         console.log(response.status);
       }
-      console.log(user);
     },
     [user.token, dispatch, navigate]
   );
