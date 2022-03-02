@@ -1,8 +1,8 @@
 /* User Routes at path /api/users */
 
-/* These routes do not follow REST standard: auth middleware renders */
-/* user-specific resource-naming unnecessary, and endpoints which */
-/* precede auth (user creation and login) do not need user ID */
+/* These routes do not follow REST standard: request Authorization header */
+/* renders user-specific resource-naming unnecessary, and endpoints which */
+/* precede auth (user creation) do not need user ID */
 
 const express = require("express");
 const User = require("../models/userModel");
@@ -92,7 +92,7 @@ router.delete("/", auth, async (req, res) => {
 });
 
 /* Modify user */
-router.patch("/:stageId", auth, async (req, res) => {
+router.patch("/", auth, async (req, res) => {
   try {
     const user = res.locals.user;
 
@@ -101,10 +101,9 @@ router.patch("/:stageId", auth, async (req, res) => {
     }
 
     if (req.body.email) {
-    } //TODO: implement update email address
+    } // TODO: implement update email address
 
     await user.save();
-    console.log("success");
     res.status(200).send();
   } catch (err) {
     res.status(500).send(err); //should never be reached

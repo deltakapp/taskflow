@@ -74,6 +74,7 @@ export default function NavPane(props) {
         // error handling will be extremely tough here
         console.log(response.status);
       }
+      console.log(user);
     },
     [user.token, dispatch, navigate]
   );
