@@ -12,57 +12,76 @@ export default function NavPane(props) {
   const navigate = useNavigate();
   const user = useSelector((state) => state.user, shallowEqual);
 
-  useEffect(() => {
-    console.log(projects);
-  }, [projects]);
-
-  async function handleCreateProject(e) {
-    e.preventDefault();
-    // TODO add blank title error handling
+  /* On each local state.projects change, send update to server */
+  useEffect(async () => {
     const request = {
-      method: "POST",
+      method: "PATCH",
       headers: {
         Authorization: `Bearer ${user.token}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        title: `${document.getElementById("new-project-title").value}`,
-      }),
+      body: JSON.stringify({ projects: projects }),
     };
-    const response = await fetch(`${URL}/api/projects/`, request);
+    const response = await fetch(`${URL}/api/users/${user.id}`, request);
     if (response.ok) {
-      const result = await response.json();
-      console.log(result);
-      dispatch({ type: "project/created", payload: result });
-      toggleOpen(false);
-    } else {
-      console.log(response.status);
-    }
-  }
+      console.log(response);
+    } else console.log(projects);
+  }, [projects, user.token]);
 
-  async function handleLoadProject(id) {
-    //TODO: memoize me
-    const request = {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${user.token}`,
-        "Content-Type": "application/json",
-      },
-    };
-    const response = await fetch(`${URL}/api/projects/${id}`, request);
-    if (response.ok) {
-      const result = await response.json();
-      console.log(result);
-      dispatch({
-        type: "project/loaded",
-        payload: { id: id, stages: result },
-      });
-      navigate(`../project/${id}`);
-    }
-  }
+  const handleCreateProject = useCallback(
+    async (e) => {
+      e.preventDefault();
+      // TODO add blank title error handling
+      const request = {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title: `${document.getElementById("new-project-title").value}`,
+        }),
+      };
+      const response = await fetch(`${URL}/api/projects/`, request);
+      if (response.ok) {
+        const result = await response.json();
+        console.log(result);
+        dispatch({ type: "project/created", payload: result });
+        toggleOpen(false);
+      } else {
+        console.log(response.status);
+      }
+    },
+    [user.token, dispatch]
+  );
 
-  const moveProject = useCallback(
+  const loadProject = useCallback(
+    async (id) => {
+      const request = {
+        method: "GET",
+        headers: { Authorization: `Bearer ${user.token}` },
+      };
+      const response = await fetch(`${URL}/api/projects/${id}`, request);
+      if (response.ok) {
+        const result = await response.json();
+        console.log(result);
+        dispatch({
+          type: "project/loaded",
+          payload: { id: id, stages: result },
+        });
+        navigate(`../project/${id}`);
+      } else {
+        // error handling will be extremely tough here
+        console.log(response.status);
+      }
+    },
+    [user.token, dispatch, navigate]
+  );
+
+  /* reorder projects in frontend (request is triggered in useEffect) */
+  const reorderProject = useCallback(
     (sourceIndex, hoverIndex) => {
+      console.log(sourceIndex, hoverIndex);
       dispatch({
         type: "user/reorderProject",
         payload: {
@@ -74,20 +93,23 @@ export default function NavPane(props) {
     [dispatch]
   );
 
-  const renderProject = useCallback((projectTitle, index) => {
-    // TODO: Change to project.id
-    return (
-      <ProjectTab
-        key={projectTitle}
-        index={index}
-        title={projectTitle}
-        moveProject={moveProject}
-        loadProject={handleLoadProject}
-      />
-    );
-  }, []);
+  const renderProject = useCallback(
+    (projectTitle, index) => {
+      // TODO: Change to project.id
+      return (
+        <ProjectTab
+          key={projectTitle}
+          index={index}
+          title={projectTitle}
+          reorderProject={reorderProject}
+          loadProject={loadProject}
+        />
+      );
+    },
+    [reorderProject, loadProject]
+  );
 
-  const createProject = open ? (
+  const createProject = open ? ( // TODO: break into separate components
     <div className="overlay">
       <div className="overlay-inner">
         <form id="new-project-creator" onSubmit={handleCreateProject}>
@@ -132,7 +154,6 @@ export default function NavPane(props) {
         {createProject}
       </ul>
       <br />
-      {/* <ProjectContainer /> */}
     </nav>
   );
 }

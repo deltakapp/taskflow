@@ -91,8 +91,24 @@ router.delete("/", auth, async (req, res) => {
   }
 });
 
-/* Update user email address */
-//TODO
-//router.put("/users");
+/* Modify user */
+router.patch("/:stageId", auth, async (req, res) => {
+  try {
+    const user = res.locals.user;
+
+    if (req.body.projects) {
+      user.projects = req.body.projects;
+    }
+
+    if (req.body.email) {
+    } //TODO: implement update email address
+
+    await user.save();
+    console.log("success");
+    res.status(200).send();
+  } catch (err) {
+    res.status(500).send(err); //should never be reached
+  }
+});
 
 module.exports = router;

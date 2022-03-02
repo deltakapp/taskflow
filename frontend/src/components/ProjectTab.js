@@ -2,16 +2,16 @@ import { useRef } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import { ItemTypes } from "../utils/ItemTypes";
 
-export default function ProjectTab({ index, title, moveProject, loadProject }) {
+export default function ProjectTab({
+  index,
+  title,
+  reorderProject,
+  loadProject,
+}) {
   const ref = useRef(null);
 
-  const [{ handlerId }, drop] = useDrop({
-    accept: ItemTypes.PROJECT, //change PROJECT to PROJECTTAB
-    collect(monitor) {
-      return {
-        handlerId: monitor.getHandlerId(),
-      };
-    },
+  const [, drop] = useDrop({
+    accept: ItemTypes.PROJECTTAB, //change PROJECT to PROJECTTAB
     hover(item, monitor) {
       if (!ref.current) {
         return;
@@ -42,19 +42,19 @@ export default function ProjectTab({ index, title, moveProject, loadProject }) {
       if (sourceIndex > hoverIndex && hoverClientX > hoverMiddleX) {
         return;
       }
-      moveProject(sourceIndex, hoverIndex);
+      reorderProject(sourceIndex, hoverIndex);
       item.index = hoverIndex;
     },
   });
 
   const [{ isDragging }, drag] = useDrag({
-    type: ItemTypes.PROJECT,
+    type: ItemTypes.PROJECTTAB,
     item: () => {
       return { title, index };
     },
-    collect: (monitor) => ({
-      isDragging: monitor.isDragging(),
-    }),
+    collect: (monitor) => {
+      return { isDragging: monitor.isDragging() };
+    },
   });
 
   const opacity = isDragging ? 0 : 1;
