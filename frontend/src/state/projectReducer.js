@@ -5,7 +5,7 @@ const initialState = {
 };
 
 export default function projectReducer(prevState = initialState, action) {
-  let state = { ...prevState };
+  let state = { ...prevState }; //mutate new state not prevState
 
   switch (action.type) {
     case "project/created": {

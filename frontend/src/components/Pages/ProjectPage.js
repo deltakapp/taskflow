@@ -1,7 +1,9 @@
 /* Main Component displays either project interface or project selection menu */
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 import { shallowEqual, useSelector } from "react-redux";
+import useCheckUser from "../../hooks/useCheckUser";
 import "../../styles/ProjectPage.css";
-import useCheckUser from "../../utils/useCheckUser";
 import Navbar from "../Navbar";
 import PageHeader from "../PageHeader";
 import Stage from "../Stage";
@@ -10,6 +12,8 @@ import StageCreator from "../StageCreator";
 export default function ProjectPage() {
   const projectId = useSelector((state) => state.project.id);
   const stages = useSelector((state) => state.project.stages, shallowEqual);
+
+  console.log("project page render");
 
   useCheckUser();
 
@@ -26,7 +30,7 @@ export default function ProjectPage() {
       })
     : null;
   return (
-    <>
+    <DndProvider backend={HTML5Backend}>
       <PageHeader />
       <Navbar />
       <main>
@@ -39,6 +43,6 @@ export default function ProjectPage() {
           </div>
         </div>
       </main>
-    </>
+    </DndProvider>
   );
 }
