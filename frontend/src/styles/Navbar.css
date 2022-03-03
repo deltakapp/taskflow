@@ -1,5 +1,5 @@
 nav {
-  height: 500px; /* revert to 26px */
+  height: 26px;
   overflow: hidden;
   position: relative;
   z-index: 1;
@@ -24,6 +24,7 @@ ul.tabrow {
   border-bottom: 1px solid #aaa;
 }
 .tabrow li {
+  padding: 0 16px;
   position: relative;
   border-top-left-radius: 6px;
   border-top-right-radius: 6px;
@@ -37,4 +38,8 @@ ul.tabrow {
 
 .tabrow li.current {
   background-color: #d1e99f;
+}
+
+nav .btn {
+  padding: 4px 0;
 }
