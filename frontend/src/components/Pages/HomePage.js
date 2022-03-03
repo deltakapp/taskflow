@@ -1,8 +1,7 @@
 import { useEffect } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { apiDomain as URL } from "../../utils/apiDomain";
-import { Link } from "react-router-dom";
 
 export default function HomePage() {
   const dispatch = useDispatch();
@@ -50,16 +49,18 @@ export default function HomePage() {
   return (
     <main className="home">
       <img className="logo" alt="Taskflow.tech" src="/logo.png" />
-      <h1><a href="/">Taskflow.tech</a></h1>
+      <h1>
+        <a href="/">Taskflow.tech</a>
+      </h1>
       <h2>Login</h2>
       <form onSubmit={handleLogin}>
         <input id="user-email" type="text" placeholder="E-mail" />
         <input id="user-password" type="password" placeholder="Password" />
         <button type="submit">Log In</button>
       </form>
-      <h3><Link to="/signup">Sign Up</Link></h3>
+      <h3>
+        <Link to="/signup">Sign Up</Link>
+      </h3>
     </main>
   );
 }
-
-

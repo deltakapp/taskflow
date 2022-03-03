@@ -1,7 +1,11 @@
+/* Node.js server entry point */
 /* This file is optimized for time to boot */
 /* Consider optimization with every line */
+
+/* Boot timers; remove for production */
 console.time("full server");
 console.time("imports");
+
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors"); //NOTE: remove for production, also app.use(cors())
@@ -39,7 +43,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// logging for all requests
+/* logging for all requests */
 app.use((req, res, next) => {
   const filename = path.basename(req.url);
   const dirname = path.dirname(req.url);
