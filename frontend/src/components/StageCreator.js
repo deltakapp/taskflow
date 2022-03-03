@@ -1,25 +1,18 @@
 import { useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { apiDomain as URL } from "../utils/apiDomain";
+import createRequest from "../utils/createRequest";
 
 export default function StageCreator({ projectId }) {
   const [open, toggleOpen] = useState(false);
-  //const toggleOpen = useState(false);
   const user = useSelector((state) => state.user, shallowEqual);
   const dispatch = useDispatch();
 
   async function handleCreateStage(e) {
     e.preventDefault();
-    const request = {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${user.token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        title: `${document.getElementById("new-stage-title").value}`,
-      }),
-    };
+    const request = createRequest("POST", user.token, {
+      title: `${document.getElementById("new-stage-title").value}`,
+    });
     const response = await fetch(
       `${URL}/api/projects/${projectId}/stages`,
       request
@@ -38,16 +31,9 @@ export default function StageCreator({ projectId }) {
     const titleField = id.target.querySelector(".rename");
     console.log(titleField);
     console.log(titleField.value);
-    const request = {
-      method: "PATCH",
-      headers: {
-        Authorization: `Bearer ${user.token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        title: `${titleField.value}`,
-      }),
-    };
+    const request = createRequest("PATCH", user.token, {
+      title: `${titleField.value}`,
+    });
     const response = await fetch(
       `${URL}/api/projects/${projectId}/stages/${id}`,
       request

@@ -4,7 +4,6 @@ import { Provider } from "react-redux";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { createStore } from "redux";
 import App from "./components/App";
-import Login from "./components/Login";
 import HomePage from "./components/Pages/HomePage";
 import LogoutPage from "./components/Pages/LogoutPage";
 import ProjectPage from "./components/Pages/ProjectPage";
@@ -23,7 +22,7 @@ ReactDOM.render(
           <Route path="/" element={<App />}>
             <Route index element={<HomePage />} />
             <Route path="signup" element={<SignupPage />} />
-            <Route path="login" element={<Login />} />
+            {/* <Route path="login" element={<Login />} /> */}
             <Route path="logout" element={<LogoutPage />} />
             <Route path="user/:userId" element={<UserPage />} />
             <Route path="project/:projectId" element={<ProjectPage />} />

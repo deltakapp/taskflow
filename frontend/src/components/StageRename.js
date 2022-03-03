@@ -2,6 +2,7 @@ import { useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import "../styles/TaskCreator.css";
 import { apiDomain as URL } from "../utils/apiDomain";
+import createRequest from "../utils/createRequest";
 
 export default function TaskCreator({ projectId, stageId, stageIndex }) {
   const [open, toggleOpen] = useState(false);
@@ -10,18 +11,11 @@ export default function TaskCreator({ projectId, stageId, stageIndex }) {
 
   async function handleEditStageName(id) {
     const titleField = id.target.querySelector(".rename");
-    console.log(titleField)
-    console.log(titleField.value)
-    const request = {
-      method: "PATCH",
-      headers: {
-        Authorization: `Bearer ${user.token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        title: `${titleField.value}`,
-      }),
-    };
+    console.log(titleField);
+    console.log(titleField.value);
+    const request = createRequest("PATCH", user.token, {
+      title: `${titleField.value}`,
+    });
     const response = await fetch(
       `${URL}/api/projects/${projectId}/stages/${id}`,
       request
@@ -45,7 +39,11 @@ export default function TaskCreator({ projectId, stageId, stageIndex }) {
             <button className="btn-stage-rename mr-1" type="submit">
               Rename
             </button>
-            <button className="btn-close-stage-rename ml-1" onClick={() => toggleOpen(false)} type="button" >
+            <button
+              className="btn-close-stage-rename ml-1"
+              onClick={() => toggleOpen(false)}
+              type="button"
+            >
               Cancel
             </button>
           </div>
@@ -53,7 +51,7 @@ export default function TaskCreator({ projectId, stageId, stageIndex }) {
       </div>
     </div>
   ) : (
-    <button className="btn" onClick={() => toggleOpen(true)} >
+    <button className="btn" onClick={() => toggleOpen(true)}>
       Rename Stage
     </button>
   );

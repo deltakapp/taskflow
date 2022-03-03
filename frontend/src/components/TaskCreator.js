@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { apiDomain as URL } from "../utils/apiDomain";
+import createRequest from "../utils/createRequest";
 
 export default function TaskCreator({ projectId, stageId, stageIndex }) {
   const [open, toggleOpen] = useState(false);
@@ -10,16 +11,9 @@ export default function TaskCreator({ projectId, stageId, stageIndex }) {
   async function handleCreateTask(e) {
     e.preventDefault();
     const titleField = e.target.querySelector(".new-task-title");
-    const request = {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${user.token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        title: `${titleField.value}`,
-      }),
-    };
+    const request = createRequest("POST", user.token, {
+      title: `${titleField.value}`,
+    });
     const response = await fetch(
       `${URL}/api/projects/${projectId}/stages/${stageId}/tasks`,
       request
@@ -44,11 +38,11 @@ export default function TaskCreator({ projectId, stageId, stageIndex }) {
     <div className="task-creator">
       <form onSubmit={handleCreateTask}>
         <textarea
-	  className="new-task-title"
-	  placeholder="Enter a task"
-	  maxlength="31">
-	</textarea>
-	<div className="two-button mt-2">
+          className="new-task-title"
+          placeholder="Enter a task"
+          maxlength="31"
+        ></textarea>
+        <div className="two-button mt-2">
           <button className="btn-create-task mr-1" type="submit">
             Create Task
           </button>
@@ -68,8 +62,18 @@ export default function TaskCreator({ projectId, stageId, stageIndex }) {
         className="btn-open-task-creator"
         onClick={() => toggleOpen(true)}
       >
-        <svg height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" className="mr-2">
-          <path fillRule="evenodd" d="M7.75 2a.75.75 0 01.75.75V7h4.25a.75.75 0 110 1.5H8.5v4.25a.75.75 0 11-1.5 0V8.5H2.75a.75.75 0 010-1.5H7V2.75A.75.75 0 017.75 2z"></path>
+        <svg
+          height="16"
+          viewBox="0 0 16 16"
+          version="1.1"
+          width="16"
+          data-view-component="true"
+          className="mr-2"
+        >
+          <path
+            fillRule="evenodd"
+            d="M7.75 2a.75.75 0 01.75.75V7h4.25a.75.75 0 110 1.5H8.5v4.25a.75.75 0 11-1.5 0V8.5H2.75a.75.75 0 010-1.5H7V2.75A.75.75 0 017.75 2z"
+          ></path>
         </svg>
       </button>
     </div>
