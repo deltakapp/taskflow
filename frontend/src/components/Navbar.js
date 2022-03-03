@@ -26,7 +26,7 @@ export default function NavPane(props) {
     if (response.ok) {
       console.log(response);
     } else console.log(projects);
-  }, [projects, user.token]);
+  }, [projects, user]);
 
   const handleCreateProject = useCallback(
     async (e) => {
