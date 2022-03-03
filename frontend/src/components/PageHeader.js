@@ -1,8 +1,10 @@
 import { useSelector } from "react-redux";
+import useCheckUser from "../hooks/useCheckUser";
 import "../styles/PageHeader.css";
 import UserTab from "./UserTab";
 
 export default function PageHeader() {
+  useCheckUser();
   const projectTitle = useSelector((state) => state.project.id);
 
   console.log("rendering PageHeader");

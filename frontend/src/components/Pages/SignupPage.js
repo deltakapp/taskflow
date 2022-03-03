@@ -1,3 +1,5 @@
+/* This page lets users sign up */
+
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { apiDomain as URL } from "../../utils/apiDomain";
 

@@ -1,14 +1,19 @@
+/* This hook ensures any componenets using it are only accessible */
+/* while user is signed in */
+
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 export default function useCheckUser() {
-  const userId = useSelector((state) => state.user.id);
+  const token = useSelector((state) => state.user.token);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!userId) {
-      navigate("/");
+    if (!token) {
+      navigate("../logout");
     }
-  }, [userId, navigate]);
+
+    // TODO: implement token expiration UI handling
+  }, [token, navigate]);
 }
