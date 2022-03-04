@@ -3,6 +3,7 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import "../styles/Navbar.css";
 import { apiDomain as URL } from "../utils/apiDomain";
+import createRequest from "../utils/createRequest";
 import ProjectTab from "./ProjectTab";
 
 export default function NavPane(props) {
@@ -14,14 +15,7 @@ export default function NavPane(props) {
 
   /* On each local state.projects change, send update to server */
   useCallback(async () => {
-    const request = {
-      method: "PATCH",
-      headers: {
-        Authorization: `Bearer ${user.token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ projects: projects }),
-    };
+    const request = createRequest("PATCH", user.token, { projects: projects });
     const response = await fetch(`${URL}/api/users/${user.id}`, request);
     if (response.ok) {
       console.log(response);
@@ -32,16 +26,9 @@ export default function NavPane(props) {
     async (e) => {
       e.preventDefault();
       // TODO add blank title error handling
-      const request = {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          title: `${document.getElementById("new-project-title").value}`,
-        }),
-      };
+      const request = createRequest("POST", user.token, {
+        title: `${document.getElementById("new-project-title").value}`,
+      });
       const response = await fetch(`${URL}/api/projects/`, request);
       if (response.ok) {
         const result = await response.json();
@@ -57,10 +44,7 @@ export default function NavPane(props) {
 
   const loadProject = useCallback(
     async (id) => {
-      const request = {
-        method: "GET",
-        headers: { Authorization: `Bearer ${user.token}` },
-      };
+      const request = createRequest("GET", user.token);
       const response = await fetch(`${URL}/api/projects/${id}`, request);
       if (response.ok) {
         const result = await response.json();

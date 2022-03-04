@@ -6,6 +6,7 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import "../styles/UserTab.css";
 import { apiDomain as URL } from "../utils/apiDomain";
+import createRequest from "../utils/createRequest";
 
 export default function UserTab() {
   const navigate = useNavigate();
@@ -23,11 +24,7 @@ export default function UserTab() {
 
   async function logoutUser() {
     console.log("logging out user");
-    const request = {
-      method: "POST",
-      cache: "no-store",
-      headers: { Authorization: `Bearer ${user.token}` },
-    };
+    const request = createRequest("POST", user.token);
     const response = await fetch(`${URL}/api/users/logout`, request);
     console.log(response);
     dispatch({ type: "user/loggedOut" });

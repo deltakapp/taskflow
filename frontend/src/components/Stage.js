@@ -1,6 +1,7 @@
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import "../styles/Stages.css";
 import { apiDomain as URL } from "../utils/apiDomain";
+import createRequest from "../utils/createRequest";
 import StageRename from "./StageRename";
 import Task from "./Task";
 import TaskCreator from "./TaskCreator";
@@ -13,12 +14,7 @@ export default function Stage({ id, stageIndex, projectId }) {
   const dispatch = useDispatch();
 
   async function handleDeleteStage(id) {
-    const request = {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${user.token}`,
-      },
-    };
+    const request = createRequest("DELETE", user.token);
     const response = await fetch(
       `${URL}/api/projects/${projectId}/stages/${id}`,
       request

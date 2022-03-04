@@ -6,6 +6,7 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import "../styles/ProjectsList.css";
 import { apiDomain as URL } from "../utils/apiDomain";
+import createRequest from "../utils/createRequest";
 
 export default function ProjectsList() {
   const dispatch = useDispatch();
@@ -16,16 +17,9 @@ export default function ProjectsList() {
   async function handleCreateProject(e) {
     e.preventDefault();
     // TODO add blank title error handling
-    const request = {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${user.token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        title: `${document.getElementById("new-project-title").value}`,
-      }),
-    };
+    const request = createRequest("POST", user.token, {
+      title: `${document.getElementById("new-project-title").value}`,
+    });
     const response = await fetch(`${URL}/api/projects/`, request);
     if (response.ok) {
       const result = await response.json();
@@ -37,13 +31,7 @@ export default function ProjectsList() {
   }
 
   async function handleDeleteProject(id) {
-    const request = {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${user.token}`,
-        "Content-Type": "application/json",
-      },
-    };
+    const request = createRequest("DELETE", user.token);
     const response = await fetch(`${URL}/api/projects/${id}`, request);
     if (response.ok) {
       dispatch({ type: "project/deleted", payload: { id: id } });
@@ -53,13 +41,7 @@ export default function ProjectsList() {
   }
 
   async function handleLoadProject(id) {
-    const request = {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${user.token}`,
-        "Content-Type": "application/json",
-      },
-    };
+    const request = createRequest("GET", user.token);
     const response = await fetch(`${URL}/api/projects/${id}`, request);
     if (response.ok) {
       const result = await response.json();
