@@ -9,8 +9,16 @@ export default function LogoutPage() {
   useEffect(() => {
     setTimeout(() => {
       navigate("/");
-    }, 1500);
+    }, 3000);
   }, []);
 
-  return <h2>You have been logged out and will be redirected</h2>;
+  return (
+    <main className="home">
+      <img className="logo" alt="Taskflow.tech" src="/logo.png" />
+      <h1>
+        <a href="/">Taskflow.tech</a>
+      </h1>
+      <h2>You have been logged out and will be redirected.</h2>
+    </main>
+  );
 }
