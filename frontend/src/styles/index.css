@@ -50,8 +50,7 @@ main {
 }
 .task-creator textarea {
   display: block;
-  width: 98%;
-  width: calc(100% - 8px);
+  width: 100%;
   padding: 4px;
   background-color: white;
   background-repeat: no-repeat;
