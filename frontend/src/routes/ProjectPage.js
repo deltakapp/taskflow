@@ -3,11 +3,11 @@
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { shallowEqual, useSelector } from "react-redux";
-import "../../styles/ProjectPage.css";
-import Navbar from "../Navbar";
-import PageHeader from "../PageHeader";
-import Stage from "../Stage";
-import StageCreator from "../StageCreator";
+import "../styles/ProjectPage.css";
+import Navbar from "../components/Navbar";
+import PageHeader from "../components/PageHeader";
+import Stage from "../components/Stage";
+import StageCreator from "../components/StageCreator";
 
 export default function ProjectPage() {
   const projectId = useSelector((state) => state.project.id);

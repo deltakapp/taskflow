@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { apiDomain as URL } from "../../utils/apiDomain";
+import { apiDomain as URL } from "../utils/apiDomain";
 
 export default function HomePage() {
   const dispatch = useDispatch();

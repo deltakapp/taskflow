@@ -27,6 +27,8 @@ export default function StageCreator({ projectId }) {
     }
   }
 
+
+/* function not used yet
   async function handleEditStageName(id) {
     const titleField = id.target.querySelector(".rename");
     console.log(titleField);
@@ -46,6 +48,7 @@ export default function StageCreator({ projectId }) {
       console.log(response.status);
     }
   }
+*/
 
   return open ? (
     <div class="overlay">
