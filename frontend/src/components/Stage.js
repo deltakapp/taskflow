@@ -1,17 +1,78 @@
+import { useRef } from "react";
+import { useDrag, useDrop } from "react-dnd";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import "../styles/Stages.css";
 import { apiDomain as URL } from "../utils/apiDomain";
 import createRequest from "../utils/createRequest";
+import { ItemTypes } from "../utils/itemTypes";
 import StageRename from "./StageRename";
 import Task from "./Task";
 import TaskCreator from "./TaskCreator";
 
-export default function Stage({ id, stageIndex, projectId }) {
+export default function Stage({
+  id,
+  stageIndex,
+  title,
+  projectId,
+  reorderStage,
+}) {
   console.log(`Rendering stage ${stageIndex}`);
   const stage = useSelector((state) => state.project.stages[stageIndex]);
   const tasks = useSelector((state) => state.project.stages[stageIndex].tasks);
   const user = useSelector((state) => state.user, shallowEqual);
   const dispatch = useDispatch();
+  const ref = useRef(null);
+
+  const [, drop] = useDrop({
+    accept: ItemTypes.STAGE, //change PROJECT to PROJECTTAB
+    hover(item, monitor) {
+      if (!ref.current) {
+        return;
+      }
+      // The source index where item is being dragged from
+      const sourceIndex = item.index;
+      // Index of current hover position
+      const hoverIndex = stageIndex;
+      // Don't replace items with themselves
+      if (sourceIndex === hoverIndex) {
+        return;
+      }
+      // Determine rectangle on screen
+      const hoverBoundingRect = ref.current?.getBoundingClientRect();
+      // Get horizontal middle
+      const hoverMiddleX =
+        (hoverBoundingRect.right - hoverBoundingRect.left) / 2;
+      // Determine mouse position
+      const clientOffset = monitor.getClientOffset();
+      // Get pixels to the top
+      const hoverClientX = clientOffset.x - hoverBoundingRect.left;
+      //Only perform the move when the mouse has crossed half of the item's height
+      // When dragging leftwards, only move when the cursor is left of 50%
+      // When dragging downwards, only move when the cursor is above 50%
+      if (sourceIndex < hoverIndex && hoverClientX < hoverMiddleX) {
+        return;
+      }
+      if (sourceIndex > hoverIndex && hoverClientX > hoverMiddleX) {
+        return;
+      }
+      reorderStage(sourceIndex, hoverIndex);
+      item.index = hoverIndex;
+    },
+  });
+
+  const [{ isDragging }, drag] = useDrag({
+    type: ItemTypes.STAGE,
+    item: () => {
+      return { title, stageIndex };
+    },
+    collect: (monitor) => {
+      return { isDragging: monitor.isDragging() };
+    },
+  });
+
+  const opacity = isDragging ? 0 : 1;
+
+  drag(drop(ref));
 
   async function handleDeleteStage(id) {
     const request = createRequest("DELETE", user.token);
@@ -41,7 +102,7 @@ export default function Stage({ id, stageIndex, projectId }) {
     : null;
 
   return (
-    <section className="stage" key={id}>
+    <section className="stage" key={id} ref={ref}>
       <div className="stage-header">
         <details className="dropdown">
           <summary className="" role="button">

@@ -40,7 +40,7 @@ export default function TaskCreator({ projectId, stageId, stageIndex }) {
         <textarea
           className="new-task-title"
           placeholder="Enter a task"
-          maxlength="31"
+          maxLength="31"
         ></textarea>
         <div className="two-button mt-2">
           <button className="btn-create-task mr-1" type="submit">

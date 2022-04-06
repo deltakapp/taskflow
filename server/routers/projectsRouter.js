@@ -70,12 +70,31 @@ router.post("/", async (req, res) => {
 /* Read project data */
 router.get("/:projectId", async (req, res) => {
   try {
-    const projectData = await res.locals.stageModel.find();
-    console.log("fetching project data");
-    res.status(200).send(projectData); //TODO: check if data too large
+    const project = await res.locals.stageModel.find();
+    res.status(200).send(project); //TODO: check if data too large
   } catch (err) {
     console.error(err);
     res.status(404).send(err); //TODO: insert 404 html page
+  }
+});
+
+/* Update a project */
+router.patch("/:projectId", async (req, res) => {
+  try {
+    /* update fields as specified */
+    const project = await res.locals.stageModel.find();
+    console.log(project);
+    if (req.body.stages) {
+      console.log("updating stages");
+      project.stages = req.body.stages;
+    }
+
+    await project.save();
+    console.log(`Updated project ${req.params.projectId}`);
+    res.status(200).send();
+  } catch (err) {
+    console.error(err);
+    res.status(404).send();
   }
 });
 

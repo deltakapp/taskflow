@@ -14,16 +14,6 @@ router.use("/", (req, res, next) => {
   next();
 });
 
-/* logging for stage requests */
-// router.route("/:projectId/stages/:stageId/tasks").all((req, res, next) => {
-//   console.log(
-//     `\nTask ${req.method} stageId: ${req.params.stageId} projectId: ${
-//       req.params.projectId
-//     }\nBody: ${JSON.stringify(req.body)}`
-//   );
-//   next();
-// });
-
 /* Create a new stage */
 router.post("/", async (req, res) => {
   try {
@@ -51,7 +41,7 @@ router.get("/:stageId", async (req, res) => {
   }
 });
 
-/* Modify stage */
+/* Update stage */
 router.patch("/:stageId", async (req, res) => {
   try {
     const stage = await res.locals.stageModel.findById(req.params.stageId);

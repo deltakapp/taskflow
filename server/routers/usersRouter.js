@@ -1,7 +1,7 @@
 /* User Routes at path /api/users */
 
 /* These routes do not follow REST standard: request Authorization header */
-/* renders user-specific resource-naming unnecessary, and endpoints which */
+/* renders user-specific resource-naming superfluous, and endpoints which */
 /* precede auth (user creation) do not need user ID */
 
 const express = require("express");

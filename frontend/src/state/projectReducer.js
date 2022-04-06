@@ -8,6 +8,15 @@ export default function projectReducer(prevState = initialState, action) {
   let state = { ...prevState }; //mutate new state not prevState
 
   switch (action.type) {
+    case "project/reorderStage": {
+      console.log(action.payload);
+      console.log(state.stages);
+      const { sourceIndex, hoverIndex } = action.payload;
+      const stages = [...state.stages];
+      stages.splice(hoverIndex, 0, stages.splice(sourceIndex, 1)[0]);
+      console.log(stages);
+      return { ...state, stages: stages };
+    }
     case "project/created": {
       state = action.payload;
       state.stages = [];

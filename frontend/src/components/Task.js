@@ -4,6 +4,7 @@ import { apiDomain as URL } from "../utils/apiDomain";
 import createRequest from "../utils/createRequest";
 
 export default function Task({ taskIndex, stageIndex, stageId, projectId }) {
+  console.log(stageIndex);
   const task = useSelector(
     (state) => state.project.stages[stageIndex].tasks[taskIndex]
   );

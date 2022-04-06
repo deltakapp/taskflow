@@ -1,4 +1,5 @@
 export const ItemTypes = {
   PROJECTTAB: "projectTab",
-  //TODO: add stage, item
+  STAGE: "stage",
+  //TODO: add item
 };

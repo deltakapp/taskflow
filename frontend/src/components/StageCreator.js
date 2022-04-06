@@ -48,10 +48,10 @@ export default function StageCreator({ projectId }) {
   }
 
   return open ? (
-    <div class="overlay">
-      <div class="overlay-inner">
+    <div className="overlay">
+      <div className="overlay-inner">
         <form onSubmit={handleCreateStage}>
-          <label for="new-stage-title">Create Stage:</label>
+          <label htmlFor="new-stage-title">Create Stage:</label>
           <input
             type="text"
             id="new-stage-title"

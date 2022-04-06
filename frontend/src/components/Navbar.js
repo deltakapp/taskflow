@@ -1,5 +1,5 @@
-import { useCallback, useState } from "react";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { useCallback, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import "../styles/Navbar.css";
 import { apiDomain as URL } from "../utils/apiDomain";
@@ -8,25 +8,16 @@ import ProjectTab from "./ProjectTab";
 
 export default function NavPane(props) {
   const [open, toggleOpen] = useState(false);
-  const projects = useSelector((state) => state.user.projects, shallowEqual);
+  const projects = useSelector((state) => state.user.projects);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const user = useSelector((state) => state.user, shallowEqual);
-
-  /* On each local state.projects change, send update to server */
-  useCallback(async () => {
-    const request = createRequest("PATCH", user.token, { projects: projects });
-    const response = await fetch(`${URL}/api/users/${user.id}`, request);
-    if (response.ok) {
-      console.log(response);
-    } else console.log(projects);
-  }, [projects, user]);
+  const token = useSelector((state) => state.user.token);
 
   const handleCreateProject = useCallback(
     async (e) => {
       e.preventDefault();
       // TODO add blank title error handling
-      const request = createRequest("POST", user.token, {
+      const request = createRequest("POST", token, {
         title: `${document.getElementById("new-project-title").value}`,
       });
       const response = await fetch(`${URL}/api/projects/`, request);
@@ -39,12 +30,12 @@ export default function NavPane(props) {
         console.log(response.status);
       }
     },
-    [user.token, dispatch]
+    [token, dispatch]
   );
 
   const loadProject = useCallback(
     async (id) => {
-      const request = createRequest("GET", user.token);
+      const request = createRequest("GET", token);
       const response = await fetch(`${URL}/api/projects/${id}`, request);
       if (response.ok) {
         const result = await response.json();
@@ -59,7 +50,7 @@ export default function NavPane(props) {
         console.log(response.status);
       }
     },
-    [user.token, dispatch, navigate]
+    [token, dispatch, navigate]
   );
 
   /* reorder projects in frontend (request is triggered in useEffect) */
@@ -76,6 +67,29 @@ export default function NavPane(props) {
     },
     [dispatch]
   );
+
+  /* Send request to API to patch users.projects*/
+  const patchProjects = useCallback(
+    async (projects) => {
+      if (!token) return; // abort if user logged out
+      console.log("patch request callback function");
+      const request = createRequest("PATCH", token, {
+        projects: projects,
+      });
+      const response = await fetch(`${URL}/api/users/`, request);
+      if (response.ok) {
+        console.log(response);
+      } else {
+        console.error(response);
+      }
+    },
+    [token]
+  );
+
+  /* Trigger patchProjects when user.projects is updated */
+  useEffect(() => {
+    patchProjects(projects);
+  }, [projects]);
 
   const renderProject = useCallback(
     (projectTitle, index) => {
