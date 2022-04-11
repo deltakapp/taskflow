@@ -3,7 +3,9 @@ const validator = require("validator");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
-const userSchema = new mongoose.Schema(
+const { Schema } = mongoose;
+
+const userSchema = new Schema(
   {
     name: {
       type: String,
@@ -11,6 +13,7 @@ const userSchema = new mongoose.Schema(
       trim: true,
     },
     email: {
+      // TODO: enforce unique
       type: String,
       required: true,
       trim: true,
@@ -27,7 +30,7 @@ const userSchema = new mongoose.Schema(
       trim: true,
       minLength: 7,
     },
-    projects: [String],
+    projects: [{ type: Schema.Types.ObjectId, ref: "Project" }], // TODO: add project titles
     tokens: [
       {
         token: {
@@ -42,7 +45,7 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-/* alias 'id' to '_id' */
+/* Alias 'id' to '_id' */
 userSchema
   .virtual("id") // virtual get '_id' => 'id' is mongoose default
   .set((id) => {
@@ -62,7 +65,7 @@ userSchema.set("toJSON", {
   },
 });
 
-/* Rules for converting documents to JSON (identical to toJSON) */
+/* Rules for converting documents to objects (identical to toJSON) */
 userSchema.set("toObject", {
   virtuals: true, // use virtuals
   versionKey: false, // remove versionKey
@@ -115,13 +118,14 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
+/* Is this deprecated???????? */
 /* When user is deleted, delete tasks */
 /* please double-test me and/or provide second line of defense */
-userSchema.pre("remove", async function (next) {
-  const user = this;
-  await Task.deleteMany({ owner: user._id });
-  next();
-});
+// userSchema.pre("remove", async function (next) {
+//   const user = this;
+//   await Task.deleteMany({ owner: user._id });
+//   next();
+// });
 
 const User = mongoose.model("User", userSchema);
 module.exports = User;

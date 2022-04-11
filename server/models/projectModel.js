@@ -1,45 +1,39 @@
 const mongoose = require("mongoose");
-const taskSchema = require("./taskSchema");
 
-const stageSchema = new mongoose.Schema(
+const { Schema } = mongoose;
+
+const projectSchema = new Schema(
   {
     title: {
       type: String,
       required: true,
       trim: true,
-      minLength: 1,
-      maxLength: 30,
     },
-    tasks: [taskSchema],
+    stages: [{ type: Schema.Types.ObjectId, ref: "Stage" }],
+    users: [{ type: Schema.Types.ObjectId, ref: "User" }],
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
 /* Alias 'id' to '_id' */
-stageSchema
+projectSchema
   .virtual("id") // virtual get '_id' => 'id' is mongoose default
   .set((id) => {
     this._id = id;
   });
 
-/* Rules for converting documents to JSON */
-stageSchema.set("toJSON", {
+/* Rules for converting documents to JSON*/
+projectSchema.set("toJSON", {
   virtuals: true, // use virtuals
   versionKey: false, // remove versionKey
   transform: (doc, converted) => {
     delete converted._id; // remove _id (converted to id)
     delete converted.createdAt;
-
-    if (!converted.tasks) {
-      converted.tasks = [];
-    }
   },
 });
 
 /* Rules for converting documents to objects (identical to toJSON) */
-stageSchema.set("toObject", {
+projectSchema.set("toObject", {
   virtuals: true, // use virtuals
   versionKey: false, // remove versionKey
   transform: (doc, converted) => {
@@ -48,4 +42,5 @@ stageSchema.set("toObject", {
   },
 });
 
-module.exports = stageSchema;
+/* Model the schema and export it */
+module.exports = mongoose.model("Project", projectSchema);

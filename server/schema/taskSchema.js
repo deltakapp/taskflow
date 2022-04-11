@@ -20,7 +20,7 @@ const taskSchema = new mongoose.Schema(
   }
 );
 
-/* alias 'id' to '_id' */
+/* Alias 'id' to '_id' */
 taskSchema
   .virtual("id") // virtual get '_id' => 'id' is mongoose default
   .set((id) => {
@@ -37,7 +37,7 @@ taskSchema.set("toJSON", {
   },
 });
 
-/* Rules for converting documents to JSON (identical to toJSON) */
+/* Rules for converting documents to objects (identical to toJSON) */
 taskSchema.set("toObject", {
   virtuals: true, // use virtuals
   versionKey: false, // remove versionKey

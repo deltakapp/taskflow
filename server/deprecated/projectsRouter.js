@@ -9,9 +9,7 @@ const mongoose = require("mongoose");
 const auth = require("../middleware/auth");
 const User = require("../models/userModel");
 const stageSchema = require("../schema/stageSchema");
-const stagesRouter = require("./stagesRouter");
-
-const projectEditors = {}; //lists current editors (subscribers) for each project
+const stagesRouter = require("../routers/stagesRouter");
 
 /* All endpoints here require authentication */
 router.use(auth);
@@ -20,14 +18,10 @@ router.use(auth);
 router.use("/:projectId", (req, res, next) => {
   /* TODO: sanitize req url params */
   const id = req.params.projectId;
-  console.log(req.params);
 
-  // reject unauthorized requests
+  // reject unauthorized requests and invalid projectIds
   if (!res.locals.user.projects.includes(id)) {
     res.status(403).send();
-    /* Note: I could add 404-checking for invalid :projectId */
-    /* but that would add time overhead to query the database again */
-    /* and those routes should fail to authorize anyway */
   } else {
     /* create project-specific stage model */
     res.locals.stageModel = mongoose.model(id, stageSchema, id);

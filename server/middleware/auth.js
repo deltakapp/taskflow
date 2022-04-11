@@ -22,7 +22,7 @@ const auth = async (req, res, next) => {
       res.set("X-Auth-Token", user.generateAuthToken());
     }
 
-    res.locals.user = user;
+    res.locals.user = user.toObject();
     next();
   } catch (err) {
     res.status(401).send({ error: "User authentication failed" });

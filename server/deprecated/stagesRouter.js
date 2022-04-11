@@ -7,7 +7,6 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 const tasksRouter = require("./tasksRouter");
-// const stageSchema = require("../schema/stageSchema");
 
 router.use("/", (req, res, next) => {
   console.log("Using Stages Router");

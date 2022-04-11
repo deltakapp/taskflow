@@ -11,10 +11,11 @@ const mongoose = require("mongoose");
 const cors = require("cors"); //NOTE: remove for production, also app.use(cors())
 const path = require("path");
 const usersRouter = require("./routers/usersRouter");
-const projectsRouter = require("./routers/projectsRouter");
+const projectsRouter2 = require("./routers/projectsRouter2");
 
 const PORT = process.env.PORT || 5000;
-const URL = process.env.DB_URL;
+const URL = process.env.DB_URL; // npm start fails to load .env ///FIX ME///
+if (!URL) console.error("No Environmental DB URL variable found.");
 console.timeEnd("imports");
 
 /* Connect server to mongodb using mongoose */
@@ -61,9 +62,9 @@ app.get("/test", async (req, res) => {
 
 /* API Routers */
 app.use("/api/users", usersRouter);
-app.use("/api/projects", projectsRouter);
+app.use("/api/projects", projectsRouter2);
 
-/* homepage path, dynamic routes point here */
+/* homepage path; dynamic routes point here */
 app.get("/*", function (req, res) {
   console.log("GETting homepage");
   res.sendFile(path.join(__dirname, "../frontend/build", "index.html"));

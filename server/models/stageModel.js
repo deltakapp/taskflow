@@ -48,4 +48,4 @@ stageSchema.set("toObject", {
   },
 });
 
-module.exports = stageSchema;
+module.exports = mongoose.model("Stage", stageSchema);
