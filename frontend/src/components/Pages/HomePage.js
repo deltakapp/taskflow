@@ -35,7 +35,8 @@ export default function HomePage() {
       console.log(result);
       dispatch({
         type: "user/loggedIn",
-        payload: { ...result.user, token: result.token },
+        payload: result.user,
+        token: result.token,
       });
     } else {
       const result = await response.json();

@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const validator = require("validator");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const Project = require("./projectModel");
 
 const { Schema } = mongoose;
 
@@ -13,7 +14,6 @@ const userSchema = new Schema(
       trim: true,
     },
     email: {
-      // TODO: enforce unique
       type: String,
       required: true,
       trim: true,
@@ -84,7 +84,7 @@ userSchema.methods.generateAuthToken = function () {
   const token = jwt.sign(
     { _id: user._id.toString() },
     process.env.AUTH_KEY,
-    { expiresIn: 3600 } // 1 hour
+    { expiresIn: 3600 } // 1 hour expiration
   );
 
   user.tokens = user.tokens.concat({ token });
@@ -118,14 +118,21 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
-/* Is this deprecated???????? */
-/* When user is deleted, delete tasks */
-/* please double-test me and/or provide second line of defense */
-// userSchema.pre("remove", async function (next) {
-//   const user = this;
-//   await Task.deleteMany({ owner: user._id });
-//   next();
-// });
+/* When user is deleted, remove user from project.users */
+userSchema.pre("remove", async function (next) {
+  const user = this;
+  for (const projectId of user.projects) {
+    const project = await Project.findById(projectId);
+    project.users.filter((userId) => userId !== user._id); // remove userId from project.users
+
+    if (project.users.length === 0) {
+      await Project.findByIdAndDelete(projectId); // if no more users remain, delete project
+    } else {
+      await project.save();
+    }
+  }
+  next();
+});
 
 const User = mongoose.model("User", userSchema);
 module.exports = User;

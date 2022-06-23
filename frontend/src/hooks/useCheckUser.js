@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 export default function useCheckUser() {
-  const token = useSelector((state) => state.user.token);
+  const token = useSelector((state) => state.token);
   const navigate = useNavigate();
 
   useEffect(() => {

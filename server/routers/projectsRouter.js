@@ -7,10 +7,28 @@ const router = express.Router();
 const auth = require("../middleware/auth");
 const Project = require("../models/projectModel");
 const User = require("../models/userModel");
-const stagesRouter = require("./stagesRouter");
 
 /* All endpoints here require authentication */
 router.use(auth);
+
+/* Create new project */
+router.post("/", async (req, res) => {
+  try {
+    let project = new Project();
+    project.title = req.body.title;
+    project.users = res.locals.user.id;
+    project = await project.save();
+
+    /* add id to user document (creates authorization to edit) */
+    res.locals.user.projects.push(project.id);
+    await res.locals.user.save();
+
+    res.status(201).send({ project: project });
+  } catch (err) {
+    res.status(400).send(err); // malformed request syntax error
+    console.error(err);
+  }
+});
 
 /* Check user authorization to edit project */
 router.use("/:projectId", (req, res, next) => {
@@ -19,44 +37,20 @@ router.use("/:projectId", (req, res, next) => {
   // reject unauthorized requests and invalid projectIds
   if (!res.locals.user.projects.includes(req.params.projectId)) {
     res.status(403).send();
-  }
-});
-
-/* Create new project */
-router.post("/", async (req, res) => {
-  try {
-    const project = new Project();
-    project.title = req.body.title;
-    project = await project.save();
-
-    /* add id to user document (creates authorization to edit) */
-    res.locals.user.projects.push(project.id);
-    await res.locals.user.save();
-
-    res.status(201).send();
-  } catch (err) {
-    console.error(err);
-    res.status(500).send(err);
+  } else {
+    next();
   }
 });
 
 /* Read project data */
 router.get("/:projectId", async (req, res) => {
   try {
-    console.time("Load Project Data");
-    const projectData = await Project.findById(req.params.projectId);
-    const stagesData = [];
-    console.time("Load Stages Data");
-    for (const stageId of projectData.stages) {
-      await stagesData.append(stageModel.findById(stageId));
-      console.log(stagesData[-1]);
-    }
-    console.timeEnd("LoadStagesData"); // if > 0.05s per stage, optimize.
-    console.timeEnd("Load Project Data");
-    res.status(200).send(projectData); //TODO: check if data too large
+    const project = await Project.findById(req.params.projectId);
+    await project.populate("stages");
+    res.status(200).send({ project: project });
   } catch (err) {
+    res.status(404).send();
     console.error(err);
-    res.status(404).send(err);
   }
 });
 
@@ -80,8 +74,12 @@ router.patch("/:projectId", async (req, res) => {
     console.log("Updated project");
     res.status(200).send();
   } catch (err) {
+    if (err instanceof mongoose.Error.ValidationError) {
+      res.status(400).send(err); // malformed request syntax error
+    } else {
+      res.status(404).send(); // project not found
+    }
     console.error(err);
-    res.status(404).send();
   }
 });
 
@@ -90,13 +88,11 @@ router.delete("/:projectId", async (req, res) => {
   try {
     const id = req.params.projectId;
 
-    /* Delete collection */
     const deletedProject = await Project.findByIdAndDelete(id);
     if (deletedProject) {
       console.log(`Deleted project ${id}`);
     } else {
-      console.error("FAILED TO DELETE PROJECT");
-      throw new Error();
+      throw new Error("FAILED TO DELETE PROJECT");
     }
 
     /* delete permissions in users */
@@ -104,12 +100,9 @@ router.delete("/:projectId", async (req, res) => {
 
     res.status(204).send();
   } catch (err) {
-    console.error(err);
     res.status(404).send(err);
+    console.error(err);
   }
 });
-
-/* stage routes are handled by stagesRouter */
-router.use("/:projectId/stages", stagesRouter);
 
 module.exports = router;

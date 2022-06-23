@@ -1,24 +1,19 @@
+/* This reducer handles redux actions affecting state.user */
+
 const initialState = {};
 
 export default function userReducer(prevState = initialState, action) {
   let state = { ...prevState }; //mutate new state not prevState
+  const payload = action.payload;
 
   switch (action.type) {
-    case "user/reorderProject":
-      /* Currently this triggers re-render of stages & tasks */
-      /* This is unnecessary and may be optimized */
-      const { sourceIndex, hoverIndex } = action.payload;
-      const projects = [...state.projects];
-      projects.splice(hoverIndex, 0, projects.splice(sourceIndex, 1)[0]);
-      return { ...state, projects: projects };
-
     case "user/created":
-      state = action.payload;
+      state = payload;
       state.flag = "EMAIL_CONFIRMATION"; //TODO: use me
       return state;
 
     case "user/loggedIn":
-      state = action.payload;
+      state = payload;
       state.flag = "LOGGED_IN";
       return state;
 
@@ -34,13 +29,24 @@ export default function userReducer(prevState = initialState, action) {
       state = { flag: "DELETED" };
       return state;
 
+    case "user/reorderProjects":
+      /* Currently this triggers re-render of stages & tasks */
+      /* This is unnecessary and may be optimized */
+      state.projects = payload;
+      return state;
+
     case "project/created":
-      state.projects = state.projects.concat(action.payload.id);
+      /* add project data to user.projects */
+      state.projects = state.projects.concat({
+        title: payload.title,
+        projectId: payload.projectId,
+      });
       return state;
 
     case "project/deleted":
+      /* remove deleted project from user.projects */
       state.projects = state.projects.filter(
-        (project) => project !== action.payload.id
+        (project) => project.projectId !== payload.projectId
       );
       return state;
 

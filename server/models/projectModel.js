@@ -12,7 +12,7 @@ const projectSchema = new Schema(
     stages: [{ type: Schema.Types.ObjectId, ref: "Stage" }],
     users: [{ type: Schema.Types.ObjectId, ref: "User" }],
   },
-  { timestamps: true }
+  { timestamps: true, minimize: false }
 );
 
 /* Alias 'id' to '_id' */
@@ -27,7 +27,9 @@ projectSchema.set("toJSON", {
   virtuals: true, // use virtuals
   versionKey: false, // remove versionKey
   transform: (doc, converted) => {
-    delete converted._id; // remove _id (converted to id)
+    converted.projectId = converted.id; // convert id to projectId
+    delete converted.id;
+    delete converted._id;
     delete converted.createdAt;
   },
 });
@@ -37,7 +39,9 @@ projectSchema.set("toObject", {
   virtuals: true, // use virtuals
   versionKey: false, // remove versionKey
   transform: (doc, converted) => {
-    delete converted._id; // remove _id (converted to id)
+    converted.projectId = converted.id; // convert id to projectId
+    delete converted.id;
+    delete converted._id;
     delete converted.createdAt;
   },
 });

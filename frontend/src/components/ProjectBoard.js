@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import "../styles/ProjectBoard.css";
 import { apiDomain as URL } from "../utils/apiDomain";
@@ -7,63 +7,53 @@ import Stage from "./Stage";
 import StageCreator from "./StageCreator";
 
 export default function ProjectBoard() {
-  const projectId = useSelector((state) => state.project.id);
+  const projectId = useSelector((state) => state.project.projectId);
   const stages = useSelector((state) => state.project.stages, shallowEqual);
-  const token = useSelector((state) => state.user.token);
+  const token = useSelector((state) => state.token);
   const dispatch = useDispatch();
 
-  /* reorder projects in frontend (request is triggered in useEffect) */
-  const reorderStage = useCallback(
-    (sourceIndex, hoverIndex) => {
-      console.log(sourceIndex, hoverIndex);
-      dispatch({
-        type: "project/reorderStage",
-        payload: {
-          sourceIndex: sourceIndex,
-          hoverIndex: hoverIndex,
-        },
-      });
-    },
-    [dispatch]
-  );
-
-  /* On each local state.projects change, send update to server */
-  const patchStages = useCallback(
-    async (stages) => {
+  /* Reorder stages */
+  const reorderStages = useCallback(
+    async (sourceIndex, hoverIndex) => {
       if (!token) return; // abort if user logged out
-      const request = createRequest("PATCH", token, { stages: stages });
-      console.log(request);
+      const newStages = [...stages]; // copy state for mutations
+      newStages.splice(hoverIndex, 0, newStages.splice(sourceIndex, 1)[0]);
+      console.log(newStages);
+
+      /* dispatch reorder to redux state */
+      dispatch({ type: "project/reorderStages", payload: newStages });
+
+      /* send API request */
+      const request = createRequest("PATCH", token, {
+        stages: newStages.map((stage) => stage.stageId), // send array of stageIds
+      });
       const response = await fetch(`${URL}/api/projects/${projectId}`, request);
       if (response.ok) {
-        console.log(response);
-      } else console.log(response);
+        const token = response.headers.get("X-Auth-Token");
+        if (token) dispatch({ type: "token/refresh", token: token });
+      } else {
+        console.error(response);
+      }
     },
-    [token, projectId]
+    [stages, token, projectId, dispatch]
   );
 
-  /* Trigger patchStages when stages is updated */
-  useEffect(() => {
-    patchStages(stages);
-  }, [stages]);
-
-  const stageList = stages
-    ? stages.map((stage, index) => {
-        return (
-          <Stage
-            key={stage.id}
-            id={stage.id}
-            stageIndex={index}
-            title={stage.title}
-            projectId={projectId}
-            reorderStage={reorderStage}
-          />
-        );
-      })
-    : null;
+  const stageList = stages?.map((stage, index) => (
+    <Stage
+      key={stage.stageId}
+      stageId={stage.stageId}
+      stageIndex={index}
+      title={stage.title}
+      reorderStages={reorderStages}
+    />
+  ));
 
   return (
     <div id="project-board">
       {stageList}
+      {/* {stages?.map((stage, index) =>
+        renderStage(stage.stageId, index, stage.title)
+      )} */}
       <StageCreator projectId={projectId} />
     </div>
   );

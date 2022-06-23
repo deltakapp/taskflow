@@ -11,9 +11,7 @@ import createRequest from "../utils/createRequest";
 export default function UserTab() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user, shallowEqual);
-
-  console.log("rendering userTab");
+  const user = useSelector((state) => state.user, shallowEqual); // TODO: remove shallowequal
 
   /* navigate to user page on click */
   function handleNavUserPanel(e) {

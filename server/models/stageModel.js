@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const taskSchema = require("./taskSchema");
+const { taskSchema } = require("./taskModel");
 
 const stageSchema = new mongoose.Schema(
   {
@@ -12,9 +12,7 @@ const stageSchema = new mongoose.Schema(
     },
     tasks: [taskSchema],
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true, minimize: false }
 );
 
 /* Alias 'id' to '_id' */
@@ -29,12 +27,10 @@ stageSchema.set("toJSON", {
   virtuals: true, // use virtuals
   versionKey: false, // remove versionKey
   transform: (doc, converted) => {
+    converted.stageId = converted.id;
+    delete converted.id;
     delete converted._id; // remove _id (converted to id)
     delete converted.createdAt;
-
-    if (!converted.tasks) {
-      converted.tasks = [];
-    }
   },
 });
 
@@ -43,6 +39,8 @@ stageSchema.set("toObject", {
   virtuals: true, // use virtuals
   versionKey: false, // remove versionKey
   transform: (doc, converted) => {
+    converted.stageId = converted.id;
+    delete converted.id;
     delete converted._id; // remove _id (converted to id)
     delete converted.createdAt;
   },

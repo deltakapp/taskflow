@@ -10,7 +10,7 @@ export default function LogoutPage() {
     setTimeout(() => {
       navigate("/");
     }, 1500);
-  }, []);
+  }, [navigate]);
 
   return <h2>You have been logged out and will be redirected</h2>;
 }

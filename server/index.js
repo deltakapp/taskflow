@@ -2,16 +2,18 @@
 /* This file is optimized for time to boot */
 /* Consider optimization with every line */
 
-/* Boot timers; remove for production */
+/* Boot timers */
 console.time("full server");
 console.time("imports");
 
 const express = require("express");
-const mongoose = require("mongoose");
+const mongoose = require("mongoose"); // for interfacing with mongodb
 const cors = require("cors"); //NOTE: remove for production, also app.use(cors())
-const path = require("path");
+const path = require("path"); // for path logging
+const filter = require("content-filter"); // filter malicious requests
 const usersRouter = require("./routers/usersRouter");
-const projectsRouter2 = require("./routers/projectsRouter2");
+const projectsRouter = require("./routers/projectsRouter");
+const stagesRouter = require("./routers/stagesRouter");
 
 const PORT = process.env.PORT || 5000;
 const URL = process.env.DB_URL; // npm start fails to load .env ///FIX ME///
@@ -41,8 +43,9 @@ mongoose.connection.on("error", (err) => {
 
 /* Create express application */
 const app = express();
-app.use(cors());
-app.use(express.json());
+app.use(cors()); // TODO: REMOVE FROM PROD
+app.use(express.json()); // parse json in request bodies
+app.use(filter({ methodList: ["GET", "POST", "PUT", "PATCH", "DELETE"] })); // filter malicious requests
 
 /* logging for all requests */
 app.use((req, res, next) => {
@@ -62,7 +65,8 @@ app.get("/test", async (req, res) => {
 
 /* API Routers */
 app.use("/api/users", usersRouter);
-app.use("/api/projects", projectsRouter2);
+app.use("/api/projects", projectsRouter);
+app.use("/api/stages", stagesRouter);
 
 /* homepage path; dynamic routes point here */
 app.get("/*", function (req, res) {

@@ -5,21 +5,18 @@ import "../styles/Stages.css";
 import { apiDomain as URL } from "../utils/apiDomain";
 import createRequest from "../utils/createRequest";
 import { ItemTypes } from "../utils/itemTypes";
-import StageRename from "./StageRename";
-import Task from "./Task";
+import StageEditor from "./StageEditor";
+import TaskCard from "./TaskCard";
 import TaskCreator from "./TaskCreator";
 
-export default function Stage({
-  id,
-  stageIndex,
-  title,
-  projectId,
-  reorderStage,
-}) {
-  console.log(`Rendering stage ${stageIndex}`);
+export default function Stage({ stageId, stageIndex, title, reorderStages }) {
+  console.log(`Rendering stage ${title}`);
   const stage = useSelector((state) => state.project.stages[stageIndex]);
-  const tasks = useSelector((state) => state.project.stages[stageIndex].tasks);
-  const user = useSelector((state) => state.user, shallowEqual);
+  const tasks = useSelector(
+    (state) => state.project.stages[stageIndex].tasks,
+    shallowEqual
+  );
+  const token = useSelector((state) => state.token);
   const dispatch = useDispatch();
   const ref = useRef(null);
 
@@ -55,7 +52,7 @@ export default function Stage({
       if (sourceIndex > hoverIndex && hoverClientX > hoverMiddleX) {
         return;
       }
-      reorderStage(sourceIndex, hoverIndex);
+      reorderStages(sourceIndex, hoverIndex);
       item.index = hoverIndex;
     },
   });
@@ -74,14 +71,11 @@ export default function Stage({
 
   drag(drop(ref));
 
-  async function handleDeleteStage(id) {
-    const request = createRequest("DELETE", user.token);
-    const response = await fetch(
-      `${URL}/api/projects/${projectId}/stages/${id}`,
-      request
-    );
+  async function handleDeleteStage(stageId) {
+    const request = createRequest("DELETE", token);
+    const response = await fetch(`${URL}/api/stages/${stageId}`, request);
     if (response.ok) {
-      dispatch({ type: "stage/deleted", payload: { id: id } });
+      dispatch({ type: "stage/deleted", payload: { stageId: stageId } });
     } else {
       console.log(response.status);
     }
@@ -90,21 +84,23 @@ export default function Stage({
   const taskList = tasks
     ? tasks.map((task, index) => {
         return (
-          <Task
-            key={task.id}
+          <TaskCard
+            key={task.taskId}
+            taskId={task.taskId}
             taskIndex={index}
+            stageId={stageId}
             stageIndex={stageIndex}
-            stageId={id}
-            projectId={projectId}
           />
         );
       })
     : null;
 
   return (
-    <section className="stage" key={id} ref={ref}>
+    <section className="stage" key={stageId} ref={ref}>
       <div className="stage-header">
         <details className="dropdown">
+          {" "}
+          {/*TODO: change from css toggle to react toggle */}
           <summary className="" role="button">
             <h3 className="stage-title">{stage.title}</h3>
             <svg
@@ -117,23 +113,18 @@ export default function Stage({
             >
               <path d="M8 9a1.5 1.5 0 100-3 1.5 1.5 0 000 3zM1.5 9a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm13 0a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"></path>
             </svg>
-            <TaskCreator
-              projectId={projectId}
-              stageId={stage.id}
-              stageIndex={stageIndex}
-            />
+            <TaskCreator stageId={stageId} stageIndex={stageIndex} />
           </summary>
           <span className="dropdown-content mt-4">
             <ul>
               <li>
-                <StageRename
-                  projectId={projectId}
-                  stageId={stage.id}
-                  stageIndex={stageIndex}
-                />
+                <StageEditor stageId={stageId} />
               </li>
               <li>
-                <button className="btn" onClick={() => handleDeleteStage(id)}>
+                <button
+                  className="btn"
+                  onClick={() => handleDeleteStage(stageId)}
+                >
                   Delete Stage
                 </button>
               </li>

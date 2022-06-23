@@ -6,7 +6,7 @@
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
-const taskSchema = require("../schema/taskSchema");
+const taskSchema = require("./taskSchema");
 const Task = mongoose.model("Task", taskSchema);
 
 /* Create a new task */
