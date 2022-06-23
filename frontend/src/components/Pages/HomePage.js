@@ -32,7 +32,6 @@ export default function HomePage() {
     const response = await fetch(`${URL}/api/users/login`, request);
     if (response.ok) {
       const result = await response.json();
-      console.log(result);
       dispatch({
         type: "user/loggedIn",
         payload: result.user,
