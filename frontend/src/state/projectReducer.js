@@ -85,10 +85,15 @@ export default function projectReducer(prevState = initialState, action) {
       return state;
     }
     case "task/updated": {
-      const index = state.stages.findIndex(
+      // locate stage
+      const stageIndex = state.stages.findIndex(
         (stage) => stage.stageId === payload.stageId
       );
-      state.stages[index] = payload;
+      // locate task
+      const taskIndex = state.stages[stageIndex].tasks.findIndex(
+        (task) => task.taskId === payload.task.taskId
+      );
+      state.stages[stageIndex].tasks[taskIndex] = payload.task;
       return state;
     }
 

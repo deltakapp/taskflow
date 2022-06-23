@@ -37,7 +37,10 @@ export default function TaskCard({ taskId, taskIndex, stageId, stageIndex }) {
     if (response.ok) {
       const result = await response.json();
       console.log(result);
-      dispatch({ type: "task/updated", payload: result });
+      dispatch({
+        type: "task/updated",
+        payload: { stageId: stageId, task: result },
+      });
       toggleEditing(false);
     } else {
       console.log(response.status);
