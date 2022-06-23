@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
-import "../styles/Stages.css";
+import "../styles/Stage.css";
 import { apiDomain as URL } from "../utils/apiDomain";
 import createRequest from "../utils/createRequest";
 import { ItemTypes } from "../utils/itemTypes";
