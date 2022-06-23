@@ -1,9 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
 import { createStore } from "redux";
-import App from "./components/App";
 import HomePage from "./components/Pages/HomePage";
 import LogoutPage from "./components/Pages/LogoutPage";
 import ProjectPage from "./components/Pages/ProjectPage";
@@ -19,7 +18,7 @@ ReactDOM.render(
     <Provider store={createStore(rootReducer)}>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<App />}>
+          <Route path="/" element={<Outlet />}>
             <Route index element={<HomePage />} />
             <Route path="signup" element={<SignupPage />} />
             {/* <Route path="login" element={<Login />} /> */}

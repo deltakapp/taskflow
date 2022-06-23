@@ -1,67 +1,79 @@
-/* Nomenclature: when creating a new project, the intended name */
-/* of the project is called "title", until it is sent to database */
-/* and created, after which the project's name is referred to as "id" */
-
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import "../styles/ProjectsList.css";
 import { apiDomain as URL } from "../utils/apiDomain";
 import createRequest from "../utils/createRequest";
 
 export default function ProjectsList() {
-  const dispatch = useDispatch();
   const projects = useSelector((state) => state.user.projects, shallowEqual);
+  const token = useSelector((state) => state.token);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const user = useSelector((state) => state.user, shallowEqual);
 
   async function handleCreateProject(e) {
     e.preventDefault();
     // TODO add blank title error handling
-    const request = createRequest("POST", user.token, {
+    const request = createRequest("POST", token, {
       title: `${document.getElementById("new-project-title").value}`,
     });
     const response = await fetch(`${URL}/api/projects/`, request);
     if (response.ok) {
+      const token = response.headers.get("X-Auth-Token");
       const result = await response.json();
       console.log(result);
-      dispatch({ type: "project/created", payload: result });
+      await dispatch({
+        type: "project/created",
+        payload: result.project,
+        token: token,
+      });
+      navigate(`../project/${result.project.projectId}`);
     } else {
       console.log(response.status);
     }
   }
 
-  async function handleDeleteProject(id) {
-    const request = createRequest("DELETE", user.token);
-    const response = await fetch(`${URL}/api/projects/${id}`, request);
+  async function handleDeleteProject(projectId) {
+    const request = createRequest("DELETE", token);
+    const response = await fetch(`${URL}/api/projects/${projectId}`, request);
     if (response.ok) {
-      dispatch({ type: "project/deleted", payload: { id: id } });
+      const token = response.headers.get("X-Auth-Token");
+      dispatch({
+        type: "project/deleted",
+        payload: { projectId: projectId },
+        token: token,
+      });
     } else {
       console.log(response.status);
     }
   }
 
-  async function handleLoadProject(id) {
-    const request = createRequest("GET", user.token);
-    const response = await fetch(`${URL}/api/projects/${id}`, request);
+  async function handleLoadProject(projectId) {
+    const request = createRequest("GET", token);
+    const response = await fetch(`${URL}/api/projects/${projectId}`, request);
     if (response.ok) {
+      const token = response.headers.get("X-Auth-Token");
       const result = await response.json();
       console.log(result);
       dispatch({
         type: "project/loaded",
-        payload: { id: id, stages: result },
+        payload: result.project,
+        token: token,
       });
-      navigate(`../project/${id}`);
+      navigate(`../project/${projectId}`);
     }
   }
 
   const listProjects = projects
-    ? projects.map((id) => {
+    ? projects.map((project) => {
         return (
           //TODO: Change to project.id
-          <li key={id}>
-            {id}
-            <button onClick={() => handleLoadProject(id)}>Edit</button>
-            <button onClick={() => handleDeleteProject(id)}>Delete</button>
+          <li key={project.projectId}>
+            {project.title}
+            <button onClick={() => handleLoadProject(project.projectId)}>
+              Edit
+            </button>
+            <button onClick={() => handleDeleteProject(project.projectId)}>
+              Delete
+            </button>
           </li>
         );
       })

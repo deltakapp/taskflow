@@ -17,7 +17,7 @@ const stageSchema = new mongoose.Schema(
   }
 );
 
-/* alias 'id' to '_id' */
+/* Alias 'id' to '_id' */
 stageSchema
   .virtual("id") // virtual get '_id' => 'id' is mongoose default
   .set((id) => {
@@ -29,7 +29,9 @@ stageSchema.set("toJSON", {
   virtuals: true, // use virtuals
   versionKey: false, // remove versionKey
   transform: (doc, converted) => {
-    delete converted._id; // remove _id (converted to id)
+    converted.stageId = converted.id; // convert id to stageId
+    delete converted.id;
+    delete converted._id;
     delete converted.createdAt;
 
     if (!converted.tasks) {
@@ -38,17 +40,15 @@ stageSchema.set("toJSON", {
   },
 });
 
-/* Rules for converting documents to JSON (identical to toJSON) */
+/* Rules for converting documents to objects (identical to toJSON) */
 stageSchema.set("toObject", {
   virtuals: true, // use virtuals
   versionKey: false, // remove versionKey
   transform: (doc, converted) => {
-    delete converted._id; // remove _id (converted to id)
+    converted.stageId = converted.id; // convert id to stageId
+    delete converted.id;
+    delete converted._id;
     delete converted.createdAt;
-
-    if (!converted.tasks) {
-      converted.tasks = [];
-    }
   },
 });
 

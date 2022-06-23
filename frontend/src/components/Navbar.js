@@ -6,94 +6,99 @@ import { apiDomain as URL } from "../utils/apiDomain";
 import createRequest from "../utils/createRequest";
 import ProjectTab from "./ProjectTab";
 
-export default function NavPane(props) {
-  const [open, toggleOpen] = useState(false);
+export default function NavPane() {
+  const [creatorIsOpen, toggleCreatorOpen] = useState(false);
   const projects = useSelector((state) => state.user.projects, shallowEqual);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const user = useSelector((state) => state.user, shallowEqual);
-
-  /* On each local state.projects change, send update to server */
-  useCallback(async () => {
-    const request = createRequest("PATCH", user.token, { projects: projects });
-    const response = await fetch(`${URL}/api/users/${user.id}`, request);
-    if (response.ok) {
-      console.log(response);
-    } else console.log(projects);
-  }, [projects, user]);
+  const token = useSelector((state) => state.token);
 
   const handleCreateProject = useCallback(
     async (e) => {
       e.preventDefault();
       // TODO add blank title error handling
-      const request = createRequest("POST", user.token, {
+      const request = createRequest("POST", token, {
         title: `${document.getElementById("new-project-title").value}`,
       });
       const response = await fetch(`${URL}/api/projects/`, request);
       if (response.ok) {
+        const token = response.headers.get("X-Auth-Token");
         const result = await response.json();
-        console.log(result);
-        dispatch({ type: "project/created", payload: result });
-        toggleOpen(false);
-      } else {
-        console.log(response.status);
-      }
+        console.log(response); // DELETE ME
+        dispatch({
+          type: "project/created",
+          payload: result.project,
+          token: token,
+        });
+        toggleCreatorOpen(false);
+      } else console.error(response.status);
     },
-    [user.token, dispatch]
+    [token, dispatch]
   );
 
   const loadProject = useCallback(
-    async (id) => {
-      const request = createRequest("GET", user.token);
-      const response = await fetch(`${URL}/api/projects/${id}`, request);
+    async (projectId) => {
+      const request = createRequest("GET", token);
+      const response = await fetch(`${URL}/api/projects/${projectId}`, request);
       if (response.ok) {
+        const token = response.headers.get("X-Auth-Token");
         const result = await response.json();
-        console.log(result);
+        console.log(response); // DELETE ME
         dispatch({
           type: "project/loaded",
-          payload: { id: id, stages: result },
+          payload: result.project,
+          token: token,
         });
-        navigate(`../project/${id}`);
+        navigate(`../project/${projectId}`);
       } else {
         // error handling will be extremely tough here
-        console.log(response.status);
+        console.error(response.status);
       }
     },
-    [user.token, dispatch, navigate]
+    [token, dispatch, navigate]
   );
 
-  /* reorder projects in frontend (request is triggered in useEffect) */
-  const reorderProject = useCallback(
-    (sourceIndex, hoverIndex) => {
-      console.log(sourceIndex, hoverIndex);
-      dispatch({
-        type: "user/reorderProject",
-        payload: {
-          sourceIndex: sourceIndex,
-          hoverIndex: hoverIndex,
-        },
+  /* reorder projects */
+  const reorderProjects = useCallback(
+    async (sourceIndex, hoverIndex) => {
+      if (!token) return; // abort if user logged out
+      const newProjects = [...projects]; // copy state for mutations
+      newProjects.splice(hoverIndex, 0, newProjects.splice(sourceIndex, 1)[0]);
+      console.log(newProjects);
+
+      /* dispatch reorder to redux state */
+      dispatch({ type: "user/reorderProjects", payload: newProjects });
+
+      /* send API request */
+      const request = createRequest("PATCH", token, {
+        projects: newProjects.map((project) => project.projectId),
       });
+      const response = await fetch(`${URL}/api/users/`, request);
+      if (response.ok) {
+        const token = response.headers.get("X-Auth-Token");
+        if (token) dispatch({ type: "token/refresh", token: token });
+      } else console.error(response);
     },
-    [dispatch]
+    [projects, token, dispatch]
   );
 
-  const renderProject = useCallback(
-    (projectTitle, index) => {
-      // TODO: Change to project.id
+  const renderProjectTab = useCallback(
+    (index, title, projectId) => {
       return (
         <ProjectTab
-          key={projectTitle}
+          key={projectId}
           index={index}
-          title={projectTitle}
-          reorderProject={reorderProject}
+          title={title}
+          projectId={projectId}
+          reorderProjects={reorderProjects}
           loadProject={loadProject}
         />
       );
     },
-    [reorderProject, loadProject]
+    [reorderProjects, loadProject]
   );
 
-  const createProject = open ? ( // TODO: break into separate components
+  const createProject = creatorIsOpen ? ( // TODO: break into separate components
     <div className="overlay">
       <div className="overlay-inner">
         <form id="new-project-creator" onSubmit={handleCreateProject}>
@@ -103,7 +108,7 @@ export default function NavPane(props) {
             <button id="submit">Create Project</button>
             <button
               className="btn-close-task-creator ml-1"
-              onClick={() => toggleOpen(false)}
+              onClick={() => toggleCreatorOpen(false)}
               type="button"
             >
               Cancel
@@ -114,7 +119,7 @@ export default function NavPane(props) {
     </div>
   ) : (
     <li className="add-project">
-      <button onClick={() => toggleOpen(true)} title="Add new project">
+      <button onClick={() => toggleCreatorOpen(true)} title="Add new project">
         <svg
           height="16"
           viewBox="0 0 16 16"
@@ -134,7 +139,9 @@ export default function NavPane(props) {
   return (
     <nav id="navbar">
       <ul className="tabrow">
-        {projects?.map((project, index) => renderProject(project, index))}
+        {projects?.map((project, index) =>
+          renderProjectTab(index, project.title, project.projectId)
+        )}
         {createProject}
       </ul>
       <br />

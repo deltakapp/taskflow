@@ -9,8 +9,8 @@ export default function LogoutPage() {
   useEffect(() => {
     setTimeout(() => {
       navigate("/");
-    }, 3000);
-  }, []);
+    }, 1500);
+  }, [navigate]);
 
   return (
     <main className="single">

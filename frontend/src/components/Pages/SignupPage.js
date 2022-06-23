@@ -1,11 +1,13 @@
 /* This page lets users sign up */
 
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+//TODO: use createRequest
+
+import { useDispatch, useSelector } from "react-redux";
 import { apiDomain as URL } from "../../utils/apiDomain";
 
 export default function SignupPage() {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user, shallowEqual);
+  const user = useSelector((state) => state.user);
 
   async function handleSignup(e) {
     e.preventDefault();
@@ -29,7 +31,8 @@ export default function SignupPage() {
       console.log(result);
       dispatch({
         type: "user/created",
-        payload: { ...result.user, token: result.token },
+        payload: result.user,
+        token: result.token,
       });
     } else {
       const result = await response.json();

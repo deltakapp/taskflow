@@ -5,13 +5,14 @@ import { ItemTypes } from "../utils/itemTypes";
 export default function ProjectTab({
   index,
   title,
-  reorderProject,
+  projectId,
+  reorderProjects,
   loadProject,
 }) {
   const ref = useRef(null);
 
   const [, drop] = useDrop({
-    accept: ItemTypes.PROJECTTAB, //change PROJECT to PROJECTTAB
+    accept: ItemTypes.PROJECTTAB,
     hover(item, monitor) {
       if (!ref.current) {
         return;
@@ -42,7 +43,7 @@ export default function ProjectTab({
       if (sourceIndex > hoverIndex && hoverClientX > hoverMiddleX) {
         return;
       }
-      reorderProject(sourceIndex, hoverIndex);
+      reorderProjects(sourceIndex, hoverIndex);
       item.index = hoverIndex;
     },
   });
@@ -63,7 +64,7 @@ export default function ProjectTab({
 
   return (
     <li ref={ref} style={{ opacity }}>
-      <button className="btn" onClick={() => loadProject(title)}>
+      <button className="btn" onClick={() => loadProject(projectId)}>
         {title}
       </button>
     </li>

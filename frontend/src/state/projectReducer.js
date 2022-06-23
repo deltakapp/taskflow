@@ -1,72 +1,108 @@
+/* This reducer handles redux actions affecting state.project */
+
 const initialState = {
-  id: null,
+  projectId: null,
   title: "",
   stages: [],
 };
 
 export default function projectReducer(prevState = initialState, action) {
-  let state = { ...prevState }; //mutate new state not prevState
+  let state = { ...prevState }; // mutate new state not prevState
+  const payload = action.payload;
+  if (
+    action.type.startsWith("project") ||
+    action.type.startsWith("stage") ||
+    action.type.startsWith("task")
+  ) {
+    console.log(payload);
+  }
 
   switch (action.type) {
+    /***** Project actions *****/
+    case "project/reorderStages": {
+      state.stages = payload;
+      return state;
+    }
     case "project/created": {
-      state = action.payload;
-      state.stages = [];
+      if (!state.projectId) {
+        state = payload;
+      }
       return state;
     }
     case "project/loaded": {
-      // not yet used
-      state = action.payload;
+      state = payload;
       return state;
     }
     case "project/unloaded": {
       return initialState;
     }
     case "project/deleted": {
-      console.log(action.payload.id);
-      if (action.payload.id === state.id) {
+      // TODO: amend to just payload not payload.project
+      if (payload.projectId === state.projectId) {
         return initialState;
       }
       return state;
     }
+
+    /***** Stage actions *****/
     case "stage/created": {
-      console.log(action.payload);
-      state.stages = state.stages.concat(action.payload);
+      state.stages = state.stages.concat(payload);
       return state;
     }
     case "stage/updated": {
-      console.log(action.payload);
-      const stageId = action.payload.stage.id;
-      const index = state.stages.findIndex((stage) => stage.id === stageId);
-      state.stages[index] = action.payload.stage;
+      const index = state.stages.findIndex(
+        (stage) => stage.stageId === payload.stageId
+      );
+      state.stages[index] = payload;
       return state;
     }
     case "stage/deleted": {
       state.stages = state.stages.filter(
-        (stage) => stage.id !== action.payload.id
+        (stage) => stage.stageId !== payload.stageId
       );
       return state;
     }
+
+    /***** Task actions *****/
     case "task/created": {
-      console.log(action.payload);
-      const stageId = action.payload.stageId;
-      const index = state.stages.findIndex((stage) => stage.id === stageId);
-      const task = action.payload.task;
-      state.stages[index].tasks = state.stages[index].tasks.concat(task);
+      // find stage
+      const stage = state.stages.find(
+        (stage) => stage.stageId === payload.stageId
+      );
+      // add new task
+      stage.tasks = stage.tasks.concat(payload.task);
       return state;
     }
     case "task/deleted": {
-      console.log(action.payload);
-      const stageIndex = state.stages.findIndex(
-        (stage) => stage.id === action.payload.stageId
+      // find stage
+      const stage = state.stages.find(
+        (stage) => stage.stageId === payload.stageId
       );
-      state.stages[stageIndex].tasks = state.stages[stageIndex].tasks.filter(
-        (task) => task.id !== action.payload.id
+      // delete task
+      stage.tasks = stage.tasks.filter(
+        (task) => task.taskId !== payload.taskId
       );
       return state;
     }
+    case "task/updated": {
+      // locate stage
+      const stageIndex = state.stages.findIndex(
+        (stage) => stage.stageId === payload.stageId
+      );
+      // locate task
+      const taskIndex = state.stages[stageIndex].tasks.findIndex(
+        (task) => task.taskId === payload.task.taskId
+      );
+      state.stages[stageIndex].tasks[taskIndex] = payload.task;
+      return state;
+    }
+
+    /***** User actions *****/
     case "user/loggedOut": {
       return initialState;
     }
+
+    /***** Default *****/
     default:
       return prevState;
   }

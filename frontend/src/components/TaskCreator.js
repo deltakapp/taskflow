@@ -1,31 +1,33 @@
 import { useState } from "react";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { apiDomain as URL } from "../utils/apiDomain";
 import createRequest from "../utils/createRequest";
 
-export default function TaskCreator({ projectId, stageId, stageIndex }) {
+export default function TaskCreator({ stageId }) {
   const [open, toggleOpen] = useState(false);
-  const user = useSelector((state) => state.user, shallowEqual);
+  const [title, setTitle] = useState("");
+  const [details, setDetails] = useState("");
+  const token = useSelector((state) => state.token);
   const dispatch = useDispatch();
 
   async function handleCreateTask(e) {
     e.preventDefault();
-    const titleField = e.target.querySelector(".new-task-title");
-    const request = createRequest("POST", user.token, {
-      title: `${titleField.value}`,
+    // const titleField = e.target.querySelector(".new-task-title");
+    const request = createRequest("POST", token, {
+      title: title,
+      details: details,
     });
-    const response = await fetch(
-      `${URL}/api/projects/${projectId}/stages/${stageId}/tasks`,
-      request
-    );
+    const response = await fetch(`${URL}/api/stages/${stageId}/tasks`, request);
     if (response.ok) {
       const result = await response.json();
       console.log(result);
       dispatch({
         type: "task/created",
-        payload: { task: { ...result }, stageId: stageId },
+        payload: { task: result, stageId: stageId },
       });
-      titleField.value = "";
+      toggleOpen(false); // close task creator
+      setTitle(""); // reset title field
+      setDetails(""); // reset details field
     } else {
       console.log(response);
     }
@@ -40,8 +42,17 @@ export default function TaskCreator({ projectId, stageId, stageIndex }) {
         <textarea
           className="new-task-title"
           placeholder="Enter a task"
-          maxlength="31"
-        ></textarea>
+          maxLength="31"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
+        <textarea
+          className="new-task-details"
+          placeholder="Enter details (optional)"
+          maxLength="500"
+          value={details}
+          onChange={(e) => setDetails(e.target.value)}
+        />
         <div className="two-button mt-2">
           <button className="btn-create-task mr-1" type="submit">
             Create Task

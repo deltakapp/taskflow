@@ -15,12 +15,10 @@ const taskSchema = new mongoose.Schema(
       maxLength: 1000,
     },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true, minimize: false }
 );
 
-/* alias 'id' to '_id' */
+/* Alias 'id' to '_id' */
 taskSchema
   .virtual("id") // virtual get '_id' => 'id' is mongoose default
   .set((id) => {
@@ -32,19 +30,25 @@ taskSchema.set("toJSON", {
   virtuals: true, // use virtuals
   versionKey: false, // remove versionKey
   transform: (doc, converted) => {
-    delete converted._id; // remove _id (converted to id)
+    converted.taskId = converted.id; // convert id to taskId
+    delete converted.id;
+    delete converted._id;
     delete converted.createdAt;
   },
 });
 
-/* Rules for converting documents to JSON (identical to toJSON) */
+/* Rules for converting documents to objects (identical to toJSON) */
 taskSchema.set("toObject", {
   virtuals: true, // use virtuals
   versionKey: false, // remove versionKey
   transform: (doc, converted) => {
-    delete converted._id; // remove _id (converted to id)
+    converted.taskId = converted.id; // convert id to taskId
+    delete converted.id;
+    delete converted._id;
     delete converted.createdAt;
   },
 });
 
-module.exports = taskSchema;
+const taskModel = mongoose.model("Task", taskSchema);
+module.exports = taskModel;
+module.exports.taskSchema = taskSchema;

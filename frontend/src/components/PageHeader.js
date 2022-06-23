@@ -5,9 +5,7 @@ import UserTab from "./UserTab";
 
 export default function PageHeader() {
   useCheckUser();
-  const projectTitle = useSelector((state) => state.project.id);
-
-  console.log("rendering PageHeader");
+  const projectTitle = useSelector((state) => state.project.projectId);
 
   return (
     <header id="page-header">

@@ -1,7 +1,7 @@
 /* User Routes at path /api/users */
 
 /* These routes do not follow REST standard: request Authorization header */
-/* renders user-specific resource-naming unnecessary, and endpoints which */
+/* renders user-specific resource-naming superfluous, and endpoints which */
 /* precede auth (user creation) do not need user ID */
 
 const express = require("express");
@@ -21,9 +21,11 @@ router.post("/", async (req, res) => {
     res.status(201).send({ user, token });
   } catch (err) {
     if (err.code === 11000) {
+      // duplicate email error
       console.log("User creation failed: duplicate email");
       res.status(409).send();
     } else {
+      // malformed request syntax error
       console.log(err);
       res.status(400).send(err);
     }
@@ -39,6 +41,7 @@ router.post("/login", async (req, res) => {
     );
     const token = user.generateAuthToken();
     await user.save();
+    await user.populate("projects", "title");
     res.status(200).send({ user, token }); //move token to header?
 
     /* Delete expired tokens AFTER response sent for expedience */
@@ -52,8 +55,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
-/* All routes below here use auth middleware. Errors outisde of auth */
-/* should fail with 5XX error codes. */
+/* All routes below here use auth middleware. */
 
 /* User logout */
 router.post("/logout", auth, async (req, res) => {
@@ -64,19 +66,18 @@ router.post("/logout", auth, async (req, res) => {
     });
 
     /* delete any replacement token set by auth */
-    const replacementToken = res.get("X-Replacement-Token");
+    const replacementToken = res.get("X-Auth-Token");
     if (replacementToken) {
-      console.log("deleting replacementToken");
       res.locals.user.tokens = res.locals.user.tokens.filter((token) => {
         return token.token !== replacementToken;
       });
-      res.removeHeader("X-Replacement-Token");
+      res.removeHeader("X-Auth-Token");
     }
     await res.locals.user.save();
 
     res.status(200).send();
   } catch (err) {
-    res.status(500).send(err); //should never be reached
+    res.status(500).send(err); // should never be reached
   }
 });
 
@@ -87,26 +88,27 @@ router.delete("/", auth, async (req, res) => {
     console.log("user deleted");
     res.status(204).send();
   } catch (err) {
-    res.status(500).send(err); //should never be reached
+    res.status(500).send(err); // should never be reached
   }
 });
 
 /* Modify user */
 router.patch("/", auth, async (req, res) => {
   try {
-    const user = res.locals.user;
+    let user = res.locals.user;
 
     if (req.body.projects) {
       user.projects = req.body.projects;
     }
 
     if (req.body.email) {
-    } // TODO: implement update email address
+      user.email = req.body.email; // TODO: test me
+    }
 
     await user.save();
     res.status(200).send();
   } catch (err) {
-    res.status(500).send(err); //should never be reached
+    res.status(400).send(err); // malformed request syntax error
   }
 });
 
