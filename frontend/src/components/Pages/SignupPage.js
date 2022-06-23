@@ -45,21 +45,19 @@ export default function SignupPage() {
   }
 
   return !user.id ? (
-    <main id="signup-page">
-      Sign Up:
+    <main className="single">
+      <img className="logo" alt="Taskflow.tech" src="/logo.png" />
+      <h1>
+        <a href="/">Taskflow.tech</a>
+      </h1>
+      <h2>Sign Up</h2>
       <form onSubmit={handleSignup}>
-        <span>User Name: </span>
-        <input id="user-name" type="text" />
-        <br />
-        <span>Email: </span>
-        <input id="user-email" type="text" />
-        <br />
-        <span>Password: </span>
-        <input id="user-password" type="text" />
+        <input id="user-name" type="text" placeholder="User Name" />
+        <input id="user-email" type="text" placeholder="Email Address" />
+        <input id="user-password" type="password" placeholder="Password" />
         <button type="submit">Sign Up</button>
       </form>
-    </main>
-  ) : (
+    </main>  ) : (
     <h1>User is logged in</h1>
   );
 }

@@ -48,7 +48,7 @@ export default function HomePage() {
   }
 
   return (
-    <main className="home">
+    <main className="single">
       <img className="logo" alt="Taskflow.tech" src="/logo.png" />
       <h1>
         <a href="/">Taskflow.tech</a>
