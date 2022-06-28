@@ -78,4 +78,5 @@ app.get("/*", function (req, res) {
 app.listen(PORT, function () {
   console.timeEnd("full server");
   console.log(`App started on port ${PORT}`);
+  console.log("running v1.0");
 });
