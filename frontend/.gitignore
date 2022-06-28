@@ -10,7 +10,7 @@
 
 # production
 # NOTE: /build may be unignored to transfer build files to heroku
-/build
+#/build
 
 # misc
 .DS_Store
