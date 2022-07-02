@@ -58,24 +58,23 @@ app.use((req, res, next) => {
 /* root directory path for frontend static build files */
 app.use(express.static(path.join(__dirname, "../frontend/build")));
 
-/* test path */
-app.get("/test", async (req, res) => {
-  res.status(200).send("Success");
-});
-
 /* API Routers */
 app.use("/api/users", usersRouter);
 app.use("/api/projects", projectsRouter);
 app.use("/api/stages", stagesRouter);
 
+/* test path */
+app.get("/test", async (req, res) => {
+  res.status(200).send("Success");
+});
+
 /* homepage path; dynamic routes point here */
-app.get("/*", function (req, res) {
-  console.log("GETting homepage");
+app.get("/*", async (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend/build", "index.html"));
 });
 
 /* listen for requests */
-app.listen(PORT, function () {
+app.listen(PORT, () => {
   console.timeEnd("full server");
   console.log(`App started on port ${PORT}`);
 });
