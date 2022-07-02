@@ -3,11 +3,16 @@
 //TODO: use createRequest
 
 import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import useLogin from "../../hooks/useLogin";
 import { apiDomain as URL } from "../../utils/apiDomain";
 
 export default function SignupPage() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const user = useSelector((state) => state.user);
+
+  useLogin();
 
   async function handleSignup(e) {
     e.preventDefault();
@@ -57,7 +62,11 @@ export default function SignupPage() {
         <input id="user-password" type="password" placeholder="Password" />
         <button type="submit">Sign Up</button>
       </form>
-    </main>  ) : (
+      <h3>
+        <Link to="/">Log In</Link>
+      </h3>
+    </main>
+  ) : (
     <h1>User is logged in</h1>
   );
 }

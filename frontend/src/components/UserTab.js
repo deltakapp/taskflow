@@ -12,6 +12,7 @@ export default function UserTab() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user, shallowEqual); // TODO: remove shallowequal
+  const token = useSelector((state) => state.token);
 
   /* navigate to user page on click */
   function handleNavUserPanel(e) {
@@ -22,10 +23,13 @@ export default function UserTab() {
 
   async function logoutUser() {
     console.log("logging out user");
-    const request = createRequest("POST", user.token);
+    const request = createRequest("POST", token);
     const response = await fetch(`${URL}/api/users/logout`, request);
+    console.log(request);
     console.log(response);
-    dispatch({ type: "user/loggedOut" });
+    setTimeout(() => {
+      dispatch({ type: "user/loggedOut" });
+    }, 500);
   }
 
   return user.id ? (

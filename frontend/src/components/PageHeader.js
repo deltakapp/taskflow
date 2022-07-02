@@ -1,10 +1,10 @@
 import { useSelector } from "react-redux";
-import useCheckUser from "../hooks/useCheckUser";
+import useLogout from "../hooks/useLogout";
 import "../styles/PageHeader.css";
 import UserTab from "./UserTab";
 
 export default function PageHeader() {
-  useCheckUser();
+  useLogout();
   const projectTitle = useSelector((state) => state.project.projectId);
 
   return (

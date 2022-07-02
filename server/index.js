@@ -2,11 +2,11 @@
 /* This file is optimized for time to boot */
 /* Consider optimization with every line */
 
-/* Boot timers */
+/* Boot timers for optimization */
 console.time("full server");
 console.time("imports");
 
-const express = require("express");
+const express = require("express"); // API framework
 const mongoose = require("mongoose"); // for interfacing with mongodb
 const cors = require("cors"); //NOTE: remove for production, also app.use(cors())
 const path = require("path"); // for path logging
