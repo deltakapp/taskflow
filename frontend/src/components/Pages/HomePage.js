@@ -9,6 +9,7 @@ export default function HomePage() {
   const user = useSelector((state) => state.user, shallowEqual);
 
   useEffect(() => {
+    console.log("homepage effect");
     if (user.id) {
       setTimeout(() => {
         navigate(`../user/${user.id}`);

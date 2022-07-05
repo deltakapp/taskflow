@@ -1,7 +1,35 @@
 #user-tab {
-  margin-top: 12.5px;
+  margin: 0.75rem;
+  position: relative;
+  display: inline-block;
 }
 
-#btn-login {
+#btn-user-name {
   font-size: 1.125rem;
+}
+
+#user-panel {
+  display: none;
+  position: absolute;
+  z-index: 2;
+}
+
+/* Note: <Link> renders as <a> */
+#user-panel a {
+  color: black;
+  text-decoration: none;
+  display: block;
+}
+
+/* Note: <Link> renders as <a> */
+#user-panel a:hover {
+  background-color: #f1f1f1;
+}
+
+#user-tab:hover #user-panel {
+  display: block;
+}
+
+#user-tab:hover #btn-user-name {
+  background-color: #f1f1f1;
 }

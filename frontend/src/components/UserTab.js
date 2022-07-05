@@ -32,20 +32,30 @@ export default function UserTab() {
     }, 500);
   }
 
-  return user.id ? (
-    <div id="user-tab" className="float-right">
-      <button id="btn-user" onClick={handleNavUserPanel}>
-        {user.name || "Anonymous User"}
-      </button>
-      <button onClick={() => logoutUser()} id="btn-logout">
-        Log Out
-      </button>
-    </div>
-  ) : (
-    <div id="user-tab">
-      <Link to="login" id="btn-login">
-        Log In
-      </Link>
-    </div>
-  );
+  if (user.id) {
+    return (
+      <div id="user-tab">
+        <button id="btn-user-name" onClick={handleNavUserPanel}>
+          {user.name || "Anonymous User"}
+        </button>
+        <div id="user-panel">
+          <Link to={`/user/${user.id}/settings`}>Settings</Link>
+
+          <Link to={`/user/${user.id}/projects`}>My Projects</Link>
+
+          <button onClick={() => logoutUser()} id="btn-logout">
+            Log Out
+          </button>
+        </div>
+      </div>
+    );
+  } else {
+    return (
+      <div id="user-tab">
+        <Link to="login" id="btn-login">
+          Log In
+        </Link>
+      </div>
+    );
+  }
 }
