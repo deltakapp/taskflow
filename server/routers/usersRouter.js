@@ -101,12 +101,28 @@ router.patch("/", auth, async (req, res) => {
       user.projects = req.body.projects;
     }
 
+    if (req.body.name) {
+      user.name = req.body.name; // TODO: test me
+    }
+
     if (req.body.email) {
       user.email = req.body.email; // TODO: test me
     }
 
-    await user.save();
-    res.status(200).send();
+    if (req.body.newPassword) {
+      try {
+        user = await User.findByCredentials(
+          req.body.email,
+          req.body.oldPassword
+        );
+      } catch {
+        res.status(401).send(); // Not authorized
+      }
+      user.password = req.body.newPassword;
+    }
+
+    user = await user.save();
+    res.status(200).send(user);
   } catch (err) {
     res.status(400).send(err); // malformed request syntax error
   }

@@ -29,6 +29,15 @@ export default function userReducer(prevState = initialState, action) {
       state = { flag: "DELETED" };
       return state;
 
+    case "user/patched":
+      if (payload.name) {
+        state.name = payload.name;
+      }
+      if (payload.email) {
+        state.email = payload.email;
+      }
+      return state;
+
     case "user/reorderProjects":
       /* Currently this triggers re-render of stages & tasks */
       /* This is unnecessary and may be optimized */
