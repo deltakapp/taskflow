@@ -6,24 +6,29 @@
 
 #btn-user-name {
   font-size: 1.125rem;
+  font-weight: bold;
 }
 
 #user-panel {
+  z-index: 2;
   display: none;
   position: absolute;
-  z-index: 2;
+  border: 1px;
+  background-color: white;
 }
 
-/* Note: <Link> renders as <a> */
-#user-panel a {
-  color: black;
-  text-decoration: none;
+#user-panel button {
   display: block;
+  width: 100%;
+  border: none;
+  padding: 0.125rem;
+  font-size: 1rem;
 }
 
-/* Note: <Link> renders as <a> */
-#user-panel a:hover {
-  background-color: #f1f1f1;
+#user-panel button:hover {
+  border: 1px;
+  background-color: lightblue;
+  color: blue;
 }
 
 #user-tab:hover #user-panel {
@@ -31,5 +36,5 @@
 }
 
 #user-tab:hover #btn-user-name {
-  background-color: #f1f1f1;
+  background-color: white;
 }

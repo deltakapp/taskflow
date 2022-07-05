@@ -39,9 +39,12 @@ export default function UserTab() {
           {user.name || "Anonymous User"}
         </button>
         <div id="user-panel">
-          <Link to={`/user/${user.id}/settings`}>Settings</Link>
-
-          <Link to={`/user/${user.id}/projects`}>My Projects</Link>
+          <button onClick={() => navigate(`/user/${user.id}/settings`)}>
+            Settings
+          </button>
+          <button onClick={() => navigate(`/user/${user.id}/projects`)}>
+            My Projects
+          </button>
 
           <button onClick={() => logoutUser()} id="btn-logout">
             Log Out
