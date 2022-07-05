@@ -17,10 +17,6 @@ export default function userReducer(prevState = initialState, action) {
       state.flag = "LOGGED_IN";
       return state;
 
-    case "user/failedLogin":
-      state = { flag: "FAILED_LOGIN" };
-      return state;
-
     case "user/loggedOut":
       state = { flag: "LOGGED_OUT" };
       return state;

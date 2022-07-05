@@ -41,7 +41,7 @@ export default function HomePage() {
     } else {
       const result = await response.json();
       console.log(result.message || response);
-      dispatch({ type: "user/failedLogin" });
+      alert("User credentials do not match");
     }
     email.value = "";
     password.value = "";
