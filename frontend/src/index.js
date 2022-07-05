@@ -21,9 +21,8 @@ ReactDOM.render(
           <Route path="/" element={<Outlet />}>
             <Route index element={<HomePage />} />
             <Route path="signup" element={<SignupPage />} />
-            {/* <Route path="login" element={<Login />} /> */}
             <Route path="logout" element={<LogoutPage />} />
-            <Route path="user/:userId" element={<UserPage />} />
+            <Route path="user/:userId/" element={<UserPage />} />
             <Route path="project/:projectId" element={<ProjectPage />} />
             <Route path="unsavedproject" element={<UnsavedProjectPage />} />
             <Route path="*" element={<HomePage />} />

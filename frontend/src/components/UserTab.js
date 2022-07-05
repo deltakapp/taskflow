@@ -18,7 +18,7 @@ export default function UserTab() {
   function handleNavUserPanel(e) {
     e.preventDefault();
     dispatch({ type: "project/unloaded" });
-    navigate(`user/${user.id}`);
+    navigate(`/user/${user.id}`);
   }
 
   async function logoutUser() {

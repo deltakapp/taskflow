@@ -2,23 +2,24 @@ header {
   height: 50px;
 }
 
-header.single {
-  height: 350px;
-}
-
 #app-title {
+  display: inline;
 }
 
 #app-subtitle {
 }
 header.single h1 {
-  display:none;
+  display: none;
 }
-.logo { 
+.logo {
   margin-top: 8px;
   width: 125px;
-  float:left;
+  float: left;
 }
 
-.float-right { float: right; }
-.float-left { float: left; }
+.float-right {
+  float: right;
+}
+.float-left {
+  float: left;
+}
