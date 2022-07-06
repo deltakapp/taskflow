@@ -7,20 +7,12 @@ export default function UserSettings() {
   const user = useSelector((state) => state.user);
   const token = useSelector((state) => state.token);
   const dispatch = useDispatch();
-  function pwReducer(state, action) {
-    return { [action.type]: action.payload, ...state };
-  }
 
   const [isEditingUsername, toggleEditingUsername] = useState(false);
   const [newUsername, setNewUsername] = useState(user.name);
   const [isEditingEmail, toggleEditingEmail] = useState(false);
   const [newEmail, setNewEmail] = useState(user.email);
   const [isEditingPassword, toggleEditingPassword] = useState(false);
-  // const [passwords, dispatchPW] = useReducer(pwReducer, {
-  //   old: "",
-  //   new1: "",
-  //   new2: "",
-  // });
 
   async function editUsername(e) {
     e.preventDefault();
