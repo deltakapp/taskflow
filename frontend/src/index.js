@@ -6,9 +6,11 @@ import { createStore } from "redux";
 import HomePage from "./components/Pages/HomePage";
 import LogoutPage from "./components/Pages/LogoutPage";
 import ProjectPage from "./components/Pages/ProjectPage";
+import Redirect from "./components/Pages/Redirect";
 import SignupPage from "./components/Pages/SignupPage";
 import UnsavedProjectPage from "./components/Pages/UnsavedProjectPage";
-import UserPage from "./components/Pages/UserPage";
+import UserProjectsPage from "./components/Pages/UserProjectsPage";
+import UserSettingsPage from "./components/Pages/UserSettingsPage";
 import reportWebVitals from "./reportWebVitals";
 import rootReducer from "./state/rootReducer";
 import "./styles/index.css";
@@ -21,9 +23,16 @@ ReactDOM.render(
           <Route path="/" element={<Outlet />}>
             <Route index element={<HomePage />} />
             <Route path="signup" element={<SignupPage />} />
-            {/* <Route path="login" element={<Login />} /> */}
             <Route path="logout" element={<LogoutPage />} />
-            <Route path="user/:userId" element={<UserPage />} />
+            <Route path="user/:userId/" element={<Redirect />} />
+            <Route
+              path="user/:userId/projects"
+              element={<UserProjectsPage />}
+            />
+            <Route
+              path="user/:userId/settings"
+              element={<UserSettingsPage />}
+            />
             <Route path="project/:projectId" element={<ProjectPage />} />
             <Route path="unsavedproject" element={<UnsavedProjectPage />} />
             <Route path="*" element={<HomePage />} />

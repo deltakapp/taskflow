@@ -9,6 +9,7 @@ export default function HomePage() {
   const user = useSelector((state) => state.user, shallowEqual);
 
   useEffect(() => {
+    console.log("homepage effect");
     if (user.id) {
       setTimeout(() => {
         navigate(`../user/${user.id}`);
@@ -40,7 +41,7 @@ export default function HomePage() {
     } else {
       const result = await response.json();
       console.log(result.message || response);
-      dispatch({ type: "user/failedLogin" });
+      alert("User credentials do not match");
     }
     email.value = "";
     password.value = "";

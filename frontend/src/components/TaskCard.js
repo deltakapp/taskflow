@@ -25,7 +25,6 @@ export default function TaskCard({ taskId, taskIndex, stageId, stageIndex }) {
   }
 
   async function editTask() {
-    console.log(newDetails);
     const request = createRequest("PATCH", token, {
       title: newTitle,
       details: newDetails,
@@ -36,7 +35,6 @@ export default function TaskCard({ taskId, taskIndex, stageId, stageIndex }) {
     );
     if (response.ok) {
       const result = await response.json();
-      console.log(result);
       dispatch({
         type: "task/updated",
         payload: { stageId: stageId, task: result },

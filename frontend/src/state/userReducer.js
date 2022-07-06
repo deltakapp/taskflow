@@ -17,16 +17,21 @@ export default function userReducer(prevState = initialState, action) {
       state.flag = "LOGGED_IN";
       return state;
 
-    case "user/failedLogin":
-      state = { flag: "FAILED_LOGIN" };
-      return state;
-
     case "user/loggedOut":
       state = { flag: "LOGGED_OUT" };
       return state;
 
     case "user/deleted": // currently not in use
       state = { flag: "DELETED" };
+      return state;
+
+    case "user/patched":
+      if (payload.name) {
+        state.name = payload.name;
+      }
+      if (payload.email) {
+        state.email = payload.email;
+      }
       return state;
 
     case "user/reorderProjects":

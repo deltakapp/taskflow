@@ -2,11 +2,11 @@
 /* This file is optimized for time to boot */
 /* Consider optimization with every line */
 
-/* Boot timers */
+/* Boot timers for optimization */
 console.time("full server");
 console.time("imports");
 
-const express = require("express");
+const express = require("express"); // API framework
 const mongoose = require("mongoose"); // for interfacing with mongodb
 const cors = require("cors"); //NOTE: remove for production, also app.use(cors())
 const path = require("path"); // for path logging
@@ -58,24 +58,23 @@ app.use((req, res, next) => {
 /* root directory path for frontend static build files */
 app.use(express.static(path.join(__dirname, "../frontend/build")));
 
-/* test path */
-app.get("/test", async (req, res) => {
-  res.status(200).send("Success");
-});
-
 /* API Routers */
 app.use("/api/users", usersRouter);
 app.use("/api/projects", projectsRouter);
 app.use("/api/stages", stagesRouter);
 
+/* test path */
+app.get("/test", async (req, res) => {
+  res.status(200).send("Success");
+});
+
 /* homepage path; dynamic routes point here */
-app.get("/*", function (req, res) {
-  console.log("GETting homepage");
+app.get("/*", async (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend/build", "index.html"));
 });
 
 /* listen for requests */
-app.listen(PORT, function () {
+app.listen(PORT, () => {
   console.timeEnd("full server");
   console.log(`App started on port ${PORT}`);
   console.log("running v1.1");

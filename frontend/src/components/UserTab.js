@@ -12,36 +12,53 @@ export default function UserTab() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user, shallowEqual); // TODO: remove shallowequal
+  const token = useSelector((state) => state.token);
 
   /* navigate to user page on click */
   function handleNavUserPanel(e) {
     e.preventDefault();
     dispatch({ type: "project/unloaded" });
-    navigate(`user/${user.id}`);
+    navigate(`/user/${user.id}`);
   }
 
   async function logoutUser() {
     console.log("logging out user");
-    const request = createRequest("POST", user.token);
+    const request = createRequest("POST", token);
     const response = await fetch(`${URL}/api/users/logout`, request);
+    console.log(request);
     console.log(response);
-    dispatch({ type: "user/loggedOut" });
+    setTimeout(() => {
+      dispatch({ type: "user/loggedOut" });
+    }, 500);
   }
 
-  return user.id ? (
-    <div id="user-tab" className="float-right">
-      <button id="btn-user" onClick={handleNavUserPanel}>
-        {user.name || "Anonymous User"}
-      </button>
-      <button onClick={() => logoutUser()} id="btn-logout">
-        Log Out
-      </button>
-    </div>
-  ) : (
-    <div id="user-tab">
-      <Link to="login" id="btn-login">
-        Log In
-      </Link>
-    </div>
-  );
+  if (user.id) {
+    return (
+      <div id="user-tab">
+        <button id="btn-user-name" onClick={handleNavUserPanel}>
+          {user.name || "Anonymous User"}
+        </button>
+        <div id="user-panel">
+          <button onClick={() => navigate(`/user/${user.id}/settings`)}>
+            Settings
+          </button>
+          <button onClick={() => navigate(`/user/${user.id}/projects`)}>
+            My Projects
+          </button>
+
+          <button onClick={() => logoutUser()} id="btn-logout">
+            Log Out
+          </button>
+        </div>
+      </div>
+    );
+  } else {
+    return (
+      <div id="user-tab">
+        <Link to="login" id="btn-login">
+          Log In
+        </Link>
+      </div>
+    );
+  }
 }

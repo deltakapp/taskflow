@@ -1,7 +1,40 @@
 #user-tab {
-  margin-top: 12.5px;
+  margin: 0.75rem;
+  position: relative;
+  display: inline-block;
 }
 
-#btn-login {
+#btn-user-name {
   font-size: 1.125rem;
+  font-weight: bold;
+}
+
+#user-panel {
+  z-index: 2;
+  display: none;
+  position: absolute;
+  border: 1px;
+  background-color: white;
+}
+
+#user-panel button {
+  display: block;
+  width: 100%;
+  border: none;
+  padding: 0.125rem;
+  font-size: 1rem;
+}
+
+#user-panel button:hover {
+  border: 1px;
+  background-color: lightblue;
+  color: blue;
+}
+
+#user-tab:hover #user-panel {
+  display: block;
+}
+
+#user-tab:hover #btn-user-name {
+  background-color: white;
 }

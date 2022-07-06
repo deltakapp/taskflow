@@ -1,24 +1,9 @@
 header {
-  height: 50px;
+  display: flex;
+  justify-content: space-between;
 }
 
-header.single {
-  height: 350px;
+.logo {
+  margin: 0.5rem;
+  width: 8rem;
 }
-
-#app-title {
-}
-
-#app-subtitle {
-}
-header.single h1 {
-  display:none;
-}
-.logo { 
-  margin-top: 8px;
-  width: 125px;
-  float:left;
-}
-
-.float-right { float: right; }
-.float-left { float: left; }

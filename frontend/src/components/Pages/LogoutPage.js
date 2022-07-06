@@ -1,4 +1,5 @@
 /* Just a splash screen informing user they have been logged out */
+/* Redirects to homepage after timeout */
 
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";

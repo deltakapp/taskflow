@@ -1,9 +1,11 @@
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import "../styles/ProjectsMenu.css";
 import { apiDomain as URL } from "../utils/apiDomain";
 import createRequest from "../utils/createRequest";
+import NewProjectCreator from "./NewProjectCreator";
 
-export default function ProjectsList() {
+export default function ProjectsMenu() {
   const projects = useSelector((state) => state.user.projects, shallowEqual);
   const token = useSelector((state) => state.token);
   const dispatch = useDispatch();
@@ -82,12 +84,7 @@ export default function ProjectsList() {
   return (
     <div id="projects-menu">
       {projects && <ul id="projects-list">{listProjects}</ul>}
-      <form id="new-project-creator" onSubmit={handleCreateProject}>
-        <h3>Create a new project</h3>
-        <h3>Titled:</h3>
-        <input id="new-project-title" />
-        <button id="submit">Create Project</button>
-      </form>
+      <NewProjectCreator />
     </div>
   );
 }
