@@ -34,3 +34,5 @@ console.log("mongoose running");
 })();
 
 console.log("Deleted temp users");
+
+process.exit();
