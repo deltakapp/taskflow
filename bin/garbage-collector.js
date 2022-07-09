@@ -6,7 +6,14 @@ console.log(URL);
 /* Connect server to mongodb using mongoose */
 mongoose
   .connect(URL)
-  .then(console.log("Connection established with database"))
+  .then(() => {
+    console.log("Connection established with database");
+    const connection = mongoose.connection;
+    connection.db.collection("tempusers", function (err, collection) {
+      collection.deleteMany({});
+    });
+    console.log("Deleted documents in collection");
+  })
 
   /* Handle initial connection errors */
   .catch((err) => {
@@ -24,24 +31,22 @@ mongoose.connection.on("error", (err) => {
   });
 });
 
-console.log("mongoose running");
-
-(async () => {
-  try {
-    console.log("deleting collection");
-    mongoose.connection.db.tempusers.deleteMany({});
-    console.log("deleting one user");
-    await User.findByIdAndDelete("62c903e9ee5a635f12dcc0f0");
-    console.log("deleting temp users");
-    await TempUser.findOneAndDelete({
-      name: "Temporary User",
-    });
-    console.log("completed findOneAndDelete");
-    await TempUser.deleteMany({});
-    console.log("Deleted temp users");
-  } catch (err) {
-    console.log(err);
-  }
-})();
+// (async () => {
+//   try {
+//     console.log("deleting collection");
+//     mongoose.connection.db.tempusers.deleteMany({});
+//     console.log("deleting one user");
+//     await User.findByIdAndDelete("62c903e9ee5a635f12dcc0f0");
+//     console.log("deleting temp users");
+//     await TempUser.findOneAndDelete({
+//       name: "Temporary User",
+//     });
+//     console.log("completed findOneAndDelete");
+//     await TempUser.deleteMany({});
+//     console.log("Deleted temp users");
+//   } catch (err) {
+//     console.log(err);
+//   }
+// })();
 
 process.exit();
