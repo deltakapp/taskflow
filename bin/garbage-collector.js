@@ -27,6 +27,7 @@ console.log("mongoose running");
 
 (async () => {
   try {
+    console.log("deleting temp users");
     await TempUser.deleteMany({});
     console.log("Deleted temp users");
   } catch (err) {
