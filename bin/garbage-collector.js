@@ -3,21 +3,23 @@ const { User, TempUser } = require("../server/models/userModel");
 const URL = process.env.DB_URL;
 console.log(URL);
 
-try {
-  await mongoose.connect(URL);
-  console.log("Connection established with database");
-  const connection = mongoose.connection;
-  connection.db.collection("tempusers", function (err, collection) {
-    collection.deleteMany({});
-  });
-  console.log("Deleted documents in collection");
-} catch (err) {
-  console.log(err);
-}
+(async () => {
+  try {
+    await mongoose.connect(URL);
+    console.log("Connection established with database");
+    const connection = mongoose.connection;
+    connection.db.collection("tempusers", function (err, collection) {
+      collection.deleteMany({});
+    });
+    console.log("Deleted documents in collection");
+  } catch (err) {
+    console.log(err);
+  }
 
-mongoose.connection.on("error", (err) => {
-  console.log(err);
-});
+  mongoose.connection.on("error", (err) => {
+    console.log(err);
+  });
+})();
 
 // /* Connect server to mongodb using mongoose */
 // mongoose
