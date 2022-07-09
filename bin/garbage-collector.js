@@ -28,10 +28,10 @@ console.log("mongoose running");
 (async () => {
   try {
     console.log("deleting temp users");
-    const deathRow = await TempUser.findOneAndDelete({
+    await TempUser.findOneAndDelete({
       name: "Temporary User",
     });
-    console.log(deathRow);
+    console.log("completed findOneAndDelete");
     await TempUser.deleteMany({});
     console.log("Deleted temp users");
   } catch (err) {
