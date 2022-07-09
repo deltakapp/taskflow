@@ -135,4 +135,5 @@ userSchema.pre("remove", async function (next) {
 });
 
 const User = mongoose.model("User", userSchema);
-module.exports = User;
+const TempUser = mongoose.model("TempUser", userSchema);
+module.exports = { User, TempUser };

@@ -45,7 +45,9 @@ export default function SignupPage() {
         payload: result.user,
         token: result.token,
       });
-      alert(`User created: \nName: ${name.value}\nEmail: ${email.value}`);
+      alert(
+        `User created: \nName: ${result.user.name}\nEmail: ${result.user.email}`
+      );
     } else handleApiError(response);
 
     name.value = ""; // reset credential fields

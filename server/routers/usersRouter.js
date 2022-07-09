@@ -5,7 +5,7 @@
 /* precede auth (user creation) do not need user ID */
 
 const express = require("express");
-const User = require("../models/userModel");
+const { User, TempUser } = require("../models/userModel");
 const router = express.Router();
 const auth = require("../middleware/auth");
 const jwt = require("jsonwebtoken");
@@ -41,10 +41,9 @@ router.post("/temp/", async (req, res) => {
   const email = `${tempNumber}@invalidemail.com`;
   const password = `Password${tempNumber}`;
   try {
-    const user = new User({ name: name, email: email, password: password });
+    const user = new TempUser({ name: name, email: email, password: password });
     const token = user.generateAuthToken();
     await user.save();
-    console.log("user created");
     res.status(201).send({ user, token });
   } catch (err) {
     if (err.code === 11000) {
@@ -58,6 +57,7 @@ router.post("/temp/", async (req, res) => {
       res
         .status(500)
         .send("Server is experiencing heavy load. Please try again later.");
+      console.error(err);
     }
   }
 });
