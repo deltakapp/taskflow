@@ -9,7 +9,7 @@ const URL = process.env.DB_URL;
     console.log("Connection established with database");
     const connection = mongoose.connection;
 
-    connection.db.collection("tempusers").deleteMany({});
+    await connection.db.collection("tempusers").deleteMany({});
     console.log("Deleted documents in collection");
 
     process.exit();
