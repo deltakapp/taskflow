@@ -28,11 +28,10 @@ console.log("mongoose running");
 (async () => {
   try {
     await TempUser.deleteMany({});
+    console.log("Deleted temp users");
   } catch (err) {
     console.log(err);
   }
 })();
-
-console.log("Deleted temp users");
 
 process.exit();
