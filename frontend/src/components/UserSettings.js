@@ -1,12 +1,13 @@
+/* User settings controls on User Settings Page */
+
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { apiDomain as URL } from "../utils/apiDomain";
-import createRequest from "../utils/createRequest";
+import { useSelector } from "react-redux";
+import useRequestTools from "../hooks/useRequestTools";
 
 export default function UserSettings() {
   const user = useSelector((state) => state.user);
-  const token = useSelector((state) => state.token);
-  const dispatch = useDispatch();
+  const [createRequest, dispatch, handleApiError, PATH, token] =
+    useRequestTools();
 
   const [isEditingUsername, toggleEditingUsername] = useState(false);
   const [newUsername, setNewUsername] = useState(user.name);
@@ -19,14 +20,14 @@ export default function UserSettings() {
     const request = createRequest("PATCH", token, {
       name: newUsername,
     });
-    const response = await fetch(`${URL}/api/users/`, request);
+    const response = await fetch(`${PATH}/users/`, request);
     if (response.ok) {
+      const token = response.headers.get("X-Auth-Token");
       const result = await response.json();
-      console.log(result);
       toggleEditingUsername(false);
-      dispatch({ type: "user/patched", payload: result });
+      dispatch({ type: "user/patched", payload: result, token: token });
       alert("Password successfully changed");
-    } else console.log(response.status);
+    } else handleApiError(response);
   }
 
   async function editEmail(e) {
@@ -34,14 +35,14 @@ export default function UserSettings() {
     const request = createRequest("PATCH", token, {
       email: newEmail,
     });
-    const response = await fetch(`${URL}/api/users/`, request);
+    const response = await fetch(`${PATH}/users/`, request);
     if (response.ok) {
+      const token = response.headers.get("X-Auth-Token");
       const result = await response.json();
-      console.log(result);
       toggleEditingEmail(false);
-      dispatch({ type: "user/patched", payload: result });
+      dispatch({ type: "user/patched", payload: result, token: token });
       alert("Password successfully changed");
-    } else console.log(response.status);
+    } else handleApiError(response);
   }
 
   async function editPassword(e) {
@@ -51,21 +52,19 @@ export default function UserSettings() {
     const newpassword2 = document.getElementById("new-password-2").value;
     if (newPassword1 !== newpassword2) {
       alert("New passwords do not match");
-      console.log(newPassword1);
-      console.log(newpassword2);
     } else {
       const request = createRequest("PATCH", token, {
         email: user.email,
         oldPassword: oldPassword,
         newPassword: newPassword1,
       });
-      console.log(request);
-      const response = await fetch(`${URL}/api/users`, request);
+      const response = await fetch(`${PATH}/users`, request);
       if (response.ok) {
+        const token = response.headers.get("X-Auth-Token");
         toggleEditingPassword(false);
         dispatch({ type: "user/patched", payload: {}, token: token });
         alert("Password successfully changed");
-      }
+      } else handleApiError(response);
     }
   }
 

@@ -1,17 +1,16 @@
 import { useCallback, useState } from "react";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { shallowEqual, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import useRequestTools from "../hooks/useRequestTools";
 import "../styles/Navbar.css";
-import { apiDomain as URL } from "../utils/apiDomain";
-import createRequest from "../utils/createRequest";
 import ProjectTab from "./ProjectTab";
 
 export default function NavPane() {
-  const [creatorIsOpen, toggleCreatorOpen] = useState(false);
-  const projects = useSelector((state) => state.user.projects, shallowEqual);
-  const dispatch = useDispatch();
+  const [createRequest, dispatch, handleApiError, PATH, token] =
+    useRequestTools();
   const navigate = useNavigate();
-  const token = useSelector((state) => state.token);
+  const projects = useSelector((state) => state.user.projects, shallowEqual);
+  const [creatorIsOpen, toggleCreatorOpen] = useState(false);
 
   const handleCreateProject = useCallback(
     async (e) => {
@@ -20,7 +19,7 @@ export default function NavPane() {
       const request = createRequest("POST", token, {
         title: `${document.getElementById("new-project-title").value}`,
       });
-      const response = await fetch(`${URL}/api/projects/`, request);
+      const response = await fetch(`${PATH}/projects/`, request);
       if (response.ok) {
         const token = response.headers.get("X-Auth-Token");
         const result = await response.json();
@@ -31,15 +30,15 @@ export default function NavPane() {
           token: token,
         });
         toggleCreatorOpen(false);
-      } else console.error(response.status);
+      } else handleApiError(response);
     },
-    [token, dispatch]
+    [token, createRequest, dispatch, handleApiError, PATH]
   );
 
   const loadProject = useCallback(
     async (projectId) => {
       const request = createRequest("GET", token);
-      const response = await fetch(`${URL}/api/projects/${projectId}`, request);
+      const response = await fetch(`${PATH}/projects/${projectId}`, request);
       if (response.ok) {
         const token = response.headers.get("X-Auth-Token");
         const result = await response.json();
@@ -50,12 +49,9 @@ export default function NavPane() {
           token: token,
         });
         navigate(`../project/${projectId}`);
-      } else {
-        // error handling will be extremely tough here
-        console.error(response.status);
-      }
+      } else handleApiError(response);
     },
-    [token, dispatch, navigate]
+    [token, createRequest, dispatch, handleApiError, PATH, navigate]
   );
 
   /* reorder projects */
@@ -64,7 +60,6 @@ export default function NavPane() {
       if (!token) return; // abort if user logged out
       const newProjects = [...projects]; // copy state for mutations
       newProjects.splice(hoverIndex, 0, newProjects.splice(sourceIndex, 1)[0]);
-      console.log(newProjects);
 
       /* dispatch reorder to redux state */
       dispatch({ type: "user/reorderProjects", payload: newProjects });
@@ -73,13 +68,13 @@ export default function NavPane() {
       const request = createRequest("PATCH", token, {
         projects: newProjects.map((project) => project.projectId),
       });
-      const response = await fetch(`${URL}/api/users/`, request);
+      const response = await fetch(`${PATH}/users/`, request);
       if (response.ok) {
         const token = response.headers.get("X-Auth-Token");
         if (token) dispatch({ type: "token/refresh", token: token });
-      } else console.error(response);
+      } else handleApiError(response);
     },
-    [projects, token, dispatch]
+    [projects, token, createRequest, dispatch, handleApiError, PATH]
   );
 
   const renderProjectTab = useCallback(

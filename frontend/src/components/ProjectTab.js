@@ -1,3 +1,6 @@
+/* A tab that lists a projects's title. */
+/* These tabs implement Drag and Drop horizontally */
+
 import { useRef } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import { ItemTypes } from "../utils/itemTypes";

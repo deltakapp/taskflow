@@ -21,13 +21,15 @@ router.post("/", async (req, res) => {
     res.status(201).send({ user, token });
   } catch (err) {
     if (err.code === 11000) {
-      // duplicate email error
-      console.log("User creation failed: duplicate email");
-      res.status(409).send();
+      res
+        .status(409)
+        .send("This email address is already registered to another user.");
     } else {
-      // malformed request syntax error
-      console.log(err);
-      res.status(400).send(err);
+      res
+        .status(400)
+        .send(
+          "Email must be valid email address and password must be minimum 8 characters."
+        );
     }
   }
 });
@@ -41,7 +43,7 @@ router.post("/login", async (req, res) => {
     );
     const token = user.generateAuthToken();
     await user.save();
-    await user.populate("projects", "title");
+    await user.populate("projects", "title"); // fetch project titles
     res.status(200).send({ user, token }); //move token to header?
 
     /* Delete expired tokens AFTER response sent for expedience */
@@ -50,8 +52,7 @@ router.post("/login", async (req, res) => {
     });
     await user.save();
   } catch (err) {
-    console.log(err);
-    res.status(404).send(err);
+    res.status(404).send("User credentials do not match. Please try again.");
   }
 });
 
@@ -102,11 +103,11 @@ router.patch("/", auth, async (req, res) => {
     }
 
     if (req.body.name) {
-      user.name = req.body.name; // TODO: test me
+      user.name = req.body.name;
     }
 
     if (req.body.email) {
-      user.email = req.body.email; // TODO: test me
+      user.email = req.body.email;
     }
 
     if (req.body.newPassword) {

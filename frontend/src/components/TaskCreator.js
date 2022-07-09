@@ -1,14 +1,12 @@
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { apiDomain as URL } from "../utils/apiDomain";
-import createRequest from "../utils/createRequest";
+import useRequestTools from "../hooks/useRequestTools";
 
 export default function TaskCreator({ stageId }) {
-  const [open, toggleOpen] = useState(false);
+  const [createRequest, dispatch, handleApiError, PATH, token] =
+    useRequestTools();
+  const [open, toggleOpen] = useState(false); // if the creator is open or not
   const [title, setTitle] = useState("");
   const [details, setDetails] = useState("");
-  const token = useSelector((state) => state.token);
-  const dispatch = useDispatch();
 
   async function handleCreateTask(e) {
     e.preventDefault();
@@ -17,20 +15,19 @@ export default function TaskCreator({ stageId }) {
       title: title,
       details: details,
     });
-    const response = await fetch(`${URL}/api/stages/${stageId}/tasks`, request);
+    const response = await fetch(`${PATH}/stages/${stageId}/tasks`, request);
     if (response.ok) {
+      const token = response.headers.get("X-Auth-Token");
       const result = await response.json();
-      console.log(result);
       dispatch({
         type: "task/created",
         payload: { task: result, stageId: stageId },
+        token: token,
       });
       toggleOpen(false); // close task creator
       setTitle(""); // reset title field
       setDetails(""); // reset details field
-    } else {
-      console.log(response);
-    }
+    } else handleApiError(response);
   }
 
   /*  TODO: add disabled="" to Create Task button

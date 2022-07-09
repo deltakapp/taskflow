@@ -1,24 +1,25 @@
+/* A stage of a project. */
+/* These stages implement Drag and Drop horizontally*/
+
 import { useRef } from "react";
 import { useDrag, useDrop } from "react-dnd";
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { shallowEqual, useSelector } from "react-redux";
+import useRequestTools from "../hooks/useRequestTools";
 import "../styles/Stage.css";
-import { apiDomain as URL } from "../utils/apiDomain";
-import createRequest from "../utils/createRequest";
 import { ItemTypes } from "../utils/itemTypes";
 import StageEditor from "./StageEditor";
 import TaskCard from "./TaskCard";
 import TaskCreator from "./TaskCreator";
 
 export default function Stage({ stageId, stageIndex, title, reorderStages }) {
-  console.log(`Rendering stage ${title}`);
+  const [createRequest, dispatch, handleApiError, PATH, token] =
+    useRequestTools();
+  const ref = useRef(null);
   const stage = useSelector((state) => state.project.stages[stageIndex]);
   const tasks = useSelector(
     (state) => state.project.stages[stageIndex].tasks,
     shallowEqual
   );
-  const token = useSelector((state) => state.token);
-  const dispatch = useDispatch();
-  const ref = useRef(null);
 
   const [, drop] = useDrop({
     accept: ItemTypes.STAGE, //change PROJECT to PROJECTTAB
@@ -67,18 +68,21 @@ export default function Stage({ stageId, stageIndex, title, reorderStages }) {
     },
   });
 
-  const opacity = isDragging ? 0 : 1;
+  // const opacity = isDragging ? 0 : 1; // TODO: change from css toggle to react
 
   drag(drop(ref));
 
   async function handleDeleteStage(stageId) {
     const request = createRequest("DELETE", token);
-    const response = await fetch(`${URL}/api/stages/${stageId}`, request);
+    const response = await fetch(`${PATH}/stages/${stageId}`, request);
     if (response.ok) {
-      dispatch({ type: "stage/deleted", payload: { stageId: stageId } });
-    } else {
-      console.log(response.status);
-    }
+      const token = response.headers.get("X-Auth-Token");
+      dispatch({
+        type: "stage/deleted",
+        payload: { stageId: stageId },
+        token: token,
+      });
+    } else handleApiError(response);
   }
 
   const taskList = tasks

@@ -15,7 +15,7 @@ router.post("/", async (req, res) => {
     await res.locals.stage.save();
     res.status(201).send(task);
   } catch (err) {
-    res.status(400).send(err); // malformed request syntax error
+    res.status(400).send("Task must have a title"); // malformed request syntax error
     console.error(err);
   }
 });
@@ -39,9 +39,11 @@ router.patch("/:taskId", async (req, res) => {
   } catch (err) {
     if (err instanceof mongoose.Error.ValidationError) {
       // malformed request syntax
-      res.status(400).send(err);
+      res.status(400).send("Task must have a title");
     } else {
-      res.status(404).send();
+      res
+        .status(404)
+        .send("Task not found. Please check its existence and try again.");
     }
     console.error(err);
   }
@@ -55,7 +57,9 @@ router.delete("/:taskId", async (req, res) => {
     res.status(204).send();
   } catch (err) {
     console.error(err);
-    res.status(404).send();
+    res
+      .status(404)
+      .send("Task not found. Please check its existence and try again.");
   }
 });
 

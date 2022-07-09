@@ -7,8 +7,8 @@ import PageHeader from "../PageHeader";
 import ProjectsMenu from "../ProjectsMenu";
 
 export default function UserPage() {
-  const user = useSelector((state) => state.user);
   const navigate = useNavigate();
+  const user = useSelector((state) => state.user);
 
   return (
     <>

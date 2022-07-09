@@ -25,7 +25,7 @@ router.post("/", async (req, res) => {
 
     res.status(201).send({ project: project });
   } catch (err) {
-    res.status(400).send(err); // malformed request syntax error
+    res.status(400).send("Project must have a title");
     console.error(err);
   }
 });
@@ -36,7 +36,7 @@ router.use("/:projectId", (req, res, next) => {
 
   // reject unauthorized requests and invalid projectIds
   if (!res.locals.user.projects.includes(req.params.projectId)) {
-    res.status(403).send();
+    res.status(403).send("You are not authorized to view this project.");
   } else {
     next();
   }
@@ -49,8 +49,7 @@ router.get("/:projectId", async (req, res) => {
     await project.populate("stages");
     res.status(200).send({ project: project });
   } catch (err) {
-    res.status(404).send();
-    console.error(err);
+    res.status(404).send("Project has been deleted.");
   }
 });
 
@@ -100,7 +99,11 @@ router.delete("/:projectId", async (req, res) => {
 
     res.status(204).send();
   } catch (err) {
-    res.status(404).send(err);
+    res
+      .status(404)
+      .send(
+        "Server unable to delete project. Check Project's existence and try again."
+      );
     console.error(err);
   }
 });

@@ -1,41 +1,20 @@
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { shallowEqual, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import useRequestTools from "../hooks/useRequestTools";
 import "../styles/ProjectsMenu.css";
-import { apiDomain as URL } from "../utils/apiDomain";
-import createRequest from "../utils/createRequest";
 import NewProjectCreator from "./NewProjectCreator";
 
 export default function ProjectsMenu() {
-  const projects = useSelector((state) => state.user.projects, shallowEqual);
-  const token = useSelector((state) => state.token);
-  const dispatch = useDispatch();
+  const [createRequest, dispatch, handleApiError, PATH, token] =
+    useRequestTools();
   const navigate = useNavigate();
+  const projects = useSelector((state) => state.user.projects, shallowEqual);
 
-  async function handleCreateProject(e) {
-    e.preventDefault();
-    // TODO add blank title error handling
-    const request = createRequest("POST", token, {
-      title: `${document.getElementById("new-project-title").value}`,
-    });
-    const response = await fetch(`${URL}/api/projects/`, request);
-    if (response.ok) {
-      const token = response.headers.get("X-Auth-Token");
-      const result = await response.json();
-      console.log(result);
-      await dispatch({
-        type: "project/created",
-        payload: result.project,
-        token: token,
-      });
-      navigate(`../project/${result.project.projectId}`);
-    } else {
-      console.log(response.status);
-    }
-  }
+  //TODO: add a popup if flag: user created
 
   async function handleDeleteProject(projectId) {
     const request = createRequest("DELETE", token);
-    const response = await fetch(`${URL}/api/projects/${projectId}`, request);
+    const response = await fetch(`${PATH}/projects/${projectId}`, request);
     if (response.ok) {
       const token = response.headers.get("X-Auth-Token");
       dispatch({
@@ -43,25 +22,22 @@ export default function ProjectsMenu() {
         payload: { projectId: projectId },
         token: token,
       });
-    } else {
-      console.log(response.status);
-    }
+    } else handleApiError(response);
   }
 
   async function handleLoadProject(projectId) {
     const request = createRequest("GET", token);
-    const response = await fetch(`${URL}/api/projects/${projectId}`, request);
+    const response = await fetch(`${PATH}/projects/${projectId}`, request);
     if (response.ok) {
       const token = response.headers.get("X-Auth-Token");
       const result = await response.json();
-      console.log(result);
       dispatch({
         type: "project/loaded",
         payload: result.project,
         token: token,
       });
       navigate(`../project/${projectId}`);
-    }
+    } else handleApiError(response);
   }
 
   const listProjects = projects

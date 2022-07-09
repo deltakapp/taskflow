@@ -1,32 +1,27 @@
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import useRequestTools from "../hooks/useRequestTools";
 import "../styles/TaskCreator.css";
-import { apiDomain as URL } from "../utils/apiDomain";
-import createRequest from "../utils/createRequest";
 
 export default function StageEditor({ stageId }) {
+  const [createRequest, dispatch, handleApiError, PATH, token] =
+    useRequestTools();
   const [open, toggleOpen] = useState(false); // toggle editor open or closed
   const [newTitle, setNewTitle] = useState("");
-  const token = useSelector((state) => state.token);
-  const dispatch = useDispatch();
 
   // TODO: implement closeStageEditor
 
   async function handleEditStageName(e) {
-    // TODO: validate stage name
     e.preventDefault();
     const request = createRequest("PATCH", token, {
       title: newTitle,
     });
-    const response = await fetch(`${URL}/api/stages/${stageId}`, request);
+    const response = await fetch(`${PATH}/stages/${stageId}`, request);
     if (response.ok) {
       toggleOpen(false); // close editor
+      const token = response.headers.get("X-Auth-Token");
       const result = await response.json();
-      console.log(result);
-      dispatch({ type: "stage/updated", payload: result });
-    } else {
-      console.log(response.status);
-    }
+      dispatch({ type: "stage/updated", payload: result, token: token });
+    } else handleApiError(response);
   }
 
   return open ? ( // display editor if open == true

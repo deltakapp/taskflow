@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import createRequest from "../utils/createRequest";
+import createRequest from "../../utils/createRequest";
 
 export default function TaskEditor({
   open,

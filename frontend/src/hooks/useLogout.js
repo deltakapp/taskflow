@@ -1,4 +1,4 @@
-/* This hook ensures any componenets using it are only accessible */
+/* This hook ensures any components using it are only accessible */
 /* while user is signed in */
 
 import { useEffect } from "react";

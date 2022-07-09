@@ -1,17 +1,15 @@
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
+import useRequestTools from "../hooks/useRequestTools";
 import "../styles/Task.css";
 import { apiDomain as URL } from "../utils/apiDomain";
-import createRequest from "../utils/createRequest";
 
 export default function TaskCard({ taskId, taskIndex, stageId, stageIndex }) {
-  console.log("rendering task");
-
+  const [createRequest, dispatch, handleApiError, PATH, token] =
+    useRequestTools();
   const task = useSelector(
     (state) => state.project.stages[stageIndex].tasks[taskIndex]
   );
-  const token = useSelector((state) => state.token);
-  const dispatch = useDispatch();
 
   const [isEditing, toggleEditing] = useState(false);
   const [newTitle, setNewTitle] = useState(task.title);
@@ -30,37 +28,36 @@ export default function TaskCard({ taskId, taskIndex, stageId, stageIndex }) {
       details: newDetails,
     });
     const response = await fetch(
-      `${URL}/api/stages/${stageId}/tasks/${taskId}`,
+      `${PATH}/stages/${stageId}/tasks/${taskId}`,
       request
     );
     if (response.ok) {
+      const token = response.headers.get("X-Auth-Token");
       const result = await response.json();
       dispatch({
         type: "task/updated",
         payload: { stageId: stageId, task: result },
+        token: token,
       });
       toggleEditing(false);
-    } else {
-      console.log(response.status);
-    }
+    } else handleApiError(response);
     toggleEditing(false);
   }
 
-  async function handleDeleteTask() {
+  async function deleteTask() {
     const request = createRequest("DELETE", token);
     const response = await fetch(
       `${URL}/api/stages/${stageId}/tasks/${taskId}`,
       request
     );
     if (response.ok) {
-      console.log(response);
+      const token = response.headers.get("X-Auth-Token");
       dispatch({
         type: "task/deleted",
         payload: { stageId: stageId, taskId: taskId },
+        token: token,
       });
-    } else {
-      console.log(response.status);
-    }
+    } else handleApiError(response);
   }
 
   const titleBar = isEditing ? ( // if isEditing true
@@ -109,13 +106,10 @@ export default function TaskCard({ taskId, taskIndex, stageId, stageIndex }) {
     <>
       <hr />
       <div className="task-options">
-        <button className="btn-delete-task" onClick={() => handleDeleteTask()}>
+        <button className="btn-delete-task" onClick={() => deleteTask()}>
           🗑️ Delete Task
         </button>
-        <button
-          className="btn-complete-task"
-          onClick={() => handleDeleteTask()}
-        >
+        <button className="btn-complete-task" onClick={() => deleteTask()}>
           ✔️ Mark Complete
         </button>
       </div>

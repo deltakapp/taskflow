@@ -10,7 +10,6 @@ const Stage = require("../models/stageModel");
 
 /* Use auth for all subsequent routes */
 router.use("/", auth, (req, res, next) => {
-  console.log("Using Stages Router");
   next();
 });
 
@@ -32,7 +31,7 @@ router.post("/", async (req, res) => {
 
     res.status(201).send(savedStage);
   } catch (err) {
-    res.status(400).send(err); // malformed request syntax error
+    res.status(400).send("Stage must have a title"); // malformed request syntax error
     console.error(err);
   }
 });
@@ -41,10 +40,11 @@ router.post("/", async (req, res) => {
 router.get("/:stageId", async (req, res) => {
   try {
     const stage = await Stage.findById(req.params.stageId);
-    console.log(`Found stage ${stage.title}:`);
     res.status(200).send(stage);
   } catch (err) {
-    res.status(404).send();
+    res
+      .status(404)
+      .send("Task not found. Please check its existence and try again.");
     console.error(err);
   }
 });
@@ -63,13 +63,14 @@ router.patch("/:stageId", async (req, res) => {
     }
 
     await stage.save();
-    console.log(`Updated stage ${stage.title}:`);
     res.status(200).json(stage);
   } catch (err) {
     if (err instanceof mongoose.Error.ValidationError) {
-      res.status(400).send(err); // malformed request syntax error
+      res.status(400).send("Stage must have a title"); // malformed request syntax error
     } else {
-      res.status(404).send(); // project not found
+      res
+        .status(404)
+        .send("Task not found. Please check its existence and try again."); // project not found
     }
     console.error(err);
   }
@@ -82,7 +83,9 @@ router.delete("/:stageId", async (req, res) => {
     if (removed) {
       res.status(204).send();
     } else {
-      res.status(404).send();
+      res
+        .status(404)
+        .send("Stage not found. Please check its existence and try again.");
     }
   } catch (err) {
     res.status(500).send(err); // should never be reached
@@ -94,10 +97,11 @@ router.delete("/:stageId", async (req, res) => {
 router.use("/:stageId/tasks", async (req, res, next) => {
   try {
     res.locals.stage = await Stage.findById(req.params.stageId);
-    console.log("using tasks router");
     next();
   } catch (err) {
-    res.status(404).send(err);
+    res
+      .status(404)
+      .send("Task not found. Please check its existence and try again.");
     console.error(err);
   }
 });

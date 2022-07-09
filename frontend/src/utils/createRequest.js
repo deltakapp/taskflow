@@ -9,9 +9,11 @@ export default function createRequest(method, token, json) {
       cache: "no-store",
     },
   };
+
   if (json) {
     request.headers["Content-Type"] = "application/json";
     request.body = JSON.stringify(json);
   }
+
   return request;
 }

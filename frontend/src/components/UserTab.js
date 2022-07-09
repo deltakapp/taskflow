@@ -2,17 +2,16 @@
 /* user is logged in, and a login link otherwise */
 /* This is meant as a subcomponent of PageHeader */
 
-import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { shallowEqual, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import useRequestTools from "../hooks/useRequestTools";
 import "../styles/UserTab.css";
-import { apiDomain as URL } from "../utils/apiDomain";
-import createRequest from "../utils/createRequest";
 
 export default function UserTab() {
+  const [createRequest, dispatch, handleApiError, PATH, token] =
+    useRequestTools();
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const user = useSelector((state) => state.user, shallowEqual); // TODO: remove shallowequal
-  const token = useSelector((state) => state.token);
 
   /* navigate to user page on click */
   function handleNavUserPanel(e) {
@@ -22,11 +21,10 @@ export default function UserTab() {
   }
 
   async function logoutUser() {
-    console.log("logging out user");
     const request = createRequest("POST", token);
-    const response = await fetch(`${URL}/api/users/logout`, request);
-    console.log(request);
-    console.log(response);
+    const response = await fetch(`${PATH}/users/logout`, request);
+    if (!response.ok) handleApiError(response);
+
     setTimeout(() => {
       dispatch({ type: "user/loggedOut" });
     }, 500);
