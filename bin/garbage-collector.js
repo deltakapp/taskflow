@@ -28,12 +28,12 @@ mongoose.connection.on("error", (err) => {
 
 console.log("mongoose running");
 
-async function collectGarbage() {
+(async () => {
   try {
     await TempUser.deleteMany({});
   } catch (err) {
     console.log(err);
   }
-}
+})();
 
-collectGarbage();
+console.log("Deleted temp users");
