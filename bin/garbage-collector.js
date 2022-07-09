@@ -25,7 +25,7 @@ mongoose.connection.on("error", (err) => {
 
 console.log("mongoose running");
 
-(async () => {
+async function collectGarbage() {
   try {
     console.log("deleting temp users");
     await TempUser.findOneAndDelete({
@@ -37,6 +37,8 @@ console.log("mongoose running");
   } catch (err) {
     console.log(err);
   }
-})();
+}
+
+collectGarbage();
 
 process.exit();
