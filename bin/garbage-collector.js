@@ -8,9 +8,7 @@ console.log(URL);
     await mongoose.connect(URL);
     console.log("Connection established with database");
     const connection = mongoose.connection;
-    connection.db.collection("tempusers", function (err, collection) {
-      collection.deleteMany({});
-    });
+    connection.db.collection("tempusers").deleteMany({});
     console.log("Deleted documents in collection");
   } catch (err) {
     console.log(err);
@@ -67,4 +65,4 @@ console.log(URL);
 //   }
 // })();
 
-process.exit();
+// process.exit();
