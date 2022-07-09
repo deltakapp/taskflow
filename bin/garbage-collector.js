@@ -3,33 +3,49 @@ const { User, TempUser } = require("../server/models/userModel");
 const URL = process.env.DB_URL;
 console.log(URL);
 
-/* Connect server to mongodb using mongoose */
-mongoose
-  .connect(URL)
-  .then(() => {
-    console.log("Connection established with database");
-    const connection = mongoose.connection;
-    connection.db.collection("tempusers", function (err, collection) {
-      collection.deleteMany({});
-    });
-    console.log("Deleted documents in collection");
-  })
-
-  /* Handle initial connection errors */
-  .catch((err) => {
-    console.error("Database connection error: ", err);
-    app.use((req, res) => {
-      res.status(503).send("Error: database is temporarily unavailable");
-    });
+try {
+  await mongoose.connect(URL);
+  console.log("Connection established with database");
+  const connection = mongoose.connection;
+  connection.db.collection("tempusers", function (err, collection) {
+    collection.deleteMany({});
   });
+  console.log("Deleted documents in collection");
+} catch (err) {
+  console.log(err);
+}
 
-/* Handle connection errors after initial connection */
 mongoose.connection.on("error", (err) => {
-  console.error(err);
-  app.use((req, res) => {
-    res.status(503).send("Error: database is temporarily unavailable");
-  });
+  console.log(err);
 });
+
+// /* Connect server to mongodb using mongoose */
+// mongoose
+//   .connect(URL)
+//   .then(() => {
+//     console.log("Connection established with database");
+//     const connection = mongoose.connection;
+//     connection.db.collection("tempusers", function (err, collection) {
+//       collection.deleteMany({});
+//     });
+//     console.log("Deleted documents in collection");
+//   })
+
+//   /* Handle initial connection errors */
+//   .catch((err) => {
+//     console.error("Database connection error: ", err);
+//     app.use((req, res) => {
+//       res.status(503).send("Error: database is temporarily unavailable");
+//     });
+//   });
+
+// /* Handle connection errors after initial connection */
+// mongoose.connection.on("error", (err) => {
+//   console.error(err);
+//   app.use((req, res) => {
+//     res.status(503).send("Error: database is temporarily unavailable");
+//   });
+// });
 
 // (async () => {
 //   try {
