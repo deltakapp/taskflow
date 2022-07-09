@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 console.log("mongoose imported");
-const TempUser = require("../server/models/userModel");
+const { TempUser } = require("../server/models/userModel");
 console.log("temp user imported");
 const URL = process.env.DB_URL;
 console.log("dburl");
