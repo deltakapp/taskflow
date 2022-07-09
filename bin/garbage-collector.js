@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const { User, TempUser } = require("../server/models/userModel");
 const URL = process.env.DB_URL;
+console.log(URL);
 
 /* Connect server to mongodb using mongoose */
 mongoose
@@ -26,15 +27,9 @@ mongoose.connection.on("error", (err) => {
 console.log("mongoose running");
 
 (async () => {
-  const tempNumber = Math.floor(Math.random() * 10000); // random int < 10000
-  const name = `Temporary User`;
-  const email = `${tempNumber}@invalidemail.com`;
-  const password = `Password${tempNumber}`;
   try {
-    const user = new TempUser({ name: name, email: email, password: password });
-    const token = user.generateAuthToken();
-    console.log("creating temp user");
-    await user.save();
+    console.log("deleting collection");
+    mongoose.connection.db.tempusers.deleteMany({});
     console.log("deleting one user");
     await User.findByIdAndDelete("62c903e9ee5a635f12dcc0f0");
     console.log("deleting temp users");
