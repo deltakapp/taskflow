@@ -53,6 +53,10 @@ export default function HomePage() {
       <h3>
         <Link to="/signup">Sign Up</Link>
       </h3>
+      <br />
+      <h3>
+        <Link to="/preview">Preview the App</Link>
+      </h3>
     </main>
   );
 }

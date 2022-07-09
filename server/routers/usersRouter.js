@@ -34,6 +34,34 @@ router.post("/", async (req, res) => {
   }
 });
 
+/* Create placeholder user for users to preview app */
+router.post("/temp/", async (req, res) => {
+  const tempNumber = Math.floor(Math.random() * 10000); // random int < 10000
+  const name = `Temporary User`;
+  const email = `${tempNumber}@invalidemail.com`;
+  const password = `Password${tempNumber}`;
+  try {
+    const user = new User({ name: name, email: email, password: password });
+    const token = user.generateAuthToken();
+    await user.save();
+    console.log("user created");
+    res.status(201).send({ user, token });
+  } catch (err) {
+    if (err.code === 11000) {
+      res
+        .status(409)
+        .send(
+          "We are experiencing a heavy load of users previewing our app. Please try again."
+        );
+      console.error(`Temp user overlap conflict${tempNumber}`);
+    } else {
+      res
+        .status(500)
+        .send("Server is experiencing heavy load. Please try again later.");
+    }
+  }
+});
+
 /* User login */
 router.post("/login", async (req, res) => {
   try {

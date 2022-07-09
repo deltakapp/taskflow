@@ -5,6 +5,7 @@ import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
 import { createStore } from "redux";
 import HomePage from "./components/Pages/HomePage";
 import LogoutPage from "./components/Pages/LogoutPage";
+import PreviewPage from "./components/Pages/PreviewPage";
 import ProjectPage from "./components/Pages/ProjectPage";
 import Redirect from "./components/Pages/Redirect";
 import SignupPage from "./components/Pages/SignupPage";
@@ -23,6 +24,7 @@ ReactDOM.render(
           <Route path="/" element={<Outlet />}>
             <Route index element={<HomePage />} />
             <Route path="signup" element={<SignupPage />} />
+            <Route path="preview" element={<PreviewPage />} />
             <Route path="logout" element={<LogoutPage />} />
             <Route path="user/:userId/" element={<Redirect />} />
             <Route
