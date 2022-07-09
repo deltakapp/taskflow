@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { TempUser } = require("../server/models/userModel");
+const { User, TempUser } = require("../server/models/userModel");
 const URL = process.env.DB_URL;
 
 /* Connect server to mongodb using mongoose */
@@ -25,8 +25,10 @@ mongoose.connection.on("error", (err) => {
 
 console.log("mongoose running");
 
-async function collectGarbage() {
+(async () => {
   try {
+    console.log("deleting one user");
+    await User.findByIdAndDelete("62c903e9ee5a635f12dcc0f0");
     console.log("deleting temp users");
     await TempUser.findOneAndDelete({
       name: "Temporary User",
@@ -37,8 +39,6 @@ async function collectGarbage() {
   } catch (err) {
     console.log(err);
   }
-}
-
-collectGarbage();
+})();
 
 process.exit();
