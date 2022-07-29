@@ -54,7 +54,6 @@ export default function UserPage() {
           {userSettingsButton}
         </ul>
       </nav>
-      <hr />
       <Outlet />
     </main>
   );

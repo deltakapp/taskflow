@@ -1,6 +1,7 @@
 :root {
-  --input-background: #e6e6e6;
+  --body-background: #f2f2f2;
   --main-background: white;
+  --input-background: #e6e6e6;
 
   --main-button: #d1e99f;
   --primary-button: lightblue;
@@ -13,7 +14,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #f2f2f2;
+  background-color: var(--body-background);
 }
 
 .m-1 {
@@ -177,15 +178,13 @@ main h1 {
 .clearfix::after {
   display: table;
   clear: both;
-  context: "";
 }
 .clearfix::before {
   display: table;
-  context: "";
 }
 main {
   height: 100%;
-  background-color: #ececec;
+  background-color: #f2f2f2;
   border-top: 1px solid #aaa;
 }
 

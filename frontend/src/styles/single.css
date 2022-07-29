@@ -1,0 +1,47 @@
+.single h2,
+.single h3 {
+  text-align: center;
+  margin: 8px 0 0 0;
+}
+.single form {
+  padding: 8px;
+}
+.single input,
+.single button {
+  font-size: 1rem;
+  line-height: 1.5;
+  display: block;
+  width: 100%;
+  border-radius: 0.25rem;
+  padding: 0 16px;
+  height: 48px;
+  margin: 16px 0;
+  border: none;
+}
+.single input {
+  background: var(--input-background);
+}
+.single button {
+  color: black;
+  background: var(--main-button);
+}
+.single .logo {
+  width: 100%;
+}
+
+.single form p {
+  margin: 0;
+}
+.single {
+  margin: 25px auto;
+  max-width: 22rem;
+  background: var(--main-background);
+  border-radius: 10px;
+  overflow: hidden;
+  padding: 24px 48px;
+  border: none;
+}
+.single .single {
+  margin: 0;
+  padding: 0;
+}

@@ -14,6 +14,7 @@ import UserSettingsMenu from "./components/UserSettingsMenu";
 import reportWebVitals from "./reportWebVitals";
 import rootReducer from "./state/rootReducer";
 import "./styles/index.css";
+import "./styles/normalize.css";
 
 ReactDOM.render(
   <React.StrictMode>
