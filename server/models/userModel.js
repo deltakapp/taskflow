@@ -30,7 +30,7 @@ const userSchema = new Schema(
       trim: true,
       minLength: 7,
     },
-    projects: [{ type: Schema.Types.ObjectId, ref: "Project" }], // TODO: add project titles
+    projects: [{ type: Schema.Types.ObjectId, ref: "Project" }],
     tokens: [
       {
         token: {
@@ -47,7 +47,7 @@ const userSchema = new Schema(
 
 /* Alias 'id' to '_id' */
 userSchema
-  .virtual("id") // virtual get '_id' => 'id' is mongoose default
+  .virtual("id") // note: equivalent getter is enabled by mongoose default
   .set((id) => {
     this._id = id;
   });
@@ -118,21 +118,6 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
-/* When user is deleted, remove user from project.users */
-userSchema.pre("remove", async function (next) {
-  const user = this;
-  for (const projectId of user.projects) {
-    const project = await Project.findById(projectId);
-    project.users.filter((userId) => userId !== user._id); // remove userId from project.users
-
-    if (project.users.length === 0) {
-      await Project.findByIdAndDelete(projectId); // if no more users remain, delete project
-    } else {
-      await project.save();
-    }
-  }
-  next();
-});
-
 const User = mongoose.model("User", userSchema);
-module.exports = User;
+const TempUser = mongoose.model("TempUser", userSchema);
+module.exports = { User, TempUser };

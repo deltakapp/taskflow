@@ -9,6 +9,7 @@ export default function ProjectTab({
   index,
   title,
   projectId,
+  isActiveProject,
   reorderProjects,
   loadProject,
 }) {
@@ -66,7 +67,11 @@ export default function ProjectTab({
   drag(drop(ref));
 
   return (
-    <li ref={ref} style={{ opacity }}>
+    <li
+      ref={ref}
+      className={isActiveProject ? "active-project" : "inactive-project"}
+      style={{ opacity }}
+    >
       <button className="btn" onClick={() => loadProject(projectId)}>
         {title}
       </button>

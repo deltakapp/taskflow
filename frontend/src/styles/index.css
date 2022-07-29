@@ -1,3 +1,11 @@
+:root {
+  --input-background: #e6e6e6;
+  --main-background: white;
+
+  --main-button: #d1e99f;
+  --primary-button: lightblue;
+}
+
 body {
   margin: 0rem;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
@@ -8,43 +16,185 @@ body {
   background-color: #f2f2f2;
 }
 
-.m-1 { margin: 4px; }
-.m-2 { margin: 8px; }
-.mt-1 { margin-top: 4px; }
-.mt-2 { margin-top: 8px; }
-.mt-3 { margin-top: 12px; }
-.mt-4 { margin-top: 16px; }
-.mt-8 { margin-top: 32px; }
-.mb-1 { margin-bottom: 4px; }
-.mb-2 { margin-bottom: 8px; }
-.mr-1 { margin-right: 4px; }
-.mr-2 { margin-right: 8px; }
-.ml-1 { margin-left: 4px; }
-.ml-2 { margin-left: 8px; }
-
-.clearfix { overflow: auto; }
-
-.single h2, .single h3 { text-align: center; margin: 8px 0 0 0; }
-.single form { padding: 8px; }
-.single input, .single button { box-sizing: border-box; font-size: 16px; line-height: 1.5; display: block; width: 100%; border-radius: 0.25rem; padding: 0 16px; height: 48px; margin: 16px 0; border:none;}
-.single input { color: #666666; background: #e6e6e6; }
-.single button { color: black; background: #d1e99f; }
-.single .logo { width: 100%; }
-
-.single form p { margin: 0; }
-main.single { margin: 25px auto; width: 350px; background: #fff; border-radius: 10px; overflow: hidden; padding: 24px 48px; border: none; }
-main h1 { display: none; }
-
-.clearfix::after { display: table; clear: both; context: ""; }
-.clearfix::before { display: table; context: ""; }
-main {
-  height:100%;
-  background-color: #ececec;
-  border-top: 1px solid #AAA;
+.m-1 {
+  margin: 4px;
+}
+.m-2 {
+  margin: 8px;
+}
+.mt-1 {
+  margin-top: 4px;
+}
+.mt-2 {
+  margin-top: 8px;
+}
+.mt-3 {
+  margin-top: 12px;
+}
+.mt-4 {
+  margin-top: 16px;
+}
+.mt-8 {
+  margin-top: 32px;
+}
+.mb-1 {
+  margin-bottom: 4px;
+}
+.mb-2 {
+  margin-bottom: 8px;
+}
+.mr-1 {
+  margin-right: 4px;
+}
+.mr-2 {
+  margin-right: 8px;
+}
+.ml-1 {
+  margin-left: 4px;
+}
+.ml-2 {
+  margin-left: 8px;
 }
 
-.float-left { float: left; }
-.float-right { float: right; }
+.clearfix {
+  overflow: auto;
+}
+
+.single h2,
+.single h3 {
+  text-align: center;
+  margin: 8px 0 0 0;
+}
+.single form {
+  padding: 8px;
+}
+.single input,
+.single button {
+  font-size: 1rem;
+  line-height: 1.5;
+  display: block;
+  width: 100%;
+  border-radius: 0.25rem;
+  padding: 0 16px;
+  height: 48px;
+  margin: 16px 0;
+  border: none;
+}
+.single input {
+  background: var(--input-background);
+}
+.single button {
+  color: black;
+  background: var(--main-button);
+}
+.single .logo {
+  width: 100%;
+}
+
+.single form p {
+  margin: 0;
+}
+.single {
+  margin: 25px auto;
+  max-width: 22rem;
+  background: var(--main-background);
+  border-radius: 10px;
+  overflow: hidden;
+  padding: 24px 48px;
+  border: none;
+}
+.single .single {
+  margin: 0;
+  padding: 0;
+}
+
+.double h2,
+.double h3 {
+  text-align: center;
+  margin: 8px 0 0 0;
+}
+.double form {
+  padding: 8px;
+}
+.double input,
+.double button {
+  font-size: 1rem;
+  line-height: 1.5;
+  display: block;
+  border-radius: 0.25rem;
+  padding: 0 16px;
+  height: 48px;
+  margin: 16px 0;
+  border: none;
+}
+.double input {
+  background: var(--input-background);
+}
+.double button {
+  color: black;
+  background: var(--primary-button);
+}
+.double ul {
+  width: 100%;
+}
+.double ul li {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+.double ul li div {
+  flex-grow: 1;
+}
+.double ul li button {
+  width: 5rem;
+  margin: 0.5rem;
+}
+.double .logo {
+  width: 100%;
+}
+
+.double form p {
+  margin: 0;
+}
+.double {
+  margin: 25px auto;
+  width: auto;
+  max-width: 44rem;
+  background: var(--main-background);
+  border-radius: 10px;
+  overflow: hidden;
+  padding: 24px 48px;
+  border: none;
+  font-size: 1.5rem;
+}
+
+main h1 {
+  display: none;
+}
+
+.clearfix::after {
+  display: table;
+  clear: both;
+  context: "";
+}
+.clearfix::before {
+  display: table;
+  context: "";
+}
+main {
+  height: 100%;
+  background-color: #ececec;
+  border-top: 1px solid #aaa;
+}
+
+.float-left {
+  float: left;
+}
+.float-right {
+  float: right;
+}
 .task-creator form {
   padding-top: 32px;
 }
@@ -70,18 +220,30 @@ main {
 .two-button button {
   flex: 1;
   box-shadow: black;
-  transition: .2s cubic-bezier(0.3, 0, 0.5, 1);
+  transition: 0.2s cubic-bezier(0.3, 0, 0.5, 1);
   transition-property: color, background-color, border-color;
 }
 
 .btn-open-task-creator {
-	background: none;
-	color: inherit;
-	border: none;
-	padding: 0;
-	font: inherit;
-	cursor: pointer;
-	outline: inherit;
+  background: none;
+  color: inherit;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
 }
 
-* { box-sizing: border-box; }
+#user-modes {
+  font-size: 1.25rem;
+}
+
+#signup-link {
+  font-size: 1.5rem;
+  color: black;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+}

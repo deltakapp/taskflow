@@ -5,7 +5,7 @@ import "../styles/TaskCreator.css";
 export default function StageEditor({ stageId }) {
   const [createRequest, dispatch, handleApiError, PATH, token] =
     useRequestTools();
-  const [open, toggleOpen] = useState(false); // toggle editor open or closed
+  const [isOpen, toggleOpen] = useState(false); // toggle editor open or closed
   const [newTitle, setNewTitle] = useState("");
 
   // TODO: implement closeStageEditor
@@ -24,7 +24,7 @@ export default function StageEditor({ stageId }) {
     } else handleApiError(response);
   }
 
-  return open ? ( // display editor if open == true
+  return isOpen ? ( // display editor if isOpen == true
     <div className="overlay">
       <div className="overlay-inner">
         <form className="stage-rename" onSubmit={handleEditStageName}>
@@ -53,7 +53,13 @@ export default function StageEditor({ stageId }) {
     </div>
   ) : (
     // display button if open == false
-    <button className="btn" onClick={() => toggleOpen(true)}>
+    <button
+      className="btn"
+      onClick={() => {
+        console.log("togglebutton");
+        toggleOpen(true);
+      }}
+    >
       Rename Stage
     </button>
   );

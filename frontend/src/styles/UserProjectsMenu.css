@@ -13,3 +13,7 @@ li {
   list-style-type: none;
   display: flex;
 }
+
+li .btn-edit-project {
+  width: fit-content;
+}

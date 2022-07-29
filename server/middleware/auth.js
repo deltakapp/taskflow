@@ -1,15 +1,24 @@
 const jwt = require("jsonwebtoken");
-const User = require("../models/userModel");
+const { User, TempUser } = require("../models/userModel");
 
 const auth = async (req, res, next) => {
   try {
     const token = req.header("Authorization").replace("Bearer ", "");
     const decoded = jwt.verify(token, process.env.AUTH_KEY);
 
-    const user = await User.findOne({
+    /* Find user by decoded credentials */
+    let user = await User.findOne({
       _id: decoded._id,
       "tokens.token": token,
     });
+
+    /* If not found, check temp users */
+    if (!user) {
+      user = await TempUser.findOne({
+        _id: decoded._id,
+        "tokens.token": token,
+      });
+    }
 
     if (!user) {
       throw new Error();
@@ -20,10 +29,10 @@ const auth = async (req, res, next) => {
       console.log("REFRESHING STALE TOKEN");
       res.set("Access-Control-Expose-Headers", "X-Auth-Token");
       res.set("X-Auth-Token", user.generateAuthToken());
-      user.save();
+      await user.save();
     }
 
-    res.locals.user = user;
+    res.locals.user = user; // add user to local variables for mongoose
     next();
   } catch (err) {
     res.status(401).send({ error: "User authentication failed" });

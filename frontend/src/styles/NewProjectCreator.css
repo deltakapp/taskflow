@@ -1,0 +1,6 @@
+#btn-toggle-project-creator {
+  font-size: 1.5rem;
+  background-color: var(--main-button);
+  border-width: 1px;
+  border-radius: 0.25rem;
+}

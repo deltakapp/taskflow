@@ -2,9 +2,12 @@
 
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import useRequestTools from "../hooks/useRequestTools";
+import "../styles/UserSettingsMenu.css";
 
 export default function UserSettings() {
+  const navigate = useNavigate();
   const user = useSelector((state) => state.user);
   const [createRequest, dispatch, handleApiError, PATH, token] =
     useRequestTools();
@@ -26,7 +29,7 @@ export default function UserSettings() {
       const result = await response.json();
       toggleEditingUsername(false);
       dispatch({ type: "user/patched", payload: result, token: token });
-      alert("Password successfully changed");
+      alert("Username successfully changed");
     } else handleApiError(response);
   }
 
@@ -41,7 +44,7 @@ export default function UserSettings() {
       const result = await response.json();
       toggleEditingEmail(false);
       dispatch({ type: "user/patched", payload: result, token: token });
-      alert("Password successfully changed");
+      alert("Email address successfully changed");
     } else handleApiError(response);
   }
 
@@ -68,6 +71,21 @@ export default function UserSettings() {
     }
   }
 
+  async function deleteUser() {
+    if (
+      window.confirm("Are you sure you want to delete your account?") === true
+    ) {
+      const request = createRequest("DELETE", token);
+      const response = await fetch(`${PATH}/users`, request);
+      if (response.ok) {
+        const token = response.headers.get("X-AUTH-TOKEN");
+        dispatch({ type: "user/deleted", payload: {}, token: token });
+        alert("User deleted");
+        navigate("/");
+      } else handleApiError(response);
+    } else return;
+  }
+
   async function resetPasswordFields() {
     document.getElementById("current-password").value = "";
     document.getElementById("new-password-1").value = "";
@@ -76,8 +94,8 @@ export default function UserSettings() {
   }
 
   return (
-    <>
-      <h2>User Name:</h2>
+    <div id="user-settings-menu" className="double">
+      <h3>User Name:</h3>
       {isEditingUsername ? (
         <form onSubmit={editUsername}>
           <input
@@ -104,7 +122,7 @@ export default function UserSettings() {
           <button onClick={() => toggleEditingUsername(true)}>Edit</button>
         </>
       )}
-      <h2>Email Address:</h2>
+      <h3>Email Address:</h3>
       {isEditingEmail ? (
         <form onSubmit={editEmail}>
           <input
@@ -132,7 +150,7 @@ export default function UserSettings() {
         </>
       )}
 
-      <h2>Password</h2>
+      <h3>Password</h3>
       {isEditingPassword ? (
         <form onSubmit={editPassword}>
           <p>Current password:</p>
@@ -156,6 +174,10 @@ export default function UserSettings() {
           Change Password
         </button>
       )}
-    </>
+      <br />
+      <button id="btn-delete-user" onClick={() => deleteUser()}>
+        Delete User
+      </button>
+    </div>
   );
 }

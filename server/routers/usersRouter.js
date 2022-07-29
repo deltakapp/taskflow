@@ -5,31 +5,95 @@
 /* precede auth (user creation) do not need user ID */
 
 const express = require("express");
-const User = require("../models/userModel");
+const { User, TempUser } = require("../models/userModel");
+const Project = require("../models/projectModel");
 const router = express.Router();
 const auth = require("../middleware/auth");
 const jwt = require("jsonwebtoken");
 
 /* Create user */
-router.post("/", async (req, res) => {
+router.post("/", async (req, res, next) => {
+  /* Create account from temporary user */
+  if (req.body.flag === "IMPORT") {
+    try {
+      await authenticateTempUser(req, res);
+      const user = new User({
+        id: res.locals.user.id,
+        projects: res.locals.user.projects, // import projects
+      });
+      user.name = req.body.name;
+      user.email = req.body.email;
+      user.password = req.body.password;
+      const token = user.generateAuthToken();
+      await user.save();
+      await user.populate("projects", "title"); // fetch project titles
+      res.status(201).send({ user, token });
+      return;
+    } catch (err) {
+      console.error(err);
+      if (err.code === 11000) {
+        res
+          .status(409)
+          .send("This email address is already registered to another user.");
+      } else {
+        res
+          .status(400)
+          .send(
+            "Email must be valid email address and password must be minimum 8 characters."
+          );
+      }
+      return;
+    }
+  } else {
+    /* Standard user account creation */
+    try {
+      const user = new User(req.body);
+      const token = user.generateAuthToken();
+      await user.save();
+      // TODO: sendWelcomeEmail
+      res.status(201).send({ user, token });
+    } catch (err) {
+      if (err.code === 11000) {
+        res
+          .status(409)
+          .send("This email address is already registered to another user.");
+      } else {
+        console.error(err);
+        res
+          .status(400)
+          .send(
+            "Email must be valid email address and password must be minimum 8 characters."
+          );
+      }
+    }
+  }
+});
+
+/* Create temporary user for users to preview app */
+router.post("/temp/", async (req, res) => {
+  const tempNumber1 = Math.floor(Math.random() * 100000); // random int < 100000
+  const tempNumber2 = Math.floor(Math.random() * 10000); // random int < 100000
+  const name = `Temporary User`;
+  const email = `${tempNumber1}@invalidemail.com`;
+  const password = `Password${tempNumber2}`;
   try {
-    const user = new User(req.body);
+    const user = new TempUser({ name: name, email: email, password: password });
     const token = user.generateAuthToken();
     await user.save();
-    // TODO: sendWelcomeEmail
-    console.log("user created");
     res.status(201).send({ user, token });
   } catch (err) {
     if (err.code === 11000) {
       res
         .status(409)
-        .send("This email address is already registered to another user.");
+        .send(
+          "We are experiencing a heavy load of users previewing our app. Please try again."
+        );
+      console.error(`Temp user overlap conflict${tempNumber}`);
     } else {
       res
-        .status(400)
-        .send(
-          "Email must be valid email address and password must be minimum 8 characters."
-        );
+        .status(500)
+        .send("Server is experiencing heavy load. Please try again later.");
+      console.error(err);
     }
   }
 });
@@ -85,8 +149,13 @@ router.post("/logout", auth, async (req, res) => {
 /* Delete user */
 router.delete("/", auth, async (req, res) => {
   try {
-    await User.findByIdAndDelete(res.locals.user.id);
-    console.log("user deleted");
+    const id = res.locals.user.id;
+    user = await User.findByIdAndDelete(id);
+
+    /* remove user authorization from projects */
+    await Project.updateMany({ users: id }, { $pullAll: { users: [id] } });
+
+    console.log(`user ${id} deleted`);
     res.status(204).send();
   } catch (err) {
     res.status(500).send(err); // should never be reached
@@ -98,19 +167,24 @@ router.patch("/", auth, async (req, res) => {
   try {
     let user = res.locals.user;
 
+    /* Update projects list */
     if (req.body.projects) {
       user.projects = req.body.projects;
     }
 
+    /* Update user name */
     if (req.body.name) {
       user.name = req.body.name;
     }
 
+    /* Update email address */
     if (req.body.email) {
       user.email = req.body.email;
     }
 
+    /* Update password */
     if (req.body.newPassword) {
+      /* check old password */
       try {
         user = await User.findByCredentials(
           req.body.email,
@@ -128,5 +202,28 @@ router.patch("/", auth, async (req, res) => {
     res.status(400).send(err); // malformed request syntax error
   }
 });
+
+/* Authenticate a temp user to prepare for account creation */
+/* This works mostly the same as /middleware/auth.js without next() */
+async function authenticateTempUser(req, res) {
+  try {
+    const token = req.header("Authorization").replace("Bearer ", "");
+    const decoded = jwt.verify(token, process.env.AUTH_KEY);
+
+    /* Find user by decoded credentials */
+    let user = await TempUser.findOne({
+      _id: decoded._id,
+      "tokens.token": token,
+    });
+
+    if (!user) {
+      throw new Error();
+    }
+
+    res.locals.user = user; // add user to local variables for mongoose
+  } catch (err) {
+    res.status(401).send({ error: "User authentication failed" });
+  }
+}
 
 module.exports = router;
