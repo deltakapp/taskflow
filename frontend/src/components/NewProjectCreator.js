@@ -1,16 +1,19 @@
 import { useState } from "react";
+import { shallowEqual, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import useRequestTools from "../hooks/useRequestTools";
+import "../styles/NewProjectCreator.css";
 
 export default function NewProjectCreator() {
   const [createRequest, dispatch, handleApiError, PATH, token] =
     useRequestTools();
   const navigate = useNavigate();
   const [isActive, toggleActive] = useState(false); // if creator is active
+  const user = useSelector((state) => state.user, shallowEqual);
 
   async function handleCreateProject(e) {
     e.preventDefault();
-    // TODO add blank title error handling
+
     const request = createRequest("POST", token, {
       title: `${document.getElementById("new-project-title").value}`,
     });

@@ -3,13 +3,13 @@
 const initialState = {};
 
 export default function userReducer(prevState = initialState, action) {
+  console.log(action);
   let state = { ...prevState }; //mutate new state not prevState
   const payload = action.payload;
 
   switch (action.type) {
     case "user/created":
       state = payload;
-      state.flag = "EMAIL_CONFIRMATION"; //TODO: use me
       return state;
 
     case "user/loggedIn":
@@ -21,7 +21,7 @@ export default function userReducer(prevState = initialState, action) {
       state = { flag: "LOGGED_OUT" };
       return state;
 
-    case "user/deleted": // currently not in use
+    case "user/deleted":
       state = { flag: "DELETED" };
       return state;
 

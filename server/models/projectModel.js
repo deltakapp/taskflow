@@ -47,4 +47,5 @@ projectSchema.set("toObject", {
 });
 
 /* Model the schema and export it */
-module.exports = mongoose.model("Project", projectSchema);
+const Project = mongoose.model("Project", projectSchema);
+module.exports = Project;

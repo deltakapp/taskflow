@@ -1,9 +1,9 @@
 /* A stage of a project. */
 /* These stages implement Drag and Drop horizontally*/
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useDrag, useDrop } from "react-dnd";
-import { shallowEqual, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import useRequestTools from "../hooks/useRequestTools";
 import "../styles/Stage.css";
 import { ItemTypes } from "../utils/itemTypes";
@@ -16,10 +16,8 @@ export default function Stage({ stageId, stageIndex, title, reorderStages }) {
     useRequestTools();
   const ref = useRef(null);
   const stage = useSelector((state) => state.project.stages[stageIndex]);
-  const tasks = useSelector(
-    (state) => state.project.stages[stageIndex].tasks,
-    shallowEqual
-  );
+  const tasks = useSelector((state) => state.project.stages[stageIndex].tasks);
+  const [isTaskCreatorOpen, toggleTaskCreator] = useState(false); // toggle task creator open or closed
 
   const [, drop] = useDrop({
     accept: ItemTypes.STAGE, //change PROJECT to PROJECTTAB
@@ -102,39 +100,41 @@ export default function Stage({ stageId, stageIndex, title, reorderStages }) {
   return (
     <section className="stage" key={stageId} ref={ref}>
       <div className="stage-header">
-        <details className="dropdown">
-          {" "}
-          {/*TODO: change from css toggle to react toggle */}
-          <summary className="" role="button">
-            <h3 className="stage-title">{stage.title}</h3>
-            <svg
-              height="16"
-              viewBox="0 0 16 16"
-              version="1.1"
-              width="16"
-              data-view-component="true"
-              className="float-right"
+        <h3 className="stage-title">{stage.title}</h3>
+        {!isTaskCreatorOpen && (
+          <div className="stage-options">
+            <div
+              className="btn-toggle-task-creator"
+              onClick={() => toggleTaskCreator(true)}
             >
-              <path d="M8 9a1.5 1.5 0 100-3 1.5 1.5 0 000 3zM1.5 9a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm13 0a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"></path>
-            </svg>
-            <TaskCreator stageId={stageId} stageIndex={stageIndex} />
-          </summary>
-          <span className="dropdown-content mt-4">
-            <ul>
-              <li>
-                <StageEditor stageId={stageId} />
-              </li>
-              <li>
-                <button
-                  className="btn"
-                  onClick={() => handleDeleteStage(stageId)}
-                >
-                  Delete Stage
-                </button>
-              </li>
-            </ul>
-          </span>
-        </details>
+              ➕
+            </div>
+            <div className="dropdown">
+              ☰
+              <div className="dropdown-content mt-4">
+                <ul>
+                  <li>
+                    <StageEditor stageId={stageId} />
+                  </li>
+                  <li>
+                    <button
+                      className="btn"
+                      onClick={() => handleDeleteStage(stageId)}
+                    >
+                      Delete Stage
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        )}
+        {isTaskCreatorOpen && (
+          <TaskCreator
+            stageId={stageId}
+            toggleTaskCreator={toggleTaskCreator}
+          />
+        )}
       </div>
       {taskList}
     </section>

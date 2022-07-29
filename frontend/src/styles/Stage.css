@@ -2,12 +2,6 @@ main {
   height: 100%;
 }
 
-/* #project-board {
-  position: relative;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column !important;
-} */
 #project-board {
   /* overlap with ProjectBoard.css */
   display: flex;
@@ -84,22 +78,33 @@ main {
   overflow: hidden;
   outline: none;
 }
+.stage-options {
+  float: right;
+}
 
 .dropdown {
+  /* float: right; */
   position: relative;
+  display: inline-block;
+  margin: 0 0.25rem 0 0.25rem;
 }
 
 .dropdown-content {
+  display: none;
   position: absolute;
   top: 0;
   right: 0;
-  z-index: 1;
   background-color: #f9f9f9;
   min-width: 160px;
   padding: 4px;
   border: 1px solid #2f353c;
   border-radius: 0.5rem;
   box-shadow: -4px 8px 24px gray;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+  position: absolute;
 }
 
 .overlay {
@@ -157,4 +162,10 @@ main {
   padding: 40px 0;
   font-weight: 600;
   text-align: center;
+}
+
+.btn-toggle-task-creator {
+  float: right;
+  position: relative;
+  margin: 0 0.25rem 0 0.25rem;
 }

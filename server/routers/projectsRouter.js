@@ -6,13 +6,22 @@ const express = require("express");
 const router = express.Router();
 const auth = require("../middleware/auth");
 const Project = require("../models/projectModel");
-const User = require("../models/userModel");
+const { User } = require("../models/userModel");
 
 /* All endpoints here require authentication */
 router.use(auth);
 
 /* Create new project */
 router.post("/", async (req, res) => {
+  console.log(req.body);
+  /* Forbid temporary users from creating more than 3 projects */
+  if (
+    res.locals.user.id === "Temporary User" &&
+    res.locals.user.projects.length > 2
+  ) {
+    res.status(403).send("To create more than 3 projects, please sign up.");
+    return;
+  }
   try {
     let project = new Project();
     project.title = req.body.title;
@@ -91,7 +100,7 @@ router.delete("/:projectId", async (req, res) => {
     if (deletedProject) {
       console.log(`Deleted project ${id}`);
     } else {
-      throw new Error("FAILED TO DELETE PROJECT");
+      throw new Error(`FAILED TO DELETE PROJECT ${id}`);
     }
 
     /* delete permissions in users */

@@ -10,8 +10,11 @@ export default function HomePage() {
 
   /* Upon login navigate to user page */
   useEffect(() => {
-    if (user.id) navigate(`../user/${user.id}`);
-  }, [user.id, navigate]);
+    if (user.id) {
+      if (user.flag === "TEMP") navigate(`../preview/${user.id}/projects`);
+      else navigate(`../users/${user.id}/projects`);
+    }
+  }, [user, navigate]);
 
   async function handleLogin(e) {
     e.preventDefault();
@@ -31,11 +34,26 @@ export default function HomePage() {
         payload: result.user,
         token: result.token,
       });
-      // navigate(`../user/${user.id}`);
     } else handleApiError(response);
 
     email.value = ""; // reset credential fields
     password.value = "";
+  }
+
+  async function initializePreview() {
+    const request = createRequest("POST", null, {});
+    const response = await fetch(`${PATH}/users/temp/`, request);
+    if (response.ok) {
+      const result = await response.json();
+      dispatch({
+        type: "user/created",
+        payload: { flag: "TEMP", ...result.user },
+        token: result.token,
+      });
+      alert(
+        "A temporary user profile has been created for you. If you wish to save your projects, create an account by clicking on the user tab in the top right corner."
+      );
+    } else handleApiError(response);
   }
 
   return (
@@ -55,7 +73,9 @@ export default function HomePage() {
       </h3>
       <br />
       <h3>
-        <Link to="/preview">Preview the App</Link>
+        <a href="#" onClick={initializePreview}>
+          Preview the app
+        </a>
       </h3>
     </main>
   );

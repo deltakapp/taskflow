@@ -1,16 +1,15 @@
 import { shallowEqual, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import useRequestTools from "../hooks/useRequestTools";
-import "../styles/ProjectsMenu.css";
+import "../styles/UserProjectsMenu.css";
 import NewProjectCreator from "./NewProjectCreator";
 
-export default function ProjectsMenu() {
+export default function UserProjects() {
   const [createRequest, dispatch, handleApiError, PATH, token] =
     useRequestTools();
   const navigate = useNavigate();
   const projects = useSelector((state) => state.user.projects, shallowEqual);
-
-  //TODO: add a popup if flag: user created
+  const user = useSelector((state) => state.user);
 
   async function handleDeleteProject(projectId) {
     const request = createRequest("DELETE", token);
@@ -36,7 +35,7 @@ export default function ProjectsMenu() {
         payload: result.project,
         token: token,
       });
-      navigate(`../project/${projectId}`);
+      navigate(`../../../projects/${projectId}`);
     } else handleApiError(response);
   }
 
@@ -45,11 +44,17 @@ export default function ProjectsMenu() {
         return (
           //TODO: Change to project.id
           <li key={project.projectId}>
-            {project.title}
-            <button onClick={() => handleLoadProject(project.projectId)}>
+            <div className="project-title">{project.title}</div>
+            <button
+              className="btn-edit-project"
+              onClick={() => handleLoadProject(project.projectId)}
+            >
               Edit
             </button>
-            <button onClick={() => handleDeleteProject(project.projectId)}>
+            <button
+              className="btn-delete-projct"
+              onClick={() => handleDeleteProject(project.projectId)}
+            >
               Delete
             </button>
           </li>
@@ -58,9 +63,16 @@ export default function ProjectsMenu() {
     : null;
 
   return (
-    <div id="projects-menu">
+    <div id="projects-menu" className="double">
       {projects && <ul id="projects-list">{listProjects}</ul>}
       <NewProjectCreator />
+      {(user.flag = "TEMP") && (
+        <button>
+          <NavLink to="signup" id="signup-link">
+            Sign up to save work
+          </NavLink>
+        </button>
+      )}
     </div>
   );
 }

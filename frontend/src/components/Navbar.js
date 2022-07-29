@@ -10,6 +10,7 @@ export default function NavPane() {
     useRequestTools();
   const navigate = useNavigate();
   const projects = useSelector((state) => state.user.projects, shallowEqual);
+  const currentProjectId = useSelector((state) => state.project.projectId);
   const [creatorIsOpen, toggleCreatorOpen] = useState(false);
 
   const handleCreateProject = useCallback(
@@ -48,7 +49,7 @@ export default function NavPane() {
           payload: result.project,
           token: token,
         });
-        navigate(`../project/${projectId}`);
+        navigate(`../projects/${projectId}`);
       } else handleApiError(response);
     },
     [token, createRequest, dispatch, handleApiError, PATH, navigate]
@@ -85,6 +86,7 @@ export default function NavPane() {
           index={index}
           title={title}
           projectId={projectId}
+          isActiveProject={projectId === currentProjectId}
           reorderProjects={reorderProjects}
           loadProject={loadProject}
         />

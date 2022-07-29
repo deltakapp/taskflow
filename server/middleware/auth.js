@@ -29,7 +29,7 @@ const auth = async (req, res, next) => {
       console.log("REFRESHING STALE TOKEN");
       res.set("Access-Control-Expose-Headers", "X-Auth-Token");
       res.set("X-Auth-Token", user.generateAuthToken());
-      user.save();
+      await user.save();
     }
 
     res.locals.user = user; // add user to local variables for mongoose

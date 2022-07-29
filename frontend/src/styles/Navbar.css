@@ -28,8 +28,10 @@ ul.tabrow {
   position: relative;
   border-top-left-radius: 6px;
   border-top-right-radius: 6px;
-  border: 1px solid #aaa;
-  border-bottom: none;
+  border-width: 1px 1px 0px 1px;
+  border-top: 1px solid #aaa;
+  border-left: 1px solid #aaa;
+  border-right: 1px solid #aaa;
   background: #ececec;
   display: inline-block;
   text-shadow: 0 1px #fff;
@@ -42,4 +44,12 @@ ul.tabrow {
 
 nav .btn {
   padding: 4px 0;
+}
+li.active-project {
+  z-index: 1;
+  border-bottom: 2px solid #ececec;
+}
+
+li.active-project button {
+  font-weight: bold;
 }
