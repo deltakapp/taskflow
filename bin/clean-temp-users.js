@@ -3,6 +3,7 @@
 const mongoose = require("mongoose");
 const { TempUser } = require("../server/models/userModel");
 const Project = require("../server/models/projectModel");
+const Stage = require("../server/models/stageModel");
 const URL = process.env.DB_URL;
 
 (async () => {
@@ -20,25 +21,18 @@ const URL = process.env.DB_URL;
     const projectIds = [];
     for (const user of tempUsers) {
       for (const projectId of user.projects) {
-        projectIds.push(projectId);
+        const project = await Project.find({ projectId });
+        await Stage.deleteMany({ id: { $in: project.stages } });
+        await Project.findByIdAndDelete(id);
       }
-      await user.remove();
+      await TempUser.findByIdAndDelete(user.id);
     }
     console.log(`Deleted ${tempUsers.length} temporary users`);
-
-    /* Delete projects belonging to temporary users */
-    const { deletedCount } = await Project.deleteMany({
-      _id: { $in: projectIds },
-    });
-    console.log(`Deleted ${deletedCount} projects`);
 
     console.log("Exiting process.");
     process.exit();
   } catch (err) {
     console.log(err);
+    process.exit();
   }
-
-  mongoose.connection.on("error", (err) => {
-    console.log(err);
-  });
 })();

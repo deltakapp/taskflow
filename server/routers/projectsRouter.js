@@ -7,6 +7,7 @@ const router = express.Router();
 const auth = require("../middleware/auth");
 const Project = require("../models/projectModel");
 const { User } = require("../models/userModel");
+const Stage = require("../models/stageModel");
 
 /* All endpoints here require authentication */
 router.use(auth);
@@ -96,7 +97,11 @@ router.delete("/:projectId", async (req, res) => {
   try {
     const id = req.params.projectId;
 
+    const project = await Project.findById(id);
+    await Stage.deleteMany({ id: { $in: project.stages } });
+
     const deletedProject = await Project.findByIdAndDelete(id);
+
     if (deletedProject) {
       console.log(`Deleted project ${id}`);
     } else {
