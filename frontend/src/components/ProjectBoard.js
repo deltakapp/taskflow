@@ -1,17 +1,26 @@
 /* A board representing a project filled with stages. */
 
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import useRequestTools from "../hooks/useRequestTools";
-import "../styles/ProjectBoard.css";
 import Stage from "./Stage";
 import StageCreator from "./StageCreator";
 
-export default function ProjectBoard() {
+export default function ProjectBoard({
+  isStageCreatorOpen,
+  toggleStageCreator,
+}) {
   const [createRequest, dispatch, handleApiError, PATH, token] =
     useRequestTools();
   const projectId = useSelector((state) => state.project.projectId);
   const stages = useSelector((state) => state.project.stages, shallowEqual);
+
+  /* On project load, open stage creator if no stages exist yet */
+  useEffect(() => {
+    if (stages.length === 0) {
+      toggleStageCreator(true);
+    } else toggleStageCreator(false);
+  }, [projectId, stages.length, toggleStageCreator]);
 
   /* Reorder stages */
   const reorderStages = useCallback(
@@ -20,7 +29,7 @@ export default function ProjectBoard() {
       const newStages = [...stages]; // copy state for mutations
       newStages.splice(hoverIndex, 0, newStages.splice(sourceIndex, 1)[0]);
 
-      /* dispatch reorder to redux state */
+      /* dispatch reorder to redux state (optimistic update for performance) */
       dispatch({ type: "project/reorderStages", payload: newStages });
 
       /* send API request */
@@ -33,7 +42,7 @@ export default function ProjectBoard() {
         if (token) dispatch({ type: "token/refresh", token: token });
       } else handleApiError(response);
     },
-    [stages, token, projectId, createRequest, dispatch, handleApiError, PATH]
+    [stages, token, projectId, createRequest, dispatch, handleApiError, PATH] //dependency array
   );
 
   const stageList = stages?.map((stage, index) => (
@@ -41,18 +50,20 @@ export default function ProjectBoard() {
       key={stage.stageId}
       stageId={stage.stageId}
       stageIndex={index}
-      title={stage.title}
+      projectId={projectId}
       reorderStages={reorderStages}
     />
   ));
 
   return (
-    <div id="project-board">
+    <main id="project-board">
       {stageList}
-      {/* {stages?.map((stage, index) =>
-        renderStage(stage.stageId, index, stage.title)
-      )} */}
-      <StageCreator projectId={projectId} />
-    </div>
+      {isStageCreatorOpen && (
+        <StageCreator
+          projectId={projectId}
+          toggleStageCreator={toggleStageCreator}
+        />
+      )}
+    </main>
   );
 }

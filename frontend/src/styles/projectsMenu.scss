@@ -1,0 +1,79 @@
+@use "colors";
+
+#projects-menu {
+  h3 {
+    margin-bottom: 0.5rem;
+  }
+  input {
+    height: 2rem;
+    border: none;
+    border-radius: 0.25rem;
+    padding: 0 0.5rem;
+    background: colors.$input-background;
+  }
+  #projects-list {
+    display: grid;
+    grid-template-columns: 4fr minmax(4rem, 1fr) 1fr 1fr;
+    padding: 0 0 0 0.5rem;
+    justify-content: stretch;
+    row-gap: 0.5rem;
+    align-items: center;
+
+    button {
+      height: 2rem;
+    }
+
+    .project-title {
+      grid-column-start: 1;
+      grid-column-end: auto;
+      padding: 0.5rem;
+      overflow: hidden;
+      font-size: 1.25rem;
+    }
+    input.project-title {
+      width: 90%;
+      padding: 0.25rem 0.25rem;
+    }
+
+    .btn-delete-project {
+      grid-column-end: 3;
+      background-color: colors.$delete-button;
+    }
+    .btn-delete-project:hover {
+      background-color: colors.$delete-button-hover;
+    }
+
+    .btn-load-project {
+      grid-column-end: 4;
+      background: colors.$confirm-button;
+    }
+    .btn-load-project:hover {
+      background-color: colors.$confirm-button-hover;
+    }
+
+    .btn-options {
+      grid-column-end: 5;
+      background: colors.$secondary-button;
+    }
+    .btn-options:hover {
+      background-color: colors.$secondary-button-hover;
+    }
+  }
+
+  #new-project-creator {
+    button {
+      margin: 0.75rem 0.5rem;
+      height: 2rem;
+    }
+  }
+
+  #signup-link {
+    background-color: colors.$primary-button;
+  }
+  #signup-link:hover {
+    background-color: colors.$primary-button-hover;
+  }
+  #signup-link:hover a {
+    background-color: colors.$primary-button-hover;
+  }
+}

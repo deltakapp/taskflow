@@ -1,141 +1,156 @@
 /* A stage of a project. */
 /* These stages implement Drag and Drop horizontally*/
 
-import { useRef, useState } from "react";
-import { useDrag, useDrop } from "react-dnd";
+import { useCallback, useRef, useState } from "react";
 import { useSelector } from "react-redux";
+import useCustomDrag from "../hooks/useCustomDrag";
+import useHorizontalDrop from "../hooks/useHorizontalDrop";
 import useRequestTools from "../hooks/useRequestTools";
-import "../styles/Stage.css";
+import useVerticalDrop from "../hooks/useVerticalDrop";
 import { ItemTypes } from "../utils/itemTypes";
 import StageEditor from "./StageEditor";
-import TaskCard from "./TaskCard";
-import TaskCreator from "./TaskCreator";
+import Task from "./Task";
+import TaskEditor from "./TaskEditor";
 
-export default function Stage({ stageId, stageIndex, title, reorderStages }) {
+export default function Stage({
+  stageId,
+  stageIndex,
+  projectId,
+  reorderStages,
+}) {
   const [createRequest, dispatch, handleApiError, PATH, token] =
     useRequestTools();
-  const ref = useRef(null);
+  const stageRef = useRef(null);
   const stage = useSelector((state) => state.project.stages[stageIndex]);
   const tasks = useSelector((state) => state.project.stages[stageIndex].tasks);
+
   const [isTaskCreatorOpen, toggleTaskCreator] = useState(false); // toggle task creator open or closed
+  const [isStageEditorOpen, toggleStageEditor] = useState(false);
 
-  const [, drop] = useDrop({
-    accept: ItemTypes.STAGE, //change PROJECT to PROJECTTAB
-    hover(item, monitor) {
-      if (!ref.current) {
-        return;
-      }
-      // The source index where item is being dragged from
-      const sourceIndex = item.index;
-      // Index of current hover position
-      const hoverIndex = stageIndex;
-      // Don't replace items with themselves
-      if (sourceIndex === hoverIndex) {
-        return;
-      }
-      // Determine rectangle on screen
-      const hoverBoundingRect = ref.current?.getBoundingClientRect();
-      // Get horizontal middle
-      const hoverMiddleX =
-        (hoverBoundingRect.right - hoverBoundingRect.left) / 2;
-      // Determine mouse position
-      const clientOffset = monitor.getClientOffset();
-      // Get pixels to the top
-      const hoverClientX = clientOffset.x - hoverBoundingRect.left;
-      //Only perform the move when the mouse has crossed half of the item's height
-      // When dragging leftwards, only move when the cursor is left of 50%
-      // When dragging downwards, only move when the cursor is above 50%
-      if (sourceIndex < hoverIndex && hoverClientX < hoverMiddleX) {
-        return;
-      }
-      if (sourceIndex > hoverIndex && hoverClientX > hoverMiddleX) {
-        return;
-      }
-      reorderStages(sourceIndex, hoverIndex);
-      item.index = hoverIndex;
-    },
-  });
+  /* Accept Drag-and-drop in both horizontal and vertical directions */
+  const [drag, isDragging] = useCustomDrag(ItemTypes.STAGE, stageIndex);
+  const horizontalDrop = useHorizontalDrop(
+    ItemTypes.STAGE,
+    stageIndex,
+    reorderStages,
+    stageRef
+  );
+  const verticalDrop = useVerticalDrop(
+    ItemTypes.STAGE,
+    stageIndex,
+    reorderStages,
+    stageRef
+  );
+  drag(horizontalDrop(stageRef));
+  drag(verticalDrop(stageRef));
 
-  const [{ isDragging }, drag] = useDrag({
-    type: ItemTypes.STAGE,
-    item: () => {
-      return { title, stageIndex };
-    },
-    collect: (monitor) => {
-      return { isDragging: monitor.isDragging() };
-    },
-  });
+  /* Reorder tasks */
+  const reorderTasks = useCallback(
+    async (sourceIndex, hoverIndex) => {
+      if (!token) return; // abort if user logged out
+      const newTasks = [...tasks]; // copy state for mutations
+      newTasks.splice(hoverIndex, 0, newTasks.splice(sourceIndex, 1)[0]);
 
-  // const opacity = isDragging ? 0 : 1; // TODO: change from css toggle to react
-
-  drag(drop(ref));
-
-  async function handleDeleteStage(stageId) {
-    const request = createRequest("DELETE", token);
-    const response = await fetch(`${PATH}/stages/${stageId}`, request);
-    if (response.ok) {
-      const token = response.headers.get("X-Auth-Token");
+      /* dispatch reorder to redux state (optimistic update for performance) */
       dispatch({
-        type: "stage/deleted",
-        payload: { stageId: stageId },
-        token: token,
+        type: "stage/reorderTasks",
+        payload: { stageId: stageId, tasks: newTasks },
       });
-    } else handleApiError(response);
+
+      /* send API request */
+      const request = createRequest("PATCH", token, {
+        tasks: newTasks,
+      });
+      const response = await fetch(`${PATH}/stages/${stageId}`, request);
+      if (response.ok) {
+        const token = response.headers.get("X-Auth-Token");
+        if (token) dispatch({ type: "token/refresh", token: token });
+      } else handleApiError(response);
+    },
+    [tasks, token, stageId, dispatch, PATH, createRequest, handleApiError] //dependency array
+  );
+
+  async function handleDeleteStage() {
+    if (window.confirm(`Delete stage ${stage.title} ?`)) {
+      const request = createRequest("DELETE", token);
+      const response = await fetch(`${PATH}/stages/${stageId}`, request);
+      if (response.ok) {
+        const token = response.headers.get("X-Auth-Token");
+        dispatch({
+          type: "stage/deleted",
+          payload: { stageId: stageId },
+          token: token,
+        });
+      } else handleApiError(response);
+    } else return; // Abort if user does not confirm
   }
 
-  const taskList = tasks
-    ? tasks.map((task, index) => {
-        return (
-          <TaskCard
-            key={task.taskId}
-            taskId={task.taskId}
-            taskIndex={index}
-            stageId={stageId}
-            stageIndex={stageIndex}
-          />
-        );
-      })
-    : null;
+  const taskList = tasks ? (
+    tasks.map((task, index) => {
+      return (
+        <Task
+          key={task.taskId}
+          taskId={task.taskId}
+          taskIndex={index}
+          stageId={stageId}
+          stageIndex={stageIndex}
+          reorderTasks={reorderTasks}
+        />
+      );
+    })
+  ) : (
+    /* display only page break if no tasks exist */
+    <br />
+  );
 
   return (
-    <section className="stage" key={stageId} ref={ref}>
+    <section
+      className="stage"
+      key={stageId}
+      ref={stageRef}
+      style={{ opacity: isDragging ? 0 : 1 }}
+    >
       <div className="stage-header">
-        <h3 className="stage-title">{stage.title}</h3>
-        {!isTaskCreatorOpen && (
-          <div className="stage-options">
-            <div
-              className="btn-toggle-task-creator"
-              onClick={() => toggleTaskCreator(true)}
-            >
-              ➕
-            </div>
-            <div className="dropdown">
-              ☰
-              <div className="dropdown-content mt-4">
-                <ul>
-                  <li>
-                    <StageEditor stageId={stageId} />
-                  </li>
-                  <li>
-                    <button
-                      className="btn"
-                      onClick={() => handleDeleteStage(stageId)}
-                    >
-                      Delete Stage
-                    </button>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        )}
-        {isTaskCreatorOpen && (
-          <TaskCreator
+        <button
+          className="btn-toggle-task-creator"
+          onClick={() => toggleTaskCreator(true)}
+          title="Add a new task"
+        >
+          ➕
+        </button>
+        {isStageEditorOpen ? (
+          <StageEditor
             stageId={stageId}
-            toggleTaskCreator={toggleTaskCreator}
+            title={stage.title}
+            toggleStageEditor={toggleStageEditor}
           />
+        ) : (
+          <h3
+            className="stage-title"
+            title="Click and drag to rearrange stages"
+          >
+            {stage.title}
+          </h3>
         )}
+        <div className="dropdown stage-options">
+          <button className="btn-stage-options">☰</button>
+          <div className="dropdown-menu">
+            <button onClick={() => toggleStageEditor(true)}>
+              Rename Stage
+            </button>
+            <button onClick={() => handleDeleteStage()}>Delete Stage</button>
+          </div>
+        </div>
       </div>
+      {isTaskCreatorOpen && (
+        <TaskEditor // TaskEditor serves as TaskCreator, given unique props
+          taskId={null}
+          title={null}
+          details={null}
+          stageId={stageId}
+          toggleTaskEditor={toggleTaskCreator} // toggleTaskCreator in place of toggleTaskEditor
+        />
+      )}
       {taskList}
     </section>
   );

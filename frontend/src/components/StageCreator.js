@@ -1,16 +1,36 @@
-import { useState } from "react";
+/* This creates a new stage */
+/* It is an uncontrolled component: */
+/* https://reactjs.org/docs/uncontrolled-components.html */
+
+import { useLayoutEffect, useRef } from "react";
 import useRequestTools from "../hooks/useRequestTools";
 
-export default function StageCreator({ projectId }) {
+export default function StageCreator({ projectId, toggleStageCreator }) {
   const [createRequest, dispatch, handleApiError, PATH, token] =
     useRequestTools();
-  const [open, toggleOpen] = useState(false); // toggle creator open or closed
-  const [newTitle, setNewTitle] = useState("");
+  const stageCreatorElement = useRef(null);
+  const titleField = useRef(null);
+
+  /* After load, remove .hidden-below class of stage creator for animation */
+  useLayoutEffect(() => {
+    window.setTimeout(() => {
+      if (!stageCreatorElement.current) return;
+      stageCreatorElement.current.classList.remove("hidden-below");
+    }, 1); // Timeout ensures effect fires after DOM painting
+  }, [stageCreatorElement]);
+
+  /* After load and animation, focus on titleField */
+  useLayoutEffect(() => {
+    window.setTimeout(() => {
+      if (!titleField.current) return;
+      titleField.current.focus();
+    }, 450); // timeout = css transition time + 50ms
+  }, [titleField]);
 
   async function handleCreateStage(e) {
     e.preventDefault();
     const request = createRequest("POST", token, {
-      title: newTitle,
+      title: titleField.current.value,
       projectId: projectId,
     });
     const response = await fetch(`${PATH}/stages`, request);
@@ -22,43 +42,28 @@ export default function StageCreator({ projectId }) {
         payload: result,
         token: token,
       });
-      toggleOpen(false);
-      setNewTitle(""); // reset new title field
+      toggleStageCreator(false);
     } else handleApiError(response);
   }
 
-  return open ? (
-    <div className="overlay">
-      <div className="overlay-inner">
-        <form onSubmit={handleCreateStage}>
-          <label htmlFor="new-stage-title">Create Stage:</label>
-          <input
-            type="text"
-            id="new-stage-title"
-            value={newTitle}
-            maxLength="29"
-            required
-            onChange={(e) => setNewTitle(e.target.value)}
-          ></input>
-          <div className="two-button mt-2">
-            <button className="btn-create-stage" type="submit">
-              Create Stage
-            </button>
-            <button
-              className="btn-toggle-stage-creator"
-              onClick={() => toggleOpen(false)}
-            >
-              Cancel
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  ) : (
-    <section className="stage create">
-      <button className="btn" onClick={() => toggleOpen(true)}>
-        Create Stage
-      </button>
+  return (
+    <section className="stage-creator hidden-below" ref={stageCreatorElement}>
+      <form onSubmit={(e) => handleCreateStage(e)}>
+        <h3>Create Stage:</h3>
+        <input type="text" maxLength={26} required ref={titleField} />
+        <button className="btn-confirm" type="submit">
+          Save
+        </button>
+        <button
+          className="btn-toggle-stage-creator btn-cancel"
+          onClick={(e) => {
+            e.preventDefault();
+            toggleStageCreator(false);
+          }}
+        >
+          Cancel
+        </button>
+      </form>
     </section>
   );
 }

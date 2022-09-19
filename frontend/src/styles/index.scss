@@ -1,0 +1,136 @@
+/* This contains all general-purpose selectors except those in normalize.css */
+/* All non-general selectors are in appropriately-named files */
+
+@use "colors";
+
+/*****************/
+/* Custom Resets */
+/*****************/
+
+html {
+  scroll-behavior: smooth;
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100%;
+  overflow-y: auto;
+  padding: 0;
+  border: none;
+  text-align: center;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: colors.$body-background;
+
+  /* "root" element of react */
+  #root {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+/*********************/
+/* Element selectors */
+/*********************/
+
+a {
+  text-decoration: none;
+  color: black;
+}
+
+button {
+  display: block;
+  border-radius: 0.25rem;
+  border: 1px solid colors.$medium-border;
+  padding: 0.25rem;
+  margin: 0.25rem;
+}
+button:hover {
+  cursor: pointer;
+}
+
+input {
+  color: colors.$field-text;
+}
+
+h2,
+h3,
+h4 {
+  cursor: pointer;
+}
+
+hr {
+  width: 100%;
+  margin: 0;
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+/*******************/
+/* General buttons */
+/*******************/
+
+.btn-confirm {
+  background-color: colors.$confirm-button;
+}
+.btn-confirm:hover {
+  background-color: colors.$confirm-button-hover;
+}
+
+.btn-cancel {
+  background-color: colors.$cancel-button;
+}
+.btn-cancel:hover {
+  background-color: colors.$cancel-button-hover;
+}
+
+.btn-delete {
+  background-color: colors.$delete-button;
+}
+.btn-delete:hover {
+  background-color: colors.$delete-button-hover;
+}
+
+/*********************/
+/* interface formats */
+/*********************/
+
+.form-row {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 0.25rem;
+}
+.form-input {
+  display: inline;
+  margin: auto;
+  padding: 0.125rem;
+}
+.options-row {
+  display: inline-flex;
+  align-items: center;
+}
+.options-block {
+  display: flex;
+  justify-content: center;
+}
+
+.options-row button {
+  display: inline;
+}
+
+/*****/
+* {
+  box-sizing: border-box;
+}

@@ -1,0 +1,57 @@
+@use "colors";
+
+.task {
+  margin: 0.5rem 0.375rem;
+  border-radius: 0.5rem;
+  padding: 0.25rem;
+  background: colors.$main-background;
+
+  .task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0;
+
+    .task-title {
+      margin: 0 0.5rem 0 0;
+      font-weight: bold;
+    }
+
+    .task-options {
+      .btn-task-options {
+        background: colors.$secondary-button;
+      }
+      &:hover .btn-task-options {
+        background: colors.$secondary-button-hover;
+      }
+
+      .dropdown-menu {
+        min-width: 8rem;
+        align-self: flex-end;
+
+        .btn-mark-task-complete:hover {
+          background: colors.$confirm-button;
+        }
+        .btn-open-task-editor:hover {
+          background: colors.$primary-button;
+        }
+        .btn-delete-task:hover {
+          background: colors.$delete-button;
+        }
+      }
+    }
+
+    .btn-task-options {
+      margin: 0;
+      width: 1.5rem;
+      height: 1.5rem;
+      border: none;
+      padding: 0;
+    }
+  }
+
+  .task-details {
+    margin: 0.25rem 0.25rem 0.25rem 0.75rem;
+    text-align: start;
+  }
+}

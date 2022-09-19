@@ -1,0 +1,55 @@
+@use "colors";
+
+.user-page {
+  height: auto;
+  max-width: calc(100vw - 2rem); // viewport height - 2 * minimum margin
+  // margin: 0 auto 1rem auto;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  /* gradient border from top black to bottom transparent/white */
+  border-image: linear-gradient(to bottom, black, rgba(255, 255, 255, 0)) 0 1 1
+    1;
+  border-style: solid;
+  border-image-width: 1px;
+  border-bottom-left-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+  padding: 0 0 1rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: colors.$main-background;
+
+  button {
+    border: none;
+  }
+
+  .options-block {
+    display: flex;
+    margin: 1rem auto;
+    width: 13rem;
+    button {
+      padding: 1rem 1rem;
+    }
+  }
+
+  #projects-menu {
+    width: 100%;
+    max-width: 23rem;
+  }
+
+  #signup-form {
+    input {
+      background: colors.$input-background;
+    }
+    input,
+    button {
+      display: block;
+      margin: 1rem 0;
+      width: 100%;
+      height: 3rem;
+      border: none;
+      border-radius: 0.25rem;
+      padding: 0 1rem;
+    }
+  }
+}

@@ -1,8 +1,16 @@
-import { useCallback, useState } from "react";
+/* This is a component of the ProjectPage and is used to */
+/* navigate between projects, and allows */
+/* projects to be reordered through drag-and-drop. */
+/* This component is shaped like a row of folder tabs with active tab on top */
+
+/* Functions herein are declared as useCallback for memo-ization */
+/* for performance because navbar and subcomponents will be */
+/* re-rendered very frequently during drag and drop */
+
+import { useCallback } from "react";
 import { shallowEqual, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import useRequestTools from "../hooks/useRequestTools";
-import "../styles/Navbar.css";
 import ProjectTab from "./ProjectTab";
 
 export default function NavPane() {
@@ -11,31 +19,8 @@ export default function NavPane() {
   const navigate = useNavigate();
   const projects = useSelector((state) => state.user.projects, shallowEqual);
   const currentProjectId = useSelector((state) => state.project.projectId);
-  const [creatorIsOpen, toggleCreatorOpen] = useState(false);
 
-  const handleCreateProject = useCallback(
-    async (e) => {
-      e.preventDefault();
-      // TODO add blank title error handling
-      const request = createRequest("POST", token, {
-        title: `${document.getElementById("new-project-title").value}`,
-      });
-      const response = await fetch(`${PATH}/projects/`, request);
-      if (response.ok) {
-        const token = response.headers.get("X-Auth-Token");
-        const result = await response.json();
-        console.log(response); // DELETE ME
-        dispatch({
-          type: "project/created",
-          payload: result.project,
-          token: token,
-        });
-        toggleCreatorOpen(false);
-      } else handleApiError(response);
-    },
-    [token, createRequest, dispatch, handleApiError, PATH]
-  );
-
+  /* Load a project from server */
   const loadProject = useCallback(
     async (projectId) => {
       const request = createRequest("GET", token);
@@ -43,7 +28,6 @@ export default function NavPane() {
       if (response.ok) {
         const token = response.headers.get("X-Auth-Token");
         const result = await response.json();
-        console.log(response); // DELETE ME
         dispatch({
           type: "project/loaded",
           payload: result.project,
@@ -78,6 +62,7 @@ export default function NavPane() {
     [projects, token, createRequest, dispatch, handleApiError, PATH]
   );
 
+  /* renders one projectTab within tabrow */
   const renderProjectTab = useCallback(
     (index, title, projectId) => {
       return (
@@ -92,56 +77,16 @@ export default function NavPane() {
         />
       );
     },
-    [reorderProjects, loadProject]
-  );
-
-  const createProject = creatorIsOpen ? ( // TODO: break into separate components
-    <div className="overlay">
-      <div className="overlay-inner">
-        <form id="new-project-creator" onSubmit={handleCreateProject}>
-          <label htmlFor="new-project-title">New Project:</label>
-          <input id="new-project-title" />
-          <div className="two-button mt-2">
-            <button id="submit">Create Project</button>
-            <button
-              className="btn-close-task-creator ml-1"
-              onClick={() => toggleCreatorOpen(false)}
-              type="button"
-            >
-              Cancel
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  ) : (
-    <li className="add-project">
-      <button onClick={() => toggleCreatorOpen(true)} title="Add new project">
-        <svg
-          height="16"
-          viewBox="0 0 16 16"
-          version="1.1"
-          width="16"
-          data-view-component="true"
-        >
-          <path
-            fillRule="evenodd"
-            d="M7.75 2a.75.75 0 01.75.75V7h4.25a.75.75 0 110 1.5H8.5v4.25a.75.75 0 11-1.5 0V8.5H2.75a.75.75 0 010-1.5H7V2.75A.75.75 0 017.75 2z"
-          ></path>
-        </svg>
-      </button>
-    </li>
+    [currentProjectId, reorderProjects, loadProject]
   );
 
   return (
     <nav id="navbar">
-      <ul className="tabrow">
+      <ul className="tab-row">
         {projects?.map((project, index) =>
           renderProjectTab(index, project.title, project.projectId)
         )}
-        {createProject}
       </ul>
-      <br />
     </nav>
   );
 }

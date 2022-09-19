@@ -67,7 +67,7 @@ router.get("/:projectId", async (req, res) => {
 router.patch("/:projectId", async (req, res) => {
   try {
     /* update fields as specified */
-    const project = await Project.findById(req.params.projectId);
+    let project = await Project.findById(req.params.projectId);
 
     if (req.body.title) {
       console.log("updating project title");
@@ -79,9 +79,9 @@ router.patch("/:projectId", async (req, res) => {
       project.stages = req.body.stages;
     }
 
-    await project.save();
+    project = await project.save();
     console.log("Updated project");
-    res.status(200).send();
+    res.status(200).send({ project: project });
   } catch (err) {
     if (err instanceof mongoose.Error.ValidationError) {
       res.status(400).send(err); // malformed request syntax error

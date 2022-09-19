@@ -1,66 +1,57 @@
-import { useState } from "react";
-import useRequestTools from "../hooks/useRequestTools";
-import "../styles/TaskCreator.css";
+/* This edits a stage's title. */
+/* It is an uncontrolled component: */
+/* https://reactjs.org/docs/uncontrolled-components.html */
 
-export default function StageEditor({ stageId }) {
+import { useLayoutEffect, useRef } from "react";
+import useRequestTools from "../hooks/useRequestTools";
+
+export default function StageEditor({ stageId, title, toggleStageEditor }) {
   const [createRequest, dispatch, handleApiError, PATH, token] =
     useRequestTools();
-  const [isOpen, toggleOpen] = useState(false); // toggle editor open or closed
-  const [newTitle, setNewTitle] = useState("");
+  const titleField = useRef(null);
 
-  // TODO: implement closeStageEditor
+  /* focus on form when element opens */
+  useLayoutEffect(() => {
+    titleField.current.focus();
+  });
 
+  /* Edit stage's title */
   async function handleEditStageName(e) {
     e.preventDefault();
+
+    /* Get new stage title */
+    const newTitle = titleField.current.value;
+
     const request = createRequest("PATCH", token, {
       title: newTitle,
     });
+    /* Send request */
     const response = await fetch(`${PATH}/stages/${stageId}`, request);
     if (response.ok) {
-      toggleOpen(false); // close editor
       const token = response.headers.get("X-Auth-Token");
       const result = await response.json();
       dispatch({ type: "stage/updated", payload: result, token: token });
+      toggleStageEditor(false);
     } else handleApiError(response);
   }
 
-  return isOpen ? ( // display editor if isOpen == true
-    <div className="overlay">
-      <div className="overlay-inner">
-        <form className="stage-rename" onSubmit={handleEditStageName}>
-          <label htmlFor="rename">Rename Stage:</label>
-          <input
-            type="text"
-            className="rename"
-            maxLength="30"
-            value={newTitle}
-            onChange={(e) => setNewTitle(e.target.value)}
-          />
-          <div className="two-button mt-2">
-            <button className="btn-stage-rename mr-1" type="submit">
-              Rename
-            </button>
-            <button
-              className="btn-close-stage-rename ml-1"
-              onClick={() => toggleOpen(false)}
-              type="button"
-            >
-              Cancel
-            </button>
-          </div>
-        </form>
+  return (
+    <form className="stage-name-editor" onSubmit={handleEditStageName}>
+      <input
+        className="rename"
+        type="text"
+        maxLength={30}
+        defaultValue={title}
+        ref={titleField}
+      />
+      <div className="options-row">
+        <button type="submit" className="btn-confirm">
+          Save
+        </button>
+        <button className="btn-cancel" onClick={() => toggleStageEditor(false)}>
+          Cancel
+        </button>
       </div>
-    </div>
-  ) : (
-    // display button if open == false
-    <button
-      className="btn"
-      onClick={() => {
-        console.log("togglebutton");
-        toggleOpen(true);
-      }}
-    >
-      Rename Stage
-    </button>
+    </form>
   );
 }
