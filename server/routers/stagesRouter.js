@@ -7,6 +7,7 @@ const auth = require("../middleware/auth");
 const tasksRouter = require("./TasksRouter");
 const Project = require("../models/projectModel");
 const Stage = require("../models/stageModel");
+const mongoose = require("mongoose");
 
 /* Use auth for all subsequent routes */
 router.use("/", auth, (req, res, next) => {
@@ -70,7 +71,7 @@ router.patch("/:stageId", async (req, res) => {
     } else {
       res
         .status(404)
-        .send("Task not found. Please check its existence and try again."); // project not found
+        .send("Stage not found. Please check its existence and try again."); // stage not found
     }
     console.error(err);
   }

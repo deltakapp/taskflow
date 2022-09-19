@@ -3,8 +3,7 @@
 const initialState = {};
 
 export default function userReducer(prevState = initialState, action) {
-  console.log(action);
-  let state = { ...prevState }; //mutate new state not prevState
+  let state = { ...prevState }; // mutate new copy of state not prevState
   const payload = action.payload;
 
   switch (action.type) {
@@ -48,14 +47,26 @@ export default function userReducer(prevState = initialState, action) {
       });
       return state;
 
+    /* Updates to project metadata, such as title, are handled by */
+    /* both userReducer and projectReducer */
+    case "project/updated":
+      // Find matching project in user.projects
+      const index = state.projects.findIndex(
+        (project) => project.projectId === payload.projectId
+      );
+      /* Replace project title with payload title*/
+      state.projects[index].title = payload.title;
+      return state;
+
     case "project/deleted":
-      /* remove deleted project from user.projects */
+      // remove deleted project from user.projects
       state.projects = state.projects.filter(
         (project) => project.projectId !== payload.projectId
       );
       return state;
 
     default:
+      /* Return prevState so as not to trigger component updates */
       return prevState;
   }
 }

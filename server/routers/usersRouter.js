@@ -13,7 +13,7 @@ const jwt = require("jsonwebtoken");
 
 /* Create user */
 router.post("/", async (req, res, next) => {
-  /* Create account from temporary user */
+  /* Create account derived from temporary user */
   if (req.body.flag === "IMPORT") {
     try {
       await authenticateTempUser(req, res);
@@ -222,7 +222,7 @@ async function authenticateTempUser(req, res) {
 
     res.locals.user = user; // add user to local variables for mongoose
   } catch (err) {
-    res.status(401).send({ error: "User authentication failed" });
+    res.status(401).send("Import user data failed. Account not created.");
   }
 }
 

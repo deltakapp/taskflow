@@ -7,6 +7,7 @@ const router = express.Router();
 const auth = require("../middleware/auth");
 const Project = require("../models/projectModel");
 const { User } = require("../models/userModel");
+const Stage = require("../models/stageModel");
 
 /* All endpoints here require authentication */
 router.use(auth);
@@ -66,7 +67,7 @@ router.get("/:projectId", async (req, res) => {
 router.patch("/:projectId", async (req, res) => {
   try {
     /* update fields as specified */
-    const project = await Project.findById(req.params.projectId);
+    let project = await Project.findById(req.params.projectId);
 
     if (req.body.title) {
       console.log("updating project title");
@@ -78,9 +79,9 @@ router.patch("/:projectId", async (req, res) => {
       project.stages = req.body.stages;
     }
 
-    await project.save();
+    project = await project.save();
     console.log("Updated project");
-    res.status(200).send();
+    res.status(200).send({ project: project });
   } catch (err) {
     if (err instanceof mongoose.Error.ValidationError) {
       res.status(400).send(err); // malformed request syntax error
@@ -96,7 +97,11 @@ router.delete("/:projectId", async (req, res) => {
   try {
     const id = req.params.projectId;
 
+    const project = await Project.findById(id);
+    await Stage.deleteMany({ id: { $in: project.stages } });
+
     const deletedProject = await Project.findByIdAndDelete(id);
+
     if (deletedProject) {
       console.log(`Deleted project ${id}`);
     } else {

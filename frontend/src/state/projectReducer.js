@@ -9,24 +9,11 @@ const initialState = {
 export default function projectReducer(prevState = initialState, action) {
   let state = { ...prevState }; // mutate new state not prevState
   const payload = action.payload;
-  if (
-    action.type.startsWith("project") ||
-    action.type.startsWith("stage") ||
-    action.type.startsWith("task")
-  ) {
-    console.log(payload);
-  }
 
   switch (action.type) {
     /***** Project actions *****/
     case "project/reorderStages": {
       state.stages = payload;
-      return state;
-    }
-    case "project/created": {
-      if (!state.projectId) {
-        state = payload;
-      }
       return state;
     }
     case "project/loaded": {
@@ -35,6 +22,13 @@ export default function projectReducer(prevState = initialState, action) {
     }
     case "project/unloaded": {
       return initialState;
+    }
+    case "project/updated": {
+      if (state.projectId === payload.projectId) {
+        // if current project updated
+        state = payload;
+      }
+      return state;
     }
     case "project/deleted": {
       // TODO: amend to just payload not payload.project
@@ -45,6 +39,13 @@ export default function projectReducer(prevState = initialState, action) {
     }
 
     /***** Stage actions *****/
+    case "stage/reorderTasks": {
+      const index = state.stages.findIndex(
+        (stage) => stage.stageId === payload.stageId
+      );
+      state.stages[index] = payload;
+      return state;
+    }
     case "stage/created": {
       state.stages = state.stages.concat(payload);
       return state;

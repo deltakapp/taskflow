@@ -1,9 +1,0 @@
-header {
-  display: flex;
-  justify-content: space-between;
-}
-
-.logo {
-  margin: 0.5rem;
-  width: 8rem;
-}

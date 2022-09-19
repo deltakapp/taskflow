@@ -1,7 +1,7 @@
 /* Refreshes auth token or deletes token on logout*/
 const initialState = "";
 
-export default function userReducer(prevState = initialState, action) {
+export default function tokenReducer(prevState = initialState, action) {
   if (action.token) {
     return action.token;
   }

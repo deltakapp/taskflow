@@ -1,0 +1,56 @@
+@use "colors";
+
+.dropdown {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.dropdown:hover {
+  cursor: pointer;
+}
+
+.dropdown:focus-within .dropdown-menu {
+  display: block;
+}
+
+/* Add hover visibility effect for devices with mouse */
+/* see https://stackoverflow.com/questions/17233804/ */
+@media (hover: hover) {
+  .dropdown:hover .dropdown-menu {
+    display: block;
+  }
+}
+
+.dropdown-menu {
+  display: none; // overrridden on dropdown:hover and dropdown:focus
+  position: absolute;
+  top: 100%;
+  border: 1px solid colors.$medium-border;
+  border-radius: 0.25rem;
+  overflow: hidden; /* prevents buttons from clipping border radius */
+  font-size: 1rem;
+  z-index: 3;
+  animation: growDown 0.2s ease-in-out forwards;
+  transform-origin: top center;
+}
+
+.dropdown-menu button {
+  margin: 0;
+  width: 100%;
+  border: none;
+}
+
+@keyframes growDown {
+  0% {
+    transform: scaleY(0);
+  }
+  80% {
+    transform: scaleY(1.05); // overscale for bounce effect
+  }
+  100% {
+    transform: scaleY(1);
+  }
+}

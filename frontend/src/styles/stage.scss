@@ -1,0 +1,64 @@
+@use "colors";
+
+.stage {
+  margin: 0.5rem;
+  max-height: calc(100vh - 7rem);
+  overflow-y: auto;
+  border-radius: 0.5rem;
+  border: 1px solid colors.$medium-border;
+  background: colors.$tab-background;
+
+  .stage-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    min-height: 1.25rem;
+    margin: 0.25rem;
+
+    .btn-toggle-task-creator,
+    .btn-stage-options {
+      margin: 0 0.125rem;
+      width: 1.5rem;
+      height: 1.5rem;
+      border: none;
+      padding: 0;
+    }
+
+    .btn-toggle-task-creator {
+      background: colors.$confirm-button;
+    }
+
+    .btn-stage-options {
+      background: colors.$primary-button;
+    }
+
+    .btn-toggle-task-creator:hover {
+      background: colors.$primary-button-hover;
+    }
+
+    .stage-title {
+      margin: 0;
+      font-size: 1.25rem;
+    }
+
+    .stage-name-editor input {
+      width: calc(100% - 0.5rem);
+    }
+
+    .stage-options {
+      &:hover .btn-stage-options {
+        background: colors.$primary-button-hover;
+      }
+
+      .dropdown-menu {
+        min-width: 8rem;
+        align-self: flex-end;
+        background-color: colors.$body-background;
+
+        > button:hover {
+          background: colors.$primary-button-hover;
+        }
+      }
+    }
+  }
+}

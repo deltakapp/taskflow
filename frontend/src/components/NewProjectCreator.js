@@ -1,15 +1,12 @@
 import { useState } from "react";
-import { shallowEqual, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import useRequestTools from "../hooks/useRequestTools";
-import "../styles/NewProjectCreator.css";
 
 export default function NewProjectCreator() {
   const [createRequest, dispatch, handleApiError, PATH, token] =
     useRequestTools();
   const navigate = useNavigate();
-  const [isActive, toggleActive] = useState(false); // if creator is active
-  const user = useSelector((state) => state.user, shallowEqual);
+  const [isActive, toggleActive] = useState(false); // if creator is open
 
   async function handleCreateProject(e) {
     e.preventDefault();
@@ -21,37 +18,54 @@ export default function NewProjectCreator() {
     if (response.ok) {
       const token = response.headers.get("X-Auth-Token");
       const result = await response.json();
-      await dispatch({
+      dispatch({
         type: "project/created",
         payload: result.project,
         token: token,
       });
+
       navigate(`../project/${result.project.projectId}`);
     } else handleApiError(response);
   }
 
   if (isActive) {
     return (
-      <form id="new-project-creator" onSubmit={handleCreateProject}>
+      <>
         <h3>Start a new project:</h3>
-        <input id="new-project-title" placeholder="Project Title" />
-        <button id="submit">Create Project</button>
-        <button
-          id="btn-toggle-project-creator"
-          onClick={() => toggleActive(false)}
+        <form
+          id="new-project-creator"
+          className="form-row"
+          onSubmit={handleCreateProject}
         >
-          Cancel
-        </button>
-      </form>
+          <input
+            id="new-project-title"
+            className="form-input"
+            placeholder="Project Title"
+          />
+          <div className="options-row">
+            <button className="btn-confirm">Create Project</button>
+            <button
+              className="btn-cancel"
+              type="button"
+              onClick={() => toggleActive(false)}
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </>
     );
   } else {
     return (
-      <button
-        id="btn-toggle-project-creator"
-        onClick={() => toggleActive(true)}
-      >
-        Start New Project
-      </button>
+      <div className="options-block">
+        <button
+          id="btn-enable-project-creator"
+          className="btn-confirm"
+          onClick={() => toggleActive(true)}
+        >
+          Start New Project
+        </button>
+      </div>
     );
   }
 }

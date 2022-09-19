@@ -1,0 +1,95 @@
+@use "colors";
+
+#user-settings-menu {
+  #user-settings-grid {
+    min-width: 20rem;
+    margin-bottom: 0.5rem;
+    padding: 0;
+
+    display: grid;
+    grid-template-columns: 3fr 1fr 1fr;
+    grid-template-rows: repeat(5, 2rem);
+    justify-items: stretch;
+    align-items: center;
+    row-gap: 0.5rem;
+
+    p,
+    input,
+    button {
+      height: 2rem;
+    }
+
+    h3 {
+      grid-column-start: 1;
+      grid-column-end: 4;
+      margin: 0;
+      align-self: flex-end;
+      text-align: center;
+      text-decoration: underline;
+    }
+
+    p {
+      font-size: 1.25rem;
+    }
+
+    p,
+    .input-left {
+      grid-column-start: 1;
+      grid-column-end: 2;
+    }
+
+    .btn-edit-field {
+      grid-column-start: 3;
+      grid-column-end: 4;
+      background: colors.$secondary-button;
+
+      &:hover {
+        background: colors.$secondary-button-hover;
+      }
+    }
+  }
+
+  .btn-change-password {
+    margin: 1rem auto;
+    height: 2rem;
+    background: colors.$secondary-button;
+
+    &hover {
+      background: colors.$secondary-button-hover;
+    }
+  }
+
+  #password-input-fields {
+    margin-top: 1rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: repeat(4, 5rem);
+
+    .password-subsection {
+      grid-column-start: 1;
+      grid-column-end: 3;
+      font-size: 1.25rem;
+
+      p {
+        margin: 0;
+      }
+    }
+
+    button {
+      margin-top: 1rem;
+      height: 2rem;
+    }
+  }
+
+  #btn-delete-user,
+  #btn-confirm-delete-user,
+  #btn-cancel-delete-user {
+    margin: 0.5rem auto;
+  }
+
+  .delete-user-section p {
+    margin: 0.5rem auto;
+    max-width: 15rem;
+    text-align: center;
+  }
+}

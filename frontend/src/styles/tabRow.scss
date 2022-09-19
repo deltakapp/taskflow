@@ -1,0 +1,55 @@
+@use "colors";
+
+.tab-row {
+  position: relative;
+  width: calc(100vw - 2rem);
+  margin: 0 auto;
+  padding: 0.25rem 0 0 0;
+  line-height: 1.5rem;
+  text-align: center;
+  background: colors.$body-background;
+
+  /* Scroll behaviors */
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  &:before {
+    z-index: 1;
+  }
+
+  /* Line representing top edge of current tab */
+  &:after {
+    position: absolute;
+    content: "";
+    width: 1000vw; // extra-wide for scrollable content
+    bottom: 0;
+    left: 0;
+    border-bottom: 1px solid black;
+    z-index: 1;
+  }
+
+  .tab {
+    position: relative;
+    display: inline-block;
+    margin: 0 0.5rem;
+    padding: 0.125rem 0.5rem;
+    border-top: 1px solid colors.$medium-border;
+    border-left: 1px solid colors.$medium-border;
+    border-right: 1px solid colors.$medium-border;
+    border-top-left-radius: 0.25rem;
+    border-top-right-radius: 0.25rem;
+    background: colors.$tab-background;
+    font-weight: bold;
+    z-index: 0;
+  }
+
+  .tab.active {
+    background: colors.$main-background;
+    color: black;
+    z-index: 2;
+  }
+}

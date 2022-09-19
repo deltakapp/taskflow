@@ -1,0 +1,50 @@
+@use "colors";
+
+.home-page {
+  margin: 1rem auto;
+  max-width: 22rem;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  padding: 1.5rem 3rem;
+  background: colors.$main-background;
+
+  h2 {
+    margin: 0.5rem 0 0 0;
+  }
+
+  form {
+    padding: 0.5rem;
+  }
+
+  input {
+    background: colors.$input-background;
+  }
+
+  button {
+    font-size: 1.25em;
+    background: colors.$confirm-button;
+  }
+
+  input,
+  button {
+    display: block;
+    margin: 1rem 0;
+    width: 100%;
+    height: 3rem;
+    border: none;
+    border-radius: 0.25rem;
+    padding: 0 1rem;
+  }
+
+  div p {
+    margin: 1rem 0;
+  }
+
+  .logo {
+    width: 100%;
+  }
+
+  .inactive {
+    display: none;
+  }
+}

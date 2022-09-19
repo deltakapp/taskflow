@@ -1,0 +1,33 @@
+@use "colors";
+
+header {
+  height: 3rem;
+  display: flex;
+  justify-content: space-between;
+  margin: 0;
+  padding: 0.25rem;
+  font-size: 1.25rem;
+}
+
+header .logo {
+  width: 8rem;
+}
+
+#btn-user-name {
+  display: block;
+  margin: 0;
+  background-color: colors.$primary-button;
+}
+.user-panel:hover #btn-user-name {
+  background-color: colors.$primary-button-hover;
+}
+
+.dropdown-menu {
+  min-width: 6rem;
+  align-self: flex-end;
+  background-color: colors.$body-background;
+}
+
+header .dropdown button:hover {
+  background-color: colors.$primary-button;
+}

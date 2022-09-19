@@ -1,37 +1,35 @@
-/* This page should contain user settings control as well as list of projects */
+/* This page contains user settings control as well as list of projects */
 
 import { useSelector } from "react-redux";
 import { NavLink, Outlet } from "react-router-dom";
-// import "../../styles/Pages/UserPage.css";
-import "../../styles/Pages/UserPage.css";
-import PageHeader from "../PageHeader";
+import Header from "../Header";
 
 export default function UserPage() {
   const user = useSelector((state) => state.user);
 
   let activeStyle = {
-    fontWeight: "bold",
-    color: "black",
-    textDecoration: "none",
+    borderLeft: "1px solid black",
+    borderTop: "1px solid black",
+    borderRight: "1px solid black",
+    color: "#000000",
   };
   let inactiveStyle = {
-    color: "blue",
-    textDecoration: "underline",
+    color: "#444444",
   };
 
   const userSettingsButton =
     user.flag === "TEMP" ? (
-      <li>
-        <NavLink
-          to="signup"
-          style={({ isActive }) => (isActive ? activeStyle : inactiveStyle)}
-        >
-          Sign Up
-        </NavLink>
-      </li>
+      <NavLink
+        to="signup"
+        className="tab"
+        style={({ isActive }) => (isActive ? activeStyle : inactiveStyle)}
+      >
+        Sign Up
+      </NavLink>
     ) : (
       <NavLink
         to="settings"
+        className="tab"
         style={({ isActive }) => (isActive ? activeStyle : inactiveStyle)}
       >
         User Settings
@@ -39,23 +37,22 @@ export default function UserPage() {
     );
 
   return (
-    <main>
-      <PageHeader></PageHeader>
-      <nav id="user-mode-selector">
-        <ul id="user-modes">
-          <li>
-            <NavLink
-              to="projects"
-              style={({ isActive }) => (isActive ? activeStyle : inactiveStyle)}
-            >
-              My Projects
-            </NavLink>
-          </li>
-          {userSettingsButton}
-        </ul>
+    <>
+      <Header />
+      <nav id="user-tabs" className="tab-row">
+        <NavLink
+          className="tab"
+          to="projects"
+          style={({ isActive }) => (isActive ? activeStyle : inactiveStyle)}
+        >
+          My Projects
+        </NavLink>
+        {userSettingsButton}
       </nav>
-      <hr />
-      <Outlet />
-    </main>
+      <main className="user-page">
+        <br />
+        <Outlet />
+      </main>
+    </>
   );
 }

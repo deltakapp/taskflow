@@ -1,22 +1,42 @@
 /* User settings controls on User Settings Page */
+/* input fields are react-controlled to enable real-time suggestions */
 
-import { useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import useRequestTools from "../hooks/useRequestTools";
-import "../styles/UserSettingsMenu.css";
 
 export default function UserSettings() {
-  const navigate = useNavigate();
-  const user = useSelector((state) => state.user);
   const [createRequest, dispatch, handleApiError, PATH, token] =
     useRequestTools();
+  const navigate = useNavigate();
+  const user = useSelector((state) => state.user);
 
+  /* User name field and states */
   const [isEditingUsername, toggleEditingUsername] = useState(false);
   const [newUsername, setNewUsername] = useState(user.name);
+  const usernameField = useRef(null); // focus on input field when editing is toggled
+  useLayoutEffect(() => {
+    if (isEditingUsername) usernameField.current.focus();
+  }, [isEditingUsername]);
+
+  /* Email address field and state */
   const [isEditingEmail, toggleEditingEmail] = useState(false);
   const [newEmail, setNewEmail] = useState(user.email);
+  const emailField = useRef(null); // focus on input field when editing is toggled
+  useLayoutEffect(() => {
+    if (isEditingEmail) emailField.current.focus();
+  }, [isEditingEmail]);
+
+  /* Password field and state */
   const [isEditingPassword, toggleEditingPassword] = useState(false);
+  const currentPasswordField = useRef(null);
+  const newPasswordField1 = useRef(null);
+  const newPasswordField2 = useRef(null);
+
+  /* Delete user field and state */
+  const [isDeletingUser, toggleDeletingUser] = useState(false);
+  const deleteUserPassword = useRef(null);
 
   async function editUsername(e) {
     e.preventDefault();
@@ -50,15 +70,15 @@ export default function UserSettings() {
 
   async function editPassword(e) {
     e.preventDefault();
-    const oldPassword = document.getElementById("current-password").value;
-    const newPassword1 = document.getElementById("new-password-1").value;
-    const newpassword2 = document.getElementById("new-password-2").value;
+    const currentPassword = currentPasswordField.current.value;
+    const newPassword1 = newPasswordField1.current.value;
+    const newpassword2 = newPasswordField2.current.value;
     if (newPassword1 !== newpassword2) {
       alert("New passwords do not match");
     } else {
       const request = createRequest("PATCH", token, {
         email: user.email,
-        oldPassword: oldPassword,
+        oldPassword: currentPassword,
         newPassword: newPassword1,
       });
       const response = await fetch(`${PATH}/users`, request);
@@ -72,9 +92,8 @@ export default function UserSettings() {
   }
 
   async function deleteUser() {
-    if (
-      window.confirm("Are you sure you want to delete your account?") === true
-    ) {
+    /* full password check occurs server-side */
+    if (deleteUserPassword.current.value !== "") {
       const request = createRequest("DELETE", token);
       const response = await fetch(`${PATH}/users`, request);
       if (response.ok) {
@@ -93,91 +112,161 @@ export default function UserSettings() {
     toggleEditingPassword(false);
   }
 
-  return (
-    <div id="user-settings-menu" className="double">
-      <h3>User Name:</h3>
-      {isEditingUsername ? (
-        <form onSubmit={editUsername}>
-          <input
-            type="text"
-            value={newUsername}
-            onChange={(e) => setNewUsername(e.target.value)}
-          />
-          <button type="submit" onClick={editUsername}>
-            Save
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              toggleEditingUsername(false);
-              setNewUsername(user.name);
-            }}
-          >
-            Cancel
-          </button>
-        </form>
-      ) : (
-        <>
-          <p>{user.name}</p>
-          <button onClick={() => toggleEditingUsername(true)}>Edit</button>
-        </>
-      )}
-      <h3>Email Address:</h3>
-      {isEditingEmail ? (
-        <form onSubmit={editEmail}>
-          <input
-            type="text"
-            value={newEmail}
-            onChange={(e) => setNewEmail(e.target.value)}
-          />
-          <button type="submit" onClick={editEmail}>
-            Save
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              toggleEditingEmail(false);
-              setNewEmail(user.email);
-            }}
-          >
-            Cancel
-          </button>
-        </form>
-      ) : (
-        <>
-          <p>{user.email}</p>
-          <button onClick={() => toggleEditingEmail(true)}>Edit</button>
-        </>
-      )}
-
-      <h3>Password</h3>
-      {isEditingPassword ? (
-        <form onSubmit={editPassword}>
-          <p>Current password:</p>
-          <input id="current-password" type="text" />
-
-          <p>Enter new password:</p>
-          <input id="new-password-1" type="text" />
-
-          <p>Re-enter new password:</p>
-          <input id="new-password-2" type="text" />
-
-          <button type="submit" onClick={editPassword}>
-            Save
-          </button>
-          <button type="button" onClick={() => resetPasswordFields()}>
-            Cancel
-          </button>
-        </form>
-      ) : (
-        <button onClick={() => toggleEditingPassword(true)}>
-          Change Password
-        </button>
-      )}
-      <br />
-      <button id="btn-delete-user" onClick={() => deleteUser()}>
-        Delete User
+  const usernameSection = isEditingUsername ? (
+    <>
+      <input
+        className="input-left"
+        defaultValue={user.name}
+        onChange={(e) => setNewUsername(e.target.value)}
+        ref={usernameField}
+      />
+      <button className="btn-confirm" type="button" onClick={editUsername}>
+        Save
       </button>
+      <button
+        className="btn-cancel"
+        type="button"
+        onClick={() => {
+          toggleEditingUsername(false);
+          setNewUsername(user.name);
+        }}
+      >
+        Cancel
+      </button>
+    </>
+  ) : (
+    <>
+      <p>{user.name}</p>
+      <button
+        className="btn-edit-field"
+        onClick={() => toggleEditingUsername(true)}
+      >
+        Edit
+      </button>
+    </>
+  );
+
+  const emailAddressSection = isEditingEmail ? (
+    <>
+      <input
+        className="input-left"
+        value={newEmail}
+        onChange={(e) => setNewEmail(e.target.value)}
+        ref={emailField}
+      />
+      <button className="btn-confirm" type="button" onClick={editEmail}>
+        Save
+      </button>
+      <button
+        className="btn-cancel"
+        type="button"
+        onClick={() => {
+          toggleEditingEmail(false);
+          setNewEmail(user.email);
+        }}
+      >
+        Cancel
+      </button>
+    </>
+  ) : (
+    <>
+      <p>{user.email}</p>
+      <button
+        className="btn-edit-field"
+        onClick={() => toggleEditingEmail(true)}
+      >
+        Edit
+      </button>
+    </>
+  );
+
+  const passwordSection = isEditingPassword ? (
+    <div id="password-input-fields">
+      <div className="password-subsection">
+        <p className="password-field-label">Current password:</p>
+        <input
+          id="current-password"
+          className="input-right"
+          ref={currentPasswordField}
+        />
+      </div>
+      <div className="password-subsection">
+        <p>Enter new password:</p>
+        <input
+          id="new-password-1"
+          className="input-right"
+          ref={newPasswordField1}
+        />
+      </div>
+      <div className="password-subsection">
+        <p>Re-enter new password:</p>
+        <input
+          id="new-password-2"
+          className="input-right"
+          ref={newPasswordField2}
+        />
+      </div>
+
+      <button className="btn-confirm left" onClick={editPassword}>
+        Save
+      </button>
+      <button
+        className="btn-cancel right"
+        onClick={() => resetPasswordFields()}
+      >
+        Cancel
+      </button>
+    </div>
+  ) : (
+    <button
+      className="btn-change-password center"
+      onClick={() => toggleEditingPassword(true)}
+    >
+      Change Password
+    </button>
+  );
+
+  const deleteUserSection = isDeletingUser ? (
+    <div className="delete-user-section">
+      <p>To delete your account, please enter your password:</p>
+      <input ref={deleteUserPassword} />
+      <button
+        id="btn-confirm-delete-user"
+        className="btn-delete"
+        onClick={() => deleteUser()}
+      >
+        Permanently Delete User
+      </button>
+      <button
+        id="btn-cancel-delete-user"
+        className="btn-cancel"
+        onClick={() => toggleDeletingUser(false)}
+      >
+        Cancel
+      </button>
+    </div>
+  ) : (
+    <button
+      id="btn-delete-user"
+      className="btn-delete"
+      onClick={() => toggleDeletingUser(true)}
+    >
+      Delete User
+    </button>
+  );
+
+  return (
+    <div id="user-settings-menu">
+      <div id="user-settings-grid">
+        <h3>User Name</h3>
+        {usernameSection}
+        <h3>Email Address</h3>
+        {emailAddressSection}
+        <h3>Password</h3>
+      </div>
+      {passwordSection}
+      <br />
+      {deleteUserSection}
     </div>
   );
 }

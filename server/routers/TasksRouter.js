@@ -6,6 +6,8 @@
 const express = require("express");
 const router = express.Router();
 const Task = require("../models/taskModel.js");
+const Stage = require("../models/stageModel");
+const Project = require("../models/projectModel.js");
 
 /* Create a new task */
 router.post("/", async (req, res) => {

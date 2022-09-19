@@ -14,11 +14,9 @@ export default function LogoutPage() {
   }, [navigate]);
 
   return (
-    <main className="single">
+    <main className="home-page">
       <img className="logo" alt="Taskflow.tech" src="/logo.png" />
-      <h1>
-        <a href="/">Taskflow.tech</a>
-      </h1>
+      <br />
       <h2>You have been logged out and will be redirected.</h2>
     </main>
   );

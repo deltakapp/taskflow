@@ -1,12 +1,19 @@
-import { useEffect } from "react";
+/* This is the home page for users. It contains options to log in, */
+/* sign up, or preview the app */
+
+import { useEffect, useLayoutEffect, useState } from "react";
 import { shallowEqual, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
-import useRequestTools from "../../hooks/useRequestTools";
+import { useNavigate } from "react-router-dom";
+import LoginForm from "../LoginForm";
+import PreviewInitializer from "../PreviewInitializer";
+import SignupForm from "../SignupForm";
 
 export default function HomePage() {
-  const [createRequest, dispatch, handleApiError, PATH] = useRequestTools();
   const navigate = useNavigate();
   const user = useSelector((state) => state.user, shallowEqual);
+
+  const [activeMode, setActiveMode] = useState(""); // determines which form is active
+  /* Note: these states must === element IDs */
 
   /* Upon login navigate to user page */
   useEffect(() => {
@@ -16,67 +23,29 @@ export default function HomePage() {
     }
   }, [user, navigate]);
 
-  async function handleLogin(e) {
-    e.preventDefault();
-    const email = document.getElementById("user-email");
-    const password = document.getElementById("user-password");
-
-    const request = createRequest("POST", null, {
-      email: email.value,
-      password: password.value,
-    });
-
-    const response = await fetch(`${PATH}/users/login`, request);
-    if (response.ok) {
-      const result = await response.json();
-      dispatch({
-        type: "user/loggedIn",
-        payload: result.user,
-        token: result.token,
-      });
-    } else handleApiError(response);
-
-    email.value = ""; // reset credential fields
-    password.value = "";
-  }
-
-  async function initializePreview() {
-    const request = createRequest("POST", null, {});
-    const response = await fetch(`${PATH}/users/temp/`, request);
-    if (response.ok) {
-      const result = await response.json();
-      dispatch({
-        type: "user/created",
-        payload: { flag: "TEMP", ...result.user },
-        token: result.token,
-      });
-      alert(
-        "A temporary user profile has been created for you. If you wish to save your projects, create an account by clicking on the user tab in the top right corner."
-      );
-    } else handleApiError(response);
-  }
+  /* Scroll to active section after DOM mutation */
+  useLayoutEffect(() => {
+    if (activeMode) {
+      const scrollDestination = document.getElementById(`${activeMode}`);
+      scrollDestination.scrollIntoView();
+    }
+  });
 
   return (
-    <main className="single">
+    <main className="home-page">
       <img className="logo" alt="Taskflow.tech" src="/logo.png" />
-      <h1>
-        <a href="/">Taskflow.tech</a>
-      </h1>
-      <h2>Login</h2>
-      <form onSubmit={handleLogin}>
-        <input id="user-email" type="text" placeholder="E-mail" />
-        <input id="user-password" type="password" placeholder="Password" />
-        <button type="submit">Log In</button>
-      </form>
-      <h3>
-        <Link to="/signup">Sign Up</Link>
-      </h3>
+      <h2 onClick={() => setActiveMode("login-form")}>Login</h2>
+      <LoginForm active={activeMode === "login-form" ? true : false} />
       <br />
-      <h3>
-        <a href="#" onClick={initializePreview}>
-          Preview the app
-        </a>
-      </h3>
+      <h2 onClick={() => setActiveMode("signup-form")}>Sign Up</h2>
+      <SignupForm active={activeMode === "signup-form" ? true : false} />
+      <br />
+      <h2 onClick={() => setActiveMode("preview-initializer")}>
+        Preview the app
+      </h2>
+      <PreviewInitializer
+        active={activeMode === "preview-initializer" ? true : false}
+      />
     </main>
   );
 }
