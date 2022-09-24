@@ -2,12 +2,7 @@
 
 import { useDrop } from "react-dnd";
 
-export default function useHorizontalDrop(
-  itemType,
-  index,
-  reorderProjects,
-  ref
-) {
+export default function useHorizontalDrop(itemType, index, reorderItems, ref) {
   const [, drop] = useDrop({
     accept: itemType,
     hover(item, monitor) {
@@ -40,8 +35,8 @@ export default function useHorizontalDrop(
       if (sourceIndex > hoverIndex && hoverClientX > hoverMiddleX) {
         return;
       }
-      // Reorder projects if all above checks have passed
-      reorderProjects(sourceIndex, hoverIndex);
+      // Reorder items if all above checks have passed
+      reorderItems(sourceIndex, hoverIndex);
       item.index = hoverIndex;
     },
   });

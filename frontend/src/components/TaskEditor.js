@@ -39,6 +39,7 @@ export default function TaskEditor({
       requestType = "POST";
       URL = `${PATH}/stages/${stageId}/tasks`;
       dispatchType = "task/created";
+      toggleTaskEditor(false); // Close task editor before request to prevent user repeating action
     } /* parameters for existing task */ else {
       requestType = "PATCH";
       URL = `${PATH}/stages/${stageId}/tasks/${taskId}`;

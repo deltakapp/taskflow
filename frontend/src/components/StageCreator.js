@@ -51,18 +51,20 @@ export default function StageCreator({ projectId, toggleStageCreator }) {
       <form onSubmit={(e) => handleCreateStage(e)}>
         <h3>Create Stage:</h3>
         <input type="text" maxLength={26} required ref={titleField} />
-        <button className="btn-confirm" type="submit">
-          Save
-        </button>
-        <button
-          className="btn-toggle-stage-creator btn-cancel"
-          onClick={(e) => {
-            e.preventDefault();
-            toggleStageCreator(false);
-          }}
-        >
-          Cancel
-        </button>
+        <div className="options-row">
+          <button className="btn-confirm" type="submit">
+            Save
+          </button>
+          <button
+            className="btn-toggle-stage-creator btn-cancel"
+            onClick={(e) => {
+              e.preventDefault();
+              toggleStageCreator(false);
+            }}
+          >
+            Cancel
+          </button>
+        </div>
       </form>
     </section>
   );

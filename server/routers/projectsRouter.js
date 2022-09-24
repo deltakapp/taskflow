@@ -3,6 +3,7 @@
 /* Each project is represented as a document in the projects collection */
 
 const express = require("express");
+const mongoose = require("mongoose");
 const router = express.Router();
 const auth = require("../middleware/auth");
 const Project = require("../models/projectModel");
@@ -66,22 +67,27 @@ router.get("/:projectId", async (req, res) => {
 /* Update a project */
 router.patch("/:projectId", async (req, res) => {
   try {
-    /* update fields as specified */
-    let project = await Project.findById(req.params.projectId);
+    const body = {}; // response object to be modified before send
 
-    if (req.body.title) {
-      console.log("updating project title");
-      project.title = req.body.title;
-    }
-
+    /* update stages */
     if (req.body.stages) {
-      console.log("updating stages");
-      project.stages = req.body.stages;
+      req.body.stages.forEach(async (stage) => {
+        await Stage.findByIdAndUpdate(stage.stageId, {
+          title: stage.title,
+          tasks: stage.tasks,
+        });
+      });
     }
 
-    project = await project.save();
-    console.log("Updated project");
-    res.status(200).send({ project: project });
+    /* update title */
+    if (req.body.title) {
+      let project = await Project.findById(req.params.projectId);
+      project.title = req.body.title;
+      project = await project.save();
+      body.project = project;
+    }
+
+    res.status(200).send(body);
   } catch (err) {
     if (err instanceof mongoose.Error.ValidationError) {
       res.status(400).send(err); // malformed request syntax error

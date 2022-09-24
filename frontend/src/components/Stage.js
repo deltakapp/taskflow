@@ -2,12 +2,14 @@
 /* These stages implement Drag and Drop horizontally*/
 
 import { useCallback, useRef, useState } from "react";
+import { useDrop } from "react-dnd";
 import { useSelector } from "react-redux";
 import useCustomDrag from "../hooks/useCustomDrag";
 import useHorizontalDrop from "../hooks/useHorizontalDrop";
 import useRequestTools from "../hooks/useRequestTools";
 import useVerticalDrop from "../hooks/useVerticalDrop";
-import { ItemTypes } from "../utils/itemTypes";
+import { itemTypes } from "../utils/itemTypes";
+import DropTaskTarget from "./DropTaskTarget";
 import StageEditor from "./StageEditor";
 import Task from "./Task";
 import TaskEditor from "./TaskEditor";
@@ -15,59 +17,86 @@ import TaskEditor from "./TaskEditor";
 export default function Stage({
   stageId,
   stageIndex,
-  projectId,
+  nextStageId,
   reorderStages,
+  requestPatchStages,
 }) {
   const [createRequest, dispatch, handleApiError, PATH, token] =
     useRequestTools();
-  const stageRef = useRef(null);
   const stage = useSelector((state) => state.project.stages[stageIndex]);
   const tasks = useSelector((state) => state.project.stages[stageIndex].tasks);
 
   const [isTaskCreatorOpen, toggleTaskCreator] = useState(false); // toggle task creator open or closed
-  const [isStageEditorOpen, toggleStageEditor] = useState(false);
+  const [isStageEditorOpen, toggleStageEditor] = useState(false); // toggle stage editor open or closed
 
-  /* Accept Drag-and-drop in both horizontal and vertical directions */
-  const [drag, isDragging] = useCustomDrag(ItemTypes.STAGE, stageIndex);
-  const horizontalDrop = useHorizontalDrop(
-    ItemTypes.STAGE,
+  /* Accept Stages Drag-and-drop in both horizontal and vertical directions */
+  const stageRef = useRef(null);
+  const [dragStage, isDragging] = useCustomDrag(itemTypes.STAGE, stageIndex);
+  const horizontalDropStages = useHorizontalDrop(
+    itemTypes.STAGE,
     stageIndex,
     reorderStages,
     stageRef
   );
-  const verticalDrop = useVerticalDrop(
-    ItemTypes.STAGE,
+  const verticalDropStages = useVerticalDrop(
+    itemTypes.STAGE,
     stageIndex,
     reorderStages,
     stageRef
   );
-  drag(horizontalDrop(stageRef));
-  drag(verticalDrop(stageRef));
+  dragStage(horizontalDropStages(stageRef));
+  dragStage(verticalDropStages(stageRef));
 
-  /* Reorder tasks */
-  const reorderTasks = useCallback(
-    async (sourceIndex, hoverIndex) => {
-      if (!token) return; // abort if user logged out
-      const newTasks = [...tasks]; // copy state for mutations
-      newTasks.splice(hoverIndex, 0, newTasks.splice(sourceIndex, 1)[0]);
+  /* Stage Header accepts tasks dropped from other stages */
+  const stageHeaderRef = useRef(null);
+  const [, dropTasks] = useDrop({
+    accept: itemTypes.TASK,
+    drop(item, monitor) {
+      moveTask(item.taskId, item.stageId, stageId, 0); // index 0 adds task to top of array
+    },
+  });
+  dropTasks(stageHeaderRef);
 
-      /* dispatch reorder to redux state (optimistic update for performance) */
-      dispatch({
-        type: "stage/reorderTasks",
-        payload: { stageId: stageId, tasks: newTasks },
-      });
-
-      /* send API request */
+  /* Updates state and server when a task is dropped from another stage */
+  const moveTask = async (taskId, oldStageId, newStageId, newTaskIndex) => {
+    dispatch({
+      type: "project/moveTask",
+      payload: {
+        taskId: taskId,
+        oldStageId: oldStageId,
+        newStageId: newStageId,
+        newTaskIndex: newTaskIndex,
+      },
+    });
+    /* send API request */
+    /* If move was internal to one stage, patch that stage. otherwise, patch project */
+    if (oldStageId === newStageId) {
       const request = createRequest("PATCH", token, {
-        tasks: newTasks,
+        tasks: tasks,
       });
       const response = await fetch(`${PATH}/stages/${stageId}`, request);
       if (response.ok) {
         const token = response.headers.get("X-Auth-Token");
         if (token) dispatch({ type: "token/refresh", token: token });
       } else handleApiError(response);
+    } else requestPatchStages(); // if task moved to another stage, patch project
+  };
+
+  /* Reorder tasks */
+  /* This is a UI-only update called frequently while dragging a task */
+  const reorderTasks = useCallback(
+    async (sourceIndex, hoverIndex) => {
+      if (!token) return; // abort if user logged out
+      const newTasks = [...tasks]; // copy state for mutations
+      newTasks.splice(hoverIndex, 0, newTasks.splice(sourceIndex, 1)[0]);
+
+      /* dispatch reorder to redux state */
+      dispatch({
+        type: "stage/reorderTasks",
+        payload: { stageId: stageId, tasks: newTasks },
+      });
     },
-    [tasks, token, stageId, dispatch, PATH, createRequest, handleApiError] //dependency array
+    [tasks, token, stageId, dispatch] //dependency array
   );
 
   async function handleDeleteStage() {
@@ -85,7 +114,8 @@ export default function Stage({
     } else return; // Abort if user does not confirm
   }
 
-  const taskList = tasks ? (
+  const taskList =
+    !!tasks.length && // if any tasks exist, map Task components
     tasks.map((task, index) => {
       return (
         <Task
@@ -94,14 +124,12 @@ export default function Stage({
           taskIndex={index}
           stageId={stageId}
           stageIndex={stageIndex}
+          nextStageId={nextStageId}
           reorderTasks={reorderTasks}
+          moveTask={moveTask}
         />
       );
-    })
-  ) : (
-    /* display only page break if no tasks exist */
-    <br />
-  );
+    });
 
   return (
     <section
@@ -110,7 +138,7 @@ export default function Stage({
       ref={stageRef}
       style={{ opacity: isDragging ? 0 : 1 }}
     >
-      <div className="stage-header">
+      <div className="stage-header" ref={stageHeaderRef}>
         <button
           className="btn-toggle-task-creator"
           onClick={() => toggleTaskCreator(true)}
@@ -152,6 +180,7 @@ export default function Stage({
         />
       )}
       {taskList}
+      <DropTaskTarget stageId={stageId} moveTask={moveTask} />
     </section>
   );
 }

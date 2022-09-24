@@ -1,6 +1,6 @@
 /* This enum gives draggable item types for react-dnd library */
 
-export const ItemTypes = {
+export const itemTypes = {
   PROJECTTAB: "projectTab",
   STAGE: "stage",
   TASK: "task",

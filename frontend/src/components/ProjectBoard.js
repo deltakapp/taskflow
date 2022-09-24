@@ -45,15 +45,32 @@ export default function ProjectBoard({
     [stages, token, projectId, createRequest, dispatch, handleApiError, PATH] //dependency array
   );
 
-  const stageList = stages?.map((stage, index) => (
-    <Stage
-      key={stage.stageId}
-      stageId={stage.stageId}
-      stageIndex={index}
-      projectId={projectId}
-      reorderStages={reorderStages}
-    />
-  ));
+  /* API request to PATCH stages. Used for Stage.moveTask() */
+  async function requestPatchStages() {
+    const request = createRequest("PATCH", token, { stages: stages });
+    const response = await fetch(`${PATH}/projects/${projectId}`, request);
+    if (response.ok) {
+      const token = response.headers.get("X-Auth-Token");
+      if (token) dispatch({ type: "token/refresh", token: token });
+    } else handleApiError(response);
+  }
+
+  const stageList = stages?.map((stage, index, stages) => {
+    return (
+      <Stage
+        key={stage.stageId}
+        stageId={stage.stageId}
+        stageIndex={index}
+        reorderStages={reorderStages}
+        requestPatchStages={requestPatchStages}
+        nextStageId={
+          /* If stage is last in array, nextStageId is null */
+          /* Otherwise, nextStageId is the stageId of next stage in array */
+          stages.length === index + 1 ? null : stages[index + 1].stageId
+        }
+      />
+    );
+  });
 
   return (
     <main id="project-board">
