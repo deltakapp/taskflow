@@ -6,7 +6,7 @@
 import { useRef } from "react";
 import useCustomDrag from "../hooks/useCustomDrag";
 import useHorizontalDrop from "../hooks/useHorizontalDrop";
-import { ItemTypes } from "../utils/itemTypes";
+import { itemTypes } from "../utils/itemTypes";
 
 export default function ProjectTab({
   index,
@@ -16,22 +16,22 @@ export default function ProjectTab({
   reorderProjects,
   loadProject,
 }) {
-  const ref = useRef(null);
+  const tabRef = useRef(null);
 
-  const [drag, isDragging] = useCustomDrag(ItemTypes.PROJECTTAB, index);
+  const [drag, isDragging] = useCustomDrag(itemTypes.PROJECTTAB, index);
 
   const drop = useHorizontalDrop(
-    ItemTypes.PROJECTTAB,
+    itemTypes.PROJECTTAB,
     index,
     reorderProjects,
-    ref
+    tabRef
   );
 
-  drag(drop(ref));
+  drag(drop(tabRef));
 
   return (
     <li
-      ref={ref}
+      ref={tabRef}
       className={isActiveProject ? "active tab" : "inactive tab"}
       onClick={() => loadProject(projectId)}
       style={{ opacity: isDragging ? 0 : 1 }}

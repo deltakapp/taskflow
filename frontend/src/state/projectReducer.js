@@ -16,6 +16,49 @@ export default function projectReducer(prevState = initialState, action) {
       state.stages = payload;
       return state;
     }
+    /* Move task between stages */
+    case "project/moveTask": {
+      const { taskId, oldStageId, newStageId, newTaskIndex } = payload;
+
+      /* index and tasks array of old stage */
+      const oldStageIndex = state.stages.findIndex(
+        (stage) => stage.stageId === oldStageId
+      );
+      let oldStageTasks = [...state.stages[oldStageIndex].tasks];
+
+      /* index and object of task */
+      const taskIndex = oldStageTasks.findIndex(
+        (task) => task.taskId === taskId
+      );
+      const task = oldStageTasks[taskIndex];
+
+      /* Remove task from old stage */
+      oldStageTasks = oldStageTasks.filter((task) => {
+        return task.taskId !== taskId;
+      });
+
+      /* If new stage different than old stage */
+      if (oldStageId !== newStageId) {
+        /* index and tasks of new stage */
+        const newStageIndex = state.stages.findIndex(
+          (stage) => stage.stageId === newStageId
+        );
+        const newStageTasks = [...state.stages[newStageIndex].tasks];
+
+        /* Add task to new stage */
+        if (newTaskIndex === -1) {
+          newStageTasks.push(task); // push task to end if index == -1
+        } else newStageTasks.splice(newTaskIndex, 0, task); // otherwise insert task at index
+        state.stages[newStageIndex].tasks = newStageTasks; // update newStage tasks
+      } else {
+        /* Add task to new stage */
+        if (newTaskIndex === -1) {
+          oldStageTasks.push(task); // push task to end if index == -1
+        } else oldStageTasks.splice(newTaskIndex, 0, task); // otherwise insert task at index
+      }
+      state.stages[oldStageIndex].tasks = oldStageTasks; // update oldStage tasks
+      return state;
+    }
     case "project/loaded": {
       state = payload;
       return state;
@@ -39,11 +82,12 @@ export default function projectReducer(prevState = initialState, action) {
     }
 
     /***** Stage actions *****/
+    /* Move task within one stage */
     case "stage/reorderTasks": {
       const index = state.stages.findIndex(
         (stage) => stage.stageId === payload.stageId
       );
-      state.stages[index] = payload;
+      state.stages[index].tasks = payload.tasks;
       return state;
     }
     case "stage/created": {

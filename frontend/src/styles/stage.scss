@@ -2,6 +2,9 @@
 
 .stage {
   margin: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-items: flex-start;
   max-height: calc(100vh - 7rem);
   overflow-y: auto;
   border-radius: 0.5rem;
@@ -60,5 +63,10 @@
         }
       }
     }
+  }
+
+  .drop-task-target {
+    width: 100%;
+    flex-grow: 1;
   }
 }

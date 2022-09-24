@@ -1,10 +1,8 @@
 /* Implements useDrag from react-dnd for drag-and-drop */
 
-/* todo: switch to dndkit */
-
 import { useDrag } from "react-dnd";
 
-export default function useCustomDrag(itemType, index, canDrag = true) {
+export default function useCustomDrag(itemType, index) {
   const [{ isDragging }, drag] = useDrag({
     type: itemType,
     item: () => {
@@ -12,12 +10,6 @@ export default function useCustomDrag(itemType, index, canDrag = true) {
     },
     collect: (monitor) => {
       return { isDragging: monitor.isDragging() };
-    },
-    /* inhibit dragging if canDrag === false */
-    canDrag: (monitor) => {
-      if (canDrag === false) {
-        return false;
-      } else return true;
     },
   });
 
